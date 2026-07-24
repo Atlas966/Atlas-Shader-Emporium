@@ -13,6 +13,7 @@ Material:
   - _ENABLEBLUENOISE_ON
   - _ENABLECAMERADEPTHFADING_ON
   - _ENABLESOFTINTERSECTION_ON
+  - _PCDEBUG_ON
   - _WORLDSPACENOISE_ON
   m_InvalidKeywords:
   - _BRDFMAP
@@ -123,9 +124,9 @@ Material:
     - _NoiseIntensity: 3
     - _NoiseSpeed: 0.001
     - _NoiseType: 0
-    - _PCDebug: 0
+    - _PCDebug: 1
     - _Pow: 3
-    - _QuestDepthFade: 0.65
+    - _QuestDepthFade: 0
     - _QueueControl: 0
     - _QueueOffset: 1
     - _RGBOffset1: 0.5
