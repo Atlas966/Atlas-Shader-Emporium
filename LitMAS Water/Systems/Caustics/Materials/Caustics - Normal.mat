@@ -1,0 +1,200 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Caustics - Normal
+  m_Shader: {fileID: 4800000, guid: 6b77b9824c48ca847ada8c692b1dbd23, type: 3}
+  m_ValidKeywords:
+  - _CHROMATICABERRATION_ON
+  - _CONTRAST_ON
+  - _ENABLEANTITILE_ON
+  - _ENABLEBLUENOISE_ON
+  - _ENABLEDISTORTEDUVS_ON
+  - _SATURATION_ON
+  m_InvalidKeywords:
+  - _USECHROMATICABERRATION_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Caustics:
+        m_Texture: {fileID: 2800000, guid: a978164be5abd0c47a06c3097711532c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CausticsTexture:
+        m_Texture: {fileID: 2800000, guid: a978164be5abd0c47a06c3097711532c, type: 3}
+        m_Scale: {x: 0, y: 0}
+        m_Offset: {x: 0, y: 0}
+    - _ColorGradient1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Distortion:
+        m_Texture: {fileID: 2800000, guid: 79d28da0be8c7264ca1afe2bd1b9ac9f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Emission:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Flowmap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GradientTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NoiseTexture:
+        m_Texture: {fileID: 2800000, guid: c0252822c730b4c49b08245a950dbbc8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Pixels:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - DayAlpha: 0
+    - DistanceFade: 0
+    - _AccurateColors: 0
+    - _AccurateColorsReqOpaqueTex: 0
+    - _AlphaCutoff: 0.5
+    - _Blendmode: 0
+    - _BumpScale1: 0.86
+    - _BumpScale2: 1.75
+    - _ChromaticAberration: 1
+    - _ChromaticAberration1: 0
+    - _CircleMask: 1.5
+    - _CloseFade: 0
+    - _CloseTransition: 0
+    - _Contrast: 1
+    - _ContrastIntensity: 3
+    - _DayFading: 0
+    - _DepthWrite: 0
+    - _DistortionStrength: 0.68
+    - _DitherIntensity: 0.5
+    - _DitheringPattern: 0
+    - _DstBlend: 1
+    - _EmissionFalloff: 1
+    - _EnableAntiTile: 1
+    - _EnableBlueNoise: 1
+    - _EnableDistortedUVs: 1
+    - _EnablePostProcessing: 0
+    - _Falloff: 1
+    - _FarFade: 40
+    - _FarTransition: 50
+    - _FlickerHardness: 0.9
+    - _FlickerIntensity: 0
+    - _FlickerSoftness: 0.5
+    - _FlickerSpeed: 1
+    - _Flickering: 1
+    - _Float0: 58.6
+    - _FlowmapDistortOverlay: 0
+    - _Grayscale: 0
+    - _HaloDepthFade: 0.5
+    - _HaloPosterize: 1
+    - _HaloSize: 1
+    - _LightPosterize: 1
+    - _LightSoftness: 1
+    - _Metallic: 0
+    - _NoiseDefusion: 0.02
+    - _NoiseMovement: 0.48
+    - _NoiseScale: 1.45
+    - _Noisiness: 2
+    - _NormalsBlending: 1
+    - _NormalsSoftness: 0.5
+    - _ParticleMode: 0
+    - _PosterizeLight: 1
+    - _QueueControl: 0
+    - _QueueOffset: 1
+    - _RGBOffset: 0.97
+    - _RGBOffset1: 0.7
+    - _RandomOffset: 0
+    - _ReceiveShadows: 1
+    - _SSROff: 0
+    - _SSRTemporalMul: 1
+    - _Saturation: 1
+    - _SaturationIntensity: 1.35
+    - _ScanlineCount: 32
+    - _ScanlineIntensity: 0.5
+    - _ScanlineSpeed: 0.1
+    - _ScreenShadows: 0
+    - _ShadingBlend: 1
+    - _ShadingSoftness: 0.01
+    - _ShadowThreshold: 0.5
+    - _ShadowsHEAVY: 0
+    - _SizeFlickering: 0
+    - _Smoothness: 1
+    - _SpecIntensity: 0.5
+    - _SpecularHighlight: 0
+    - _SrcBlend: 5
+    - _StepSpacing: 3
+    - _StepsSpacing: 1
+    - _TexturePacking: 0
+    - _TimeSpeed: 0
+    - _UseChromaticAberration: 1
+    - _WaterHeight: -0.11
+    - __HEAVYShadows: 0
+    - ___Flickering___: 0
+    - ___Halo___: 0
+    - ___Noise___: 1
+    - _randomOffset: 0
+    m_Colors:
+    - _BOffset: {r: -0.002, g: -0.002, b: 0, a: 0}
+    - _CausticScale: {r: 0.5, g: 0.5, b: 0, a: 0}
+    - _CausticScale2: {r: 1, g: 1, b: 0, a: 0}
+    - _CausticsCenter: {r: 0, g: 0.15, b: 0, a: 0}
+    - _CausticsSize: {r: 10, g: 1, b: 10, a: 0}
+    - _Color: {r: 102.75575, g: 102.75575, b: 102.75575, a: 1}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FlickerHue: {r: 1, g: 1, b: 1, a: 1}
+    - _FlowAXYSpeed: {r: 0, g: 0.02, b: 0, a: 0}
+    - _FlowAXYspeed: {r: 0.15, g: 0, b: 0, a: 0}
+    - _FlowAXYspeed1: {r: -0.09, g: -0.09, b: 0, a: 0}
+    - _FlowBXYSpeed: {r: -0.02, g: -0.02, b: 0, a: 0}
+    - _FlowBXYspeed: {r: -0.1, g: -0.15, b: 0, a: 0}
+    - _FlowmapOverlayOffset: {r: 0.05, g: 0, b: 0, a: 0}
+    - _FlowmapTiliing: {r: 1, g: 1, b: 0, a: 0}
+    - _GOffset: {r: 0, g: -0.002, b: 0, a: 0}
+    - _HaloTint: {r: 1, g: 1, b: 1, a: 1}
+    - _LightTint: {r: 12.844469, g: 12.844469, b: 12.844469, a: 1}
+    - _OffsetXYSpeed: {r: 0.01, g: 0.01, b: 0, a: 0}
+    - _ROffset: {r: 0.002, g: 0, b: 0, a: 0}
+    - _Tiling: {r: 0.1, g: 0.1, b: 0, a: 0}
+    - _Vector7: {r: 1, g: 1, b: 0, a: 0}
+  m_BuildTextureStacks: []

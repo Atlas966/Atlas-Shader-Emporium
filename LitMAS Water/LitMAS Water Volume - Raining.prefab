@@ -1,0 +1,499 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5197440695806536701
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5197440695806536700}
+  - component: {fileID: 5197440695806536694}
+  - component: {fileID: 5197440695806536695}
+  - component: {fileID: 5197440695806536688}
+  - component: {fileID: 5197440695806536689}
+  - component: {fileID: 5197440695806536690}
+  - component: {fileID: 5197440695806536691}
+  m_Layer: 4
+  m_Name: LitMAS Water Volume - Raining
+  m_TagString: Untagged
+  m_Icon: {fileID: 2800000, guid: 8efa0cfaaa04f0643a61b4a2d7d43367, type: 3}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5197440695806536700
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197440695806536701}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4913502257466488689}
+  - {fileID: 4601588987091232866}
+  - {fileID: 5197440696459748747}
+  - {fileID: 5197440696014173084}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5197440695806536694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197440695806536701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17f428c2cf8978245ad0bf4e7e1cdf5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: "Layer MUST be set to \"Water\" for proper collision and \nbullet splashes
+    via Impact Properties."
+--- !u!33 &5197440695806536695
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197440695806536701}
+  m_Mesh: {fileID: 4300000, guid: 10116bf99c5bc604ab5637716e41cf2c, type: 2}
+--- !u!23 &5197440695806536688
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197440695806536701}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: e55c8c3b9e9de9447bb98255c75e985d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5197440695806536689
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197440695806536701}
+  m_Material: {fileID: 13400000, guid: 04c1f2ef3fe87e548a05c23b57165bb4, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 10116bf99c5bc604ab5637716e41cf2c, type: 2}
+--- !u!114 &5197440695806536690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197440695806536701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17f428c2cf8978245ad0bf4e7e1cdf5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: "Impact Properties is used for Bullet Splash VFX, should already\nbe preset
+    to 'LitMAS Water Bullet Ripple'. Import the LitMAS Water\nEffects Resource as
+    a pallet dependency on your mod, and add it \nas a Mod.io dependency."
+--- !u!114 &5197440695806536691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197440695806536701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8020d77a8527fdd4e84ec1fbdfe6a973, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _surfaceDataCard:
+    _barcode:
+      _id: Atlas.96.LitMASWaterEffectsResource.SurfaceDataCard.LitMASWaterBulletRipple
+  decalType: -1
+--- !u!1 &5197440696014173085
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5197440696014173084}
+  - component: {fileID: 5197440696014173073}
+  - component: {fileID: 5197440696014173074}
+  - component: {fileID: 5197440696014173075}
+  m_Layer: 0
+  m_Name: PostProcess
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5197440696014173084
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197440696014173085}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.75, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5197440695806536700}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5197440696014173073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197440696014173085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17f428c2cf8978245ad0bf4e7e1cdf5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: 'Underwater post processing. Leave at default values if you do
+
+    not know
+    what they do.'
+--- !u!65 &5197440696014173074
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197440696014173085}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10, y: 1.5, z: 10}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5197440696014173075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197440696014173085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 0
+  priority: 0
+  blendDistance: 0.001
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 73a4ae80fafcd244bbb1738748ec69ff, type: 2}
+--- !u!1 &5197440696459748788
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5197440696459748747}
+  - component: {fileID: 5197440696459748751}
+  - component: {fileID: 5197440696459748744}
+  - component: {fileID: 5197440696459748745}
+  - component: {fileID: 5197440696459748746}
+  m_Layer: 0
+  m_Name: Liquid Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5197440696459748747
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197440696459748788}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.75, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5197440695806536700}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5197440696459748751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197440696459748788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17f428c2cf8978245ad0bf4e7e1cdf5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: 'FluidLab water volume. Install FluidLab SDK to get scripts.
+
+    https://github.com/Lakatrazz/FluidLab/releases/tag/v1.0.3'
+--- !u!114 &5197440696459748744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197440696459748788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d6a9f6bdd746a746a2b7ef1c4287704, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  density: 1000
+  center: {x: 0, y: 0, z: 0}
+  size: {x: 10, y: 1.5, z: 10}
+  flow: {x: 0, y: 0, z: 0}
+  ambienceBarcode: Lakatrazz.FluidEffectsResource.MonoDisc.Underwater
+  ambienceEnabled: 1
+  splashVfxBarcode: Lakatrazz.FluidEffectsResource.Spawnable.WaterSplash
+  splashSfxBarcode: Lakatrazz.FluidEffectsResource.MonoDisc.SmallSplash
+  splashEnabled: 1
+--- !u!65 &5197440696459748745
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197440696459748788}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10, y: 1.5, z: 10}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5197440696459748746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197440696459748788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 003c25630808c7243847bd9149749434, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _AwakeEvent:
+    _PersistentCalls:
+    - _Target: {fileID: 5197440696459748744}
+      _MethodName: SetAmbience
+      _PersistentArguments:
+      - _Type: 2
+        _Int: 0
+        _String: 'Lakatrazz.FluidEffectsResource.MonoDisc.Underwater '
+        _X: 0
+        _Y: 0
+        _Z: 0
+        _W: 0
+        _Object: {fileID: 0}
+    - _Target: {fileID: 5197440696459748744}
+      _MethodName: SetSplashVFX
+      _PersistentArguments:
+      - _Type: 2
+        _Int: 0
+        _String: 'Lakatrazz.FluidEffectsResource.Spawnable.WaterSplash '
+        _X: 0
+        _Y: 0
+        _Z: 0
+        _W: 0
+        _Object: {fileID: 0}
+    - _Target: {fileID: 5197440696459748744}
+      _MethodName: SetSplashSFX
+      _PersistentArguments:
+      - _Type: 2
+        _Int: 0
+        _String: 'Lakatrazz.FluidEffectsResource.MonoDisc.SmallSplash '
+        _X: 0
+        _Y: 0
+        _Z: 0
+        _W: 0
+        _Object: {fileID: 0}
+  _StartEvent:
+    _PersistentCalls: []
+  _EnableEvent:
+    _PersistentCalls: []
+  _DisableEvent:
+    _PersistentCalls: []
+  _DestroyEvent:
+    _PersistentCalls: []
+--- !u!1001 &5197440695670114183
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 5197440695806536700}
+    m_Modifications:
+    - target: {fileID: 869547137494233333, guid: b1afa6d2634ab1843a9635c85f54c6cd, type: 3}
+      propertyPath: m_Name
+      value: Dynamic Ripple System (KEEP DISABLED IF NOT USED)
+      objectReference: {fileID: 0}
+    - target: {fileID: 869547137494233334, guid: b1afa6d2634ab1843a9635c85f54c6cd, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 869547137494233334, guid: b1afa6d2634ab1843a9635c85f54c6cd, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 869547137494233334, guid: b1afa6d2634ab1843a9635c85f54c6cd, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 869547137494233334, guid: b1afa6d2634ab1843a9635c85f54c6cd, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 869547137494233334, guid: b1afa6d2634ab1843a9635c85f54c6cd, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 869547137494233334, guid: b1afa6d2634ab1843a9635c85f54c6cd, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 869547137494233334, guid: b1afa6d2634ab1843a9635c85f54c6cd, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 869547137494233334, guid: b1afa6d2634ab1843a9635c85f54c6cd, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 869547137494233334, guid: b1afa6d2634ab1843a9635c85f54c6cd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 869547137494233334, guid: b1afa6d2634ab1843a9635c85f54c6cd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 869547137494233334, guid: b1afa6d2634ab1843a9635c85f54c6cd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b1afa6d2634ab1843a9635c85f54c6cd, type: 3}
+--- !u!4 &4913502257466488689 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 869547137494233334, guid: b1afa6d2634ab1843a9635c85f54c6cd, type: 3}
+  m_PrefabInstance: {fileID: 5197440695670114183}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &8796114221300139166
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 5197440695806536700}
+    m_Modifications:
+    - target: {fileID: 3814603481507851505, guid: ad4e500c880c1b64e99f883d64d63a1f, type: 3}
+      propertyPath: m_Name
+      value: CausticsBox
+      objectReference: {fileID: 0}
+    - target: {fileID: 5030014503727099132, guid: ad4e500c880c1b64e99f883d64d63a1f, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5030014503727099132, guid: ad4e500c880c1b64e99f883d64d63a1f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5030014503727099132, guid: ad4e500c880c1b64e99f883d64d63a1f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5030014503727099132, guid: ad4e500c880c1b64e99f883d64d63a1f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5030014503727099132, guid: ad4e500c880c1b64e99f883d64d63a1f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5030014503727099132, guid: ad4e500c880c1b64e99f883d64d63a1f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5030014503727099132, guid: ad4e500c880c1b64e99f883d64d63a1f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5030014503727099132, guid: ad4e500c880c1b64e99f883d64d63a1f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5030014503727099132, guid: ad4e500c880c1b64e99f883d64d63a1f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5030014503727099132, guid: ad4e500c880c1b64e99f883d64d63a1f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5030014503727099132, guid: ad4e500c880c1b64e99f883d64d63a1f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877245659706284267, guid: ad4e500c880c1b64e99f883d64d63a1f, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 86138af076e8d264e9e1a4bbcd431d23, type: 2}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ad4e500c880c1b64e99f883d64d63a1f, type: 3}
+--- !u!4 &4601588987091232866 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5030014503727099132, guid: ad4e500c880c1b64e99f883d64d63a1f, type: 3}
+  m_PrefabInstance: {fileID: 8796114221300139166}
+  m_PrefabAsset: {fileID: 0}

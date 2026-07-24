@@ -1,0 +1,19 @@
+{
+  "name": "com.atlas.atlasshaderemporium",
+  "version": "1.0.0",
+  "displayName": "Atlas Shader Emporium",
+  "description": "Repository of all of Atlas's custom Amplify-built Unity shaders for BONELAB. Contains recreated Vertigo 2 shaders as well.",
+  "unity": "2021.3",
+  "keywords": [
+    "slz",
+    "shader",
+    "urp"
+  ],
+  "author": {
+    "name": "Atlas",
+    "email": "josephoderhodes@gmail.com",
+    "url": "https://mod.io/u/atlas-96/"
+  },
+  "license": "MIT",
+  "licensesUrl": "https://github.com/FragileDeviations/MabelsShaders/blob/main/LICENSE"
+}

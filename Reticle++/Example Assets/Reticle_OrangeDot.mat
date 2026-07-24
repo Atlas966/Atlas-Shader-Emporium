@@ -1,0 +1,355 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-1268703592299063224
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Reticle_OrangeDot
+  m_Shader: {fileID: 4800000, guid: 5dbe5fc0283d9144286374078d908065, type: 3}
+  m_ValidKeywords:
+  - _USEBLUENOISEDIFFUSION_ON
+  - _USECHROMATICABERRATION_ON
+  m_InvalidKeywords: []
+  m_LightmapFlags: 2
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Ambient_Occlusion:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ColorMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Emission:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Flowmap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Glass:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HeightMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 7d2b35b540bd16a418903cb72818b4bf, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Main_Texture:
+        m_Texture: {fileID: 2800000, guid: d2dc199ffb6d891449d5b0876da6ef4e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Metallic:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 2800000, guid: 09d470003bf37cd40a33d8792ac06dd6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Pixels:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Reticle:
+        m_Texture: {fileID: 2800000, guid: b0b00792e2e45ac409037af5db5f1c5c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Reticle_Layer_1:
+        m_Texture: {fileID: 2800000, guid: 09abb6f30dd1611488542b8344df61b0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Reticle_Layer_10:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Reticle_Layer_2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Reticle_Layer_3:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Reticle_Layer_4:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Reticle_Layer_5:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Reticle_Layer_6:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Reticle_Layer_7:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Reticle_Layer_8:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Reticle_Layer_9:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SceneColor:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Smoothness:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Test:
+        m_Texture: {fileID: 2800000, guid: 09abb6f30dd1611488542b8344df61b0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TextureSample0:
+        m_Texture: {fileID: 2800000, guid: 09abb6f30dd1611488542b8344df61b0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - g_tBRDFMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - BRDFMAP: 0
+    - VertexIllumination: 0
+    - _Alpha: 0.652
+    - _AlphaClip: 0
+    - _AlphaCutoff: 0.5
+    - _BakedMutiplier: 0
+    - _Blend: 0
+    - _BumpScale: 1
+    - _CastShadows: 1
+    - _ClearCoatMask: 0
+    - _ClearCoatSmoothness: 0
+    - _Cull: 2
+    - _Cutoff: 0.5
+    - _Depth: 3
+    - _DetailAlbedoMapScale: 1
+    - _DetailNormalMapScale: 1
+    - _DetailSmoothnessMapScale: 1
+    - _DstBlend: 10
+    - _EmissionFalloff: 1
+    - _EmitAlbedo: 0
+    - _Float0: 0.47
+    - _FlowmapDistortOverlay: 0
+    - _Glass_Opacity_Multiplier: 0.25
+    - _GlossMapScale: 0
+    - _Glossiness: 0
+    - _GlossyReflections: 0
+    - _Height: 1.7
+    - _Metallic: 0
+    - _MetallicType: 1
+    - _Metallic_Multiplier: 1
+    - _Multiplier: 1
+    - _NoiseDefusion: 0.055
+    - _NormalToOcclusion: 0
+    - _OcclusionStrength: 1
+    - _OffsetFactor: 0
+    - _OffsetUnits: 0
+    - _Parallax: 0
+    - _Parallax1: 3.93
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _RGBOffset: 0.5
+    - _ReceiveShadows: 1
+    - _Reflection_Fresnel_Power: 20
+    - _Reflection_Strength: 0.2
+    - _ReticleDepth: 10.62
+    - _ReticleScale: 0.9
+    - _Reticle_Layer_10_Depth: 8
+    - _Reticle_Layer_10_Rotation: 0
+    - _Reticle_Layer_10_Rotation_Speed: 0
+    - _Reticle_Layer_10_Scale: 1
+    - _Reticle_Layer_1_Depth: 8.7
+    - _Reticle_Layer_1_Rotation: 180
+    - _Reticle_Layer_1_Rotation_Speed: 0
+    - _Reticle_Layer_1_Scale: 0.69
+    - _Reticle_Layer_2_Depth: 3.8
+    - _Reticle_Layer_2_Rotation: 253
+    - _Reticle_Layer_2_Rotation_Speed: 0
+    - _Reticle_Layer_2_Scale: 0.63
+    - _Reticle_Layer_3_Depth: 6
+    - _Reticle_Layer_3_Rotation: 0
+    - _Reticle_Layer_3_Rotation_Speed: 4
+    - _Reticle_Layer_3_Scale: 0.183
+    - _Reticle_Layer_4_Depth: 8
+    - _Reticle_Layer_4_Rotation: 0
+    - _Reticle_Layer_4_Rotation_Speed: 0
+    - _Reticle_Layer_4_Scale: 1
+    - _Reticle_Layer_5_Depth: 8
+    - _Reticle_Layer_5_Rotation: 0
+    - _Reticle_Layer_5_Rotation_Speed: 0
+    - _Reticle_Layer_5_Scale: 1
+    - _Reticle_Layer_6_Depth: 2.9
+    - _Reticle_Layer_6_Rotation: 0
+    - _Reticle_Layer_6_Rotation_Speed: 0
+    - _Reticle_Layer_6_Scale: 1
+    - _Reticle_Layer_7_Depth: 8
+    - _Reticle_Layer_7_Rotation: 0
+    - _Reticle_Layer_7_Rotation_Speed: 0
+    - _Reticle_Layer_7_Scale: 1
+    - _Reticle_Layer_8_Depth: 8
+    - _Reticle_Layer_8_Rotation: 0
+    - _Reticle_Layer_8_Rotation_Speed: 0
+    - _Reticle_Layer_8_Scale: 1
+    - _Reticle_Layer_9_Depth: 8
+    - _Reticle_Layer_9_Rotation: 0
+    - _Reticle_Layer_9_Rotation_Speed: 3.3
+    - _Reticle_Layer_9_Scale: 1
+    - _Rotation: 0
+    - _RotationAmount: 0.25
+    - _RotationSpeed: 0
+    - _SSROff: 0
+    - _SSRTemporalMul: 1
+    - _ScanlineCount: 32
+    - _ScanlineIntensity: 0.5
+    - _ScanlineSpeed: 0.1
+    - _SceneColorMultiplier: 1
+    - _SceneDepth: 1
+    - _Sight_Size: -2
+    - _Smoothness: 1
+    - _Smoothness_Multiplier: 0
+    - _Specmod: 1
+    - _SrcBlend: 5
+    - _Surface: 1
+    - _TimeSpeed: 0
+    - _UseBlueNoiseDiffusion: 1
+    - _UseChromaticAberration: 1
+    - _UseColorMask: 0
+    - _UseDetail: 0
+    - _UseOcclusion: 0
+    - _UseTinting: 0
+    - _VertexColors: 0
+    - _VertexOcclusion: 0
+    - _VertexTint: 0
+    - _Vignette_Depth_Multiplier: 15
+    - _Vignette_Hardness: 0.45
+    - _Vignette_Radius: 2.08
+    - _WorkflowMode: 1
+    - _ZTest: 4
+    - _ZWrite: 0
+    - _ZWriteControl: 0
+    - _alpha: 1
+    - _test: 6.29
+    m_Colors:
+    - _BOffset: {r: -0.002, g: -0.002, b: 0, a: 0}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 13.76636, g: 3.3056648, b: 0.72075164, a: 1}
+    - _ColorShift1: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorShift2: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorShift3: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FlowmapOverlayOffset: {r: 0.05, g: 0, b: 0, a: 0}
+    - _FlowmapTiliing: {r: 1, g: 1, b: 0, a: 0}
+    - _GOffset: {r: 0, g: -0.002, b: 0, a: 0}
+    - _Main_Color: {r: 0.030887008, g: 1, b: 0, a: 1}
+    - _Offset: {r: 0.38, g: 0.34, b: 0, a: 0}
+    - _OffsetUseONLYifreticleismisalignedUseIsoviewtoalign: {r: 0, g: 0, b: 0, a: 0}
+    - _ROffset: {r: 0.002, g: 0, b: 0, a: 0}
+    - _Reticle_Layer_10_Color: {r: 0.24402116, g: 2.1185474, b: 0, a: 1}
+    - _Reticle_Layer_1_Color: {r: 4.237095, g: 0.110918716, b: 0.110918716, a: 1}
+    - _Reticle_Layer_2_Color: {r: 5.632174, g: 0, b: 0, a: 1}
+    - _Reticle_Layer_3_Color: {r: 0.24402116, g: 2.1185474, b: 0, a: 1}
+    - _Reticle_Layer_4_Color: {r: 0.24402116, g: 2.1185474, b: 0, a: 1}
+    - _Reticle_Layer_5_Color: {r: 0.24402116, g: 2.1185474, b: 0, a: 1}
+    - _Reticle_Layer_6_Color: {r: 0.24402116, g: 2.1185474, b: 0, a: 1}
+    - _Reticle_Layer_7_Color: {r: 0.24402116, g: 2.1185474, b: 0, a: 1}
+    - _Reticle_Layer_8_Color: {r: 0.24402116, g: 2.1185474, b: 0, a: 1}
+    - _Reticle_Layer_9_Color: {r: 0.24402116, g: 2.1185474, b: 0, a: 1}
+    - _Scale: {r: 1, g: 1, b: 0, a: 0}
+    - _ScaleInternal: {r: 1, g: 1, b: 0, a: 0}
+    - _TintColor: {r: 0.12015993, g: 0.12015993, b: 0.12015993, a: 0}
+    - _Vector2: {r: 0.5, g: 0.5, b: 0, a: 0}
+    - _VectorOffset: {r: 0, g: 0, b: 0, a: 0}
+  m_BuildTextureStacks: []

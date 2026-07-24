@@ -1,0 +1,215 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: LitMAS Water 3 Example - Flowmap
+  m_Shader: {fileID: 4800000, guid: a2be5c15fd831c04ca6570540fc7a2dc, type: 3}
+  m_ValidKeywords:
+  - _DEPTHCOLORMODE_REGULARRECOMMENDED
+  - _DISTORTIONTYPE_DEFAULT
+  - _ENABLEANTITILEFOAM_ON
+  - _ENABLEANTITILENORMALS_ON
+  - _ENABLEANTITILEUVDISTORTION_ON
+  - _ENABLECAMERADEPTHFADING_ON
+  - _ENABLEDEPTHCOLORS_ON
+  - _ENABLEDEPTHMASKEDREFRACTION_ON
+  - _ENABLEFLOWMAPPEDUVS_ON
+  - _ENABLERAINDROPRIPPLES
+  - _ENABLESOFTINTERSECTION_ON
+  - _MICRONORMALS
+  - _WAVETYPE_NONE
+  m_InvalidKeywords:
+  - _DISTORTIONTYPE_CHROMATICABBERATION
+  - _ENABLEANTITILEFLOWMAP_ON
+  - _ENABLECHROMATICABBERATION_ON
+  - _ENABLEDENSITYFOG_ON
+  - _ENABLEFLOWMAPPEDUVS
+  - _FLOWMAPDEBUGVIEW_ON
+  - _MASKCHANNEL_RED
+  - _METALLICTYPE_MAS
+  - _MICRONORMALS_ON
+  - _TEMPORALMODE1_FLOWMAPTIME
+  - _TRANSLUCENCY_ASE
+  - _USEDETAIL_ON
+  - _USE_TRANSLUCENCY
+  - _WAVETYPE_DYNAMICRIPPLESONLY
+  m_LightmapFlags: 5
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2999
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BubbleBook:
+        m_Texture: {fileID: 2800000, guid: 760bf7cc2c844e6478d1844e81f23868, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Displacement3DTexture:
+        m_Texture: {fileID: 11700000, guid: ede26a347e1c6634d9d6c87e30361481, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Distortion:
+        m_Texture: {fileID: 2800000, guid: 04faf1bd9d207b049a34d8765e3907a9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Flowmap:
+        m_Texture: {fileID: 2800000, guid: fd3144cde50ef1f4e9feb6af85214aeb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FoamTexture:
+        m_Texture: {fileID: 2800000, guid: 175c9d90377d747449523cd5ccab748c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MicroNormalMap:
+        m_Texture: {fileID: 2800000, guid: fc7df81110c0e4d2498739bf4d47a49d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: 7b01cf887e3f6c64398e31da292623ac, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RippleRenderTexture:
+        m_Texture: {fileID: 8400000, guid: f2c95742d40b34e48883b27af7074a0a, type: 2}
+        m_Scale: {x: -1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - g_tBRDFMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - BRDFMAP: 0
+    - _AlphaCutoff: 0.5
+    - _AlphaFalloff: 0.25
+    - _Amplitude: 0.05
+    - _Blue: 0
+    - _CDDistance: 0.05
+    - _CDFalloff: 0.05
+    - _Clarity: 1
+    - _Contrast: 0
+    - _ContrastIntensity: 1.1
+    - _Cull: 0
+    - _DebugContrast: 0.5
+    - _DebugContrast1: 0.5
+    - _DebugView: 0
+    - _DebugView1: 0
+    - _DepthColorMode: 0
+    - _DepthTranslucency: 0.03
+    - _DisplacementTiling: 0.25
+    - _DistortOverlayIntensity: 0.15
+    - _DistortedUVInfluence: 0.35
+    - _DistortedUVInfluence1: 2.5
+    - _Distortion: 0
+    - _DistortionIntensity: 0.25
+    - _DistortionSpeedX: 0
+    - _DistortionSpeedY: 0.008
+    - _DistortionType: 1
+    - _DynamicRippleIntensity: 0.075
+    - _DynamicRippleWaveHeight: 0.273
+    - _EnableAlphaMasking: 0
+    - _EnableAntiTileFoam: 1
+    - _EnableAntiTileNormals: 1
+    - _EnableAntiTileUVDistortion: 1
+    - _EnableCameraDepthFading: 1
+    - _EnableDepthColors: 1
+    - _EnableDepthMaskedRefraction: 1
+    - _EnableDistortedUVs: 0
+    - _EnableDynamicRipples: 0
+    - _EnableFlowmappedUVs: 1
+    - _EnableFoam: 0
+    - _EnableFoamDistortion: 0
+    - _EnableFoamParallax: 0
+    - _EnablePostProcessing: 0
+    - _EnableRainDropRipples: 1
+    - _EnableSoftIntersection: 1
+    - _FlowSpeed: -0.3
+    - _FoamAlpha: 6
+    - _FoamDistortion: 0.05
+    - _FoamParallaxScale: 1
+    - _FoamSpeedX: 0.01
+    - _FoamSpeedY: 0.05
+    - _FoamStrength: 1
+    - _FoamTiling: 0.36
+    - _Grayscale: 0
+    - _Green: 0
+    - _MicroNormalIntensity: 0.095
+    - _MicroNormalSpeedX: -0.05
+    - _MicroNormalSpeedY: 0.05
+    - _MicroNormals: 1
+    - _MicroNormalsFarFadeDistance: 4
+    - _MicroNormalsNearFadeDistance: 0
+    - _Midtones: 0
+    - _MixingIntensity: 1
+    - _Murkiness: 0.08
+    - _NoiseWavesScale: 10
+    - _NoiseWavesSize: 8
+    - _NoiseWavesSpeed: 0.075
+    - _NormalIntensity: 0.35
+    - _NumberOfWaves: 8
+    - _PosterizationIntensity: 25
+    - _Posterize: 0
+    - _RGBOffset: 0.4
+    - _RainDropRippleIntensity: 5
+    - _RainDropRippleSpeed: 25
+    - _Red: 0
+    - _Reflectivity: 0.1
+    - _SSROff: 0
+    - _SSRTemporalMul: 1
+    - _Saturation: 0
+    - _SaturationIntensity: 1.25
+    - _Smoothness: 0.95
+    - _SoftIntersectionIntensity: 0.2
+    - _Speed: 0.35
+    - _Steepness: 10
+    - _Strength: 0.363
+    - _WaterDepth: 1
+    - _WaterSpeedX: 0.01
+    - _WaterSpeedY: -0.015
+    - _WaveHeight: 0.25
+    - _WaveSpeed: 0.5
+    - _WaveType: 0
+    - _Wavelength: 2.5
+    m_Colors:
+    - _DeepColor: {r: 0, g: 0.628074, b: 0.7176471, a: 1}
+    - _DepthColor: {r: 0.031372547, g: 0.67217314, b: 1, a: 1}
+    - _DistortionTiling: {r: 1, g: 1, b: 0, a: 0}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FlowSpeed: {r: 1, g: 1, b: 0, a: 0}
+    - _FoamColor: {r: 3.9533494, g: 3.9533494, b: 3.9533494, a: 1}
+    - _FoamTiling: {r: 25, g: 25, b: 0, a: 0}
+    - _MicroNormalTiling: {r: 50, g: 50, b: 0, a: 0}
+    - _NoiseWavesDirection: {r: 0, g: 1, b: 0, a: 0}
+    - _NormalTiling: {r: 2, g: 2, b: 0, a: 0}
+    - _RainDropRippleTiling: {r: 15, g: 15, b: 0, a: 0}
+    - _ShallowColor: {r: 0, g: 0.4069506, b: 0.43529412, a: 1}
+    - _Speed: {r: -0.23, g: 0.02, b: 0, a: 0}
+    - _WaterColor: {r: 0.11764705, g: 0.8440191, b: 1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!114 &7657566863721811038
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5

@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78b2425a2284af743826c689403a4924, type: 3}
+  m_Name: Lerp3point
+  m_EditorClassIdentifier: 
+  m_functionInfo: "// Made with Amplify Shader Editor\n// Available at the Unity Asset
+    Store - http://u3d.as/y3X \n/*ASEBEGIN\nVersion=16800\n-1433;7;1426;1004;2044.6;691.8099;1.708643;True;False\nNode;AmplifyShaderEditor.LerpOp;7;-768.6825,-223.5162;Float;True;3;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT;0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.SimpleMultiplyOpNode;14;-960.8459,-58.91608;Float;False;2;2;0;FLOAT;0;False;1;FLOAT;2;False;1;FLOAT;0\nNode;AmplifyShaderEditor.LerpOp;8;-758.6342,97.3695;Float;True;3;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT;0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.LerpOp;17;-148.7858,5.664924;Float;True;3;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT;0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.FunctionInput;9;-965.9944,457.5724;Float;False;Alpha;1;3;True;1;0;FLOAT;0.1;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput;1;-1216.023,-168.0976;Float;False;A;3;0;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.FunctionInput;2;-1220.406,-84.6414;Float;False;B;3;1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.FunctionInput;3;-1205.068,120.1509;Float;False;C;3;2;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.FunctionOutput;0;224,-6.400001;Float;False;True;;0;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0\nWireConnection;7;0;1;0\nWireConnection;7;1;2;0\nWireConnection;7;2;14;0\nWireConnection;14;0;9;0\nWireConnection;8;1;3;0\nWireConnection;8;2;9;0\nWireConnection;17;0;7;0\nWireConnection;17;1;8;0\nWireConnection;17;2;9;0\nWireConnection;0;0;17;0\nASEEND*/\n//CHKSM=9AAF24C11C06E3D0AB177B3E28ED514323DED9DB"
+  m_functionName: 
+  m_description: 'Blends between 3 inputs.
+
+    A->B, B->C.
+
+
+    This is done by nesting lerps. The AB are lerped with a multiplied alpha value
+    of 2. 0.5 will thus become their max/final blend. BC blends its lerp regular.
+    Those two lerp results are then lerped to get our final value.
+
+
+    Created by Mark Duisters
+
+    Alzheimer Studio
+
+    www.markduisters.com'
+  m_additionalIncludes:
+    m_additionalIncludes: []
+    m_outsideIncludes: []
+  m_additionalPragmas:
+    m_additionalPragmas: []
+    m_outsidePragmas: []
+  m_additionalDirectives:
+    m_validData: 0
+    m_isDirty: 0
+    m_moduleName: ' Additional Directives'
+    m_independentModule: 1
+    m_additionalDirectives: []
+    m_shaderFunctionDirectives: []
+    m_nativeDirectives: []
+    m_nativeDirectivesFoldout: 0
+    m_directivesSaveItems: []
+  m_nodeCategory: 7
+  m_customNodeCategory: 
+  m_previewPosition: 0
+  m_hidden: 0

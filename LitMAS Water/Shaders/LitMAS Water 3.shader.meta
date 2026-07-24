@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a2be5c15fd831c04ca6570540fc7a2dc
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _Displacement3DTexture: {fileID: 11700000, guid: ede26a347e1c6634d9d6c87e30361481, type: 2}
+  - _NormalMap: {fileID: 2800000, guid: fc7df81110c0e4d2498739bf4d47a49d, type: 3}
+  - _Distortion: {fileID: 2800000, guid: 04faf1bd9d207b049a34d8765e3907a9, type: 3}
+  - _BubbleBook: {fileID: 2800000, guid: 760bf7cc2c844e6478d1844e81f23868, type: 3}
+  - _FoamTexture: {fileID: 2800000, guid: 175c9d90377d747449523cd5ccab748c, type: 3}
+  - _MicroNormalMap: {fileID: 2800000, guid: fc7df81110c0e4d2498739bf4d47a49d, type: 3}
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
