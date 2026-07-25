@@ -188,8 +188,8 @@ Shader "AtlasShaders/Particle/Lit Particle Depth Fade Alpha Shadows"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED
 			#define ASE_DEPTH_WRITE_ON
-			#pragma multi_compile_instancing
 			#define _ALPHATEST_SHADOW_ON 1
+			#pragma multi_compile_instancing
 			#define _ALPHATEST_ON 1
 			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
@@ -898,8 +898,8 @@ Shader "AtlasShaders/Particle/Lit Particle Depth Fade Alpha Shadows"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED
 			#define ASE_DEPTH_WRITE_ON
-			#pragma multi_compile_instancing
 			#define _ALPHATEST_SHADOW_ON 1
+			#pragma multi_compile_instancing
 			#define _ALPHATEST_ON 1
 			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
@@ -1334,8 +1334,8 @@ Shader "AtlasShaders/Particle/Lit Particle Depth Fade Alpha Shadows"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED
 			#define ASE_DEPTH_WRITE_ON
-			#pragma multi_compile_instancing
 			#define _ALPHATEST_SHADOW_ON 1
+			#pragma multi_compile_instancing
 			#define _ALPHATEST_ON 1
 			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
@@ -1737,8 +1737,8 @@ Shader "AtlasShaders/Particle/Lit Particle Depth Fade Alpha Shadows"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED
 			#define ASE_DEPTH_WRITE_ON
-			#pragma multi_compile_instancing
 			#define _ALPHATEST_SHADOW_ON 1
+			#pragma multi_compile_instancing
 			#define _ALPHATEST_ON 1
 			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
@@ -2228,8 +2228,8 @@ Shader "AtlasShaders/Particle/Lit Particle Depth Fade Alpha Shadows"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED
 			#define ASE_DEPTH_WRITE_ON
-			#pragma multi_compile_instancing
 			#define _ALPHATEST_SHADOW_ON 1
+			#pragma multi_compile_instancing
 			#define _ALPHATEST_ON 1
 			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
@@ -2588,8 +2588,8 @@ Shader "AtlasShaders/Particle/Lit Particle Depth Fade Alpha Shadows"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED
 			#define ASE_DEPTH_WRITE_ON
-			#pragma multi_compile_instancing
 			#define _ALPHATEST_SHADOW_ON 1
+			#pragma multi_compile_instancing
 			#define _ALPHATEST_ON 1
 			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
@@ -3023,7 +3023,7 @@ Shader "AtlasShaders/Particle/Lit Particle Depth Fade Alpha Shadows"
 			
 
 			HLSLPROGRAM
-#define _NORMAL_DROPOFF_TS 1#pragma multi_compile_fog#define ASE_FOG 1#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED#define ASE_DEPTH_WRITE_ON#pragma multi_compile_instancing#define _ALPHATEST_SHADOW_ON 1#define _ALPHATEST_ON 1#define ASE_VERSION 19908#define ASE_SRP_VERSION -1#define REQUIRE_DEPTH_TEXTURE 1
+#define _NORMAL_DROPOFF_TS 1#pragma multi_compile_fog#define ASE_FOG 1#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED#define ASE_DEPTH_WRITE_ON#define _ALPHATEST_SHADOW_ON 1#pragma multi_compile_instancing#define _ALPHATEST_ON 1#define ASE_VERSION 19908#define ASE_SRP_VERSION -1#define REQUIRE_DEPTH_TEXTURE 1
 #if FALSE
 			#pragma multi_compile _ LIGHTMAP_ON
 			#pragma multi_compile _ DYNAMICLIGHTMAP_ON
@@ -3616,8 +3616,8 @@ Shader "AtlasShaders/Particle/Lit Particle Depth Fade Alpha Shadows"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED
 			#define ASE_DEPTH_WRITE_ON
-			#pragma multi_compile_instancing
 			#define _ALPHATEST_SHADOW_ON 1
+			#pragma multi_compile_instancing
 			#define _ALPHATEST_ON 1
 			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
@@ -3938,8 +3938,8 @@ Shader "AtlasShaders/Particle/Lit Particle Depth Fade Alpha Shadows"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED
 			#define ASE_DEPTH_WRITE_ON
-			#pragma multi_compile_instancing
 			#define _ALPHATEST_SHADOW_ON 1
+			#pragma multi_compile_instancing
 			#define _ALPHATEST_ON 1
 			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
@@ -4307,7 +4307,7 @@ Node;AmplifyShaderEditor.SmoothstepOpNode, AmplifyShaderEditor, Version=0.0.0.0,
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;101;-1616,-320;Inherit;False;4;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.SaturateNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;73;-1472,-320;Inherit;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;161;-960,-944;Inherit;False;1515.132;588.5452;Calculate Alpha Shadow;16;255;145;134;160;158;172;128;249;154;133;178;244;155;153;159;152;Alpha Shadow;0.2145643,1,0,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;182;-960,-288;Inherit;False;1386.622;350.7966;;14;68;67;66;65;64;63;62;61;189;252;185;188;184;183;Quest Depth Fade;1,0.3646275,0,1;0;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;182;-960,-288;Inherit;False;1386.622;350.7966;;16;68;67;66;65;64;63;62;61;189;252;185;188;184;183;257;256;Quest Depth Fade;1,0.3646275,0,1;0;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;169;-1328,-320;Inherit;False;Alpha;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;116;-1712,-1456;Inherit;False;VertexColor;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;50;48,-1376;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
@@ -4339,12 +4339,12 @@ Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, 
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;145;-80,-624;Inherit;False;3;3;0;FLOAT3;0,0,0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;255;-96,-496;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;171;-2128,-80;Inherit;False;AlphaFloat;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.IntNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;196;1136,-1280;Inherit;False;Property;_Cull;_Cull;23;1;[HideInInspector];Create;True;0;0;0;True;0;False;2;0;False;0;0;0;1;INT;0
 Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;183;-256,-240;Inherit;False;Property;_SHADER_API_MOBILE;SHADER_API_MOBILE;33;0;Create;True;0;0;0;False;0;False;0;0;0;False;SHADER_API_MOBILE;Toggle;2;Key0;Key1;Fetch;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;184;0,-240;Inherit;False;Property;_PCDebug;PC Debug;19;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;188;-64,-144;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;185;208,-240;Inherit;False;QuestDepthFade;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;252;-944,-32;Inherit;False;Property;_QuestDepthFadeBlueNoiseSize;Blue Noise Size;18;0;Create;False;1;Quest Depth Fade;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.IntNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;196;1136,-1280;Inherit;False;Property;_Cull;_Cull;23;1;[HideInInspector];Create;True;0;0;0;True;0;False;2;0;False;0;0;0;1;INT;0
 Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;189;-944,-112;Inherit;False;Property;_QuestDepthFade;Quest Depth Fade;17;1;[Header];Create;True;1;Quest Depth Fade;0;0;False;0;False;0.25;0;0;3;0;1;FLOAT;0
 Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;256;-640,-112;Inherit;False;BlueNoiseFakeTransparencyDepthOffset;-1;;143;e0e0f8e10bf068a43b805df662b593ba;0;3;1;FLOAT;1;False;2;FLOAT;0;False;24;FLOAT;1;False;1;FLOAT;0
 Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;257;-640,-240;Inherit;False;BlueNoiseFakeTransparencyDepthOffset;-1;;145;e0e0f8e10bf068a43b805df662b593ba;0;3;1;FLOAT;1;False;2;FLOAT;0;False;24;FLOAT;1;False;1;FLOAT;0
@@ -4433,4 +4433,4 @@ WireConnection;60;6;170;0
 WireConnection;60;7;141;0
 WireConnection;60;17;190;0
 ASEEND*/
-//CHKSM=2F60C919C49AEEA23852B8950BD5167E9D96D510
+//CHKSM=5C379C9E7B0453B3ABDB1243C9EE5019CC4AFF3D
