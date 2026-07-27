@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LuminousLightbeamGUI : ShaderGUI
 {
-    private const string LogoPath = "Packages/com.atlas.atlasshaderemporium/Luminous Light Volumes/Assets/Texture2D/LuminousLightVolumes Logo.psd";
+    private const string LogoPath = "Packages/com.atlas.atlasshaderemporium/!Resources/Script Icons/LuminousLightVolumes Logo.psd";
 
     MaterialEditor m_MaterialEditor;
     GUIStyle headerStyle;

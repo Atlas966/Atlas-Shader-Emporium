@@ -7,7 +7,7 @@ Shader "AtlasShaders/Luminous Light Volumes/Luminous Lightbeam"
 		[HideInInspector] _EmissionColor("Emission Color", Color) = (1,1,1,1)
 		[HideInInspector] _Cutoff("Alpha Cutoff", Range(0, 1)) = 0.5
 		[HDR][Header(Base Attributes)] _BeamColor( "Beam Color", Color ) = ( 1, 1, 1, 1 )
-		_GlobalIntensity( "Global Intensity", Range( 0, 1 ) ) = 0.025
+		_GlobalIntensity( "Global Intensity", Range( 0, 1 ) ) = 0.075
 		[Header (Edge Color Falloff)][Toggle( _ENABLEEDGECOLORFALLOFF_ON )] _EnableEdgeColorFalloff( "Enable Edge Color Falloff", Float ) = 0
 		[HDR] _EdgeColorFalloff( "Edge Color Falloff", Color ) = ( 1, 0, 0, 1 )
 		_ColorEdgeBlend( "Color Edge Blend", Range( 0, 2 ) ) = 1
@@ -573,7 +573,7 @@ Shader "AtlasShaders/Luminous Light Volumes/Luminous Lightbeam"
 				float3 break110 = staticSwitch109;
 				float mulTime105 = _TimeParameters.x * _3DNoiseSpeed;
 				float3 appendResult104 = (float3(( break110.x * _3DNoiseTiling ) , ( break110.z * _3DNoiseTiling ) , mulTime105));
-				float3 temp_output_491_0 = ( appendResult104 + ( ( _NoiseVelocity * _TimeParameters.x ) * float3( -2,-2,-2 ) ) );
+				float3 temp_output_491_0 = ( appendResult104 + ( ( _NoiseVelocity * _TimeParameters.x ) * float3( 0.2,0.2,0.2 ) ) );
 				float simplePerlin3D487 = snoise( temp_output_491_0*3.0 );
 				simplePerlin3D487 = simplePerlin3D487*0.5 + 0.5;
 				float4 temp_cast_1 = (simplePerlin3D487).xxxx;
@@ -1384,7 +1384,7 @@ Shader "AtlasShaders/Luminous Light Volumes/Luminous Lightbeam"
 				float3 break110 = staticSwitch109;
 				float mulTime105 = _TimeParameters.x * _3DNoiseSpeed;
 				float3 appendResult104 = (float3(( break110.x * _3DNoiseTiling ) , ( break110.z * _3DNoiseTiling ) , mulTime105));
-				float3 temp_output_491_0 = ( appendResult104 + ( ( _NoiseVelocity * _TimeParameters.x ) * float3( -2,-2,-2 ) ) );
+				float3 temp_output_491_0 = ( appendResult104 + ( ( _NoiseVelocity * _TimeParameters.x ) * float3( 0.2,0.2,0.2 ) ) );
 				float simplePerlin3D487 = snoise( temp_output_491_0*3.0 );
 				simplePerlin3D487 = simplePerlin3D487*0.5 + 0.5;
 				float4 temp_cast_1 = (simplePerlin3D487).xxxx;
@@ -2679,7 +2679,6 @@ Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Cul
 Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;106;-1200,1136;Inherit;False;Property;_3DNoiseSpeed;3D Noise Speed;28;0;Create;True;0;0;0;False;0;False;0.025;0.3;0.01;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.BreakToComponentsNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;110;-1040,928;Inherit;False;FLOAT3;1;0;FLOAT3;0,0,0;False;16;FLOAT;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT;5;FLOAT;6;FLOAT;7;FLOAT;8;FLOAT;9;FLOAT;10;FLOAT;11;FLOAT;12;FLOAT;13;FLOAT;14;FLOAT;15
 Node;AmplifyShaderEditor.SimpleTimeNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;105;-912,1136;Inherit;False;1;0;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;100;-1200,1056;Inherit;False;Property;_3DNoiseTiling;3D Noise Tiling;27;0;Create;True;0;0;0;False;0;False;0.1;0.2;0.0001;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;102;-880,1040;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;103;-880,928;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.DynamicAppendNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;104;-656,928;Inherit;False;FLOAT3;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT3;0
@@ -2697,9 +2696,10 @@ Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.
 Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;112;688,928;Inherit;False;Noise3D;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;488;288,928;Inherit;False;Property;_NoiseType;Noise Type;22;0;Create;True;0;0;0;False;0;False;0;0;0;True;;KeywordEnum;2;3DTexture;Generated;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;497;-112,1040;Inherit;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;499;-352,1056;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;FLOAT3;-2,-2,-2;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;11;-848,1456;Float;False;Property;_EdgeFalloff;Edge Falloff;9;0;Create;True;0;0;0;False;2;Space (10);Header (Beam Settings);False;4;8;0;10;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;68;-688,1680;Inherit;False;Property;_GlobalIntensity;Global Intensity;1;0;Create;True;0;0;0;False;0;False;0.025;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;68;-688,1680;Inherit;False;Property;_GlobalIntensity;Global Intensity;1;0;Create;True;0;0;0;False;0;False;0.075;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;100;-1200,1056;Inherit;False;Property;_3DNoiseTiling;3D Noise Tiling;27;0;Create;True;0;0;0;False;0;False;0.1;0.2;0.0001;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;499;-352,1056;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0.2,0.2,0.2;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;204;-8.438074,-433.7911;Float;False;False;-1;3;UnityEditor.ShaderGraphUnlitGUI;0;13;New Amplify Shader;6cdc246191bcab64b98a12a2f745caec;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;7;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;205;-8.438074,-433.7911;Float;False;False;-1;3;UnityEditor.ShaderGraphUnlitGUI;0;13;New Amplify Shader;6cdc246191bcab64b98a12a2f745caec;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;7;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;206;-8.438074,-433.7911;Float;False;False;-1;3;UnityEditor.ShaderGraphUnlitGUI;0;13;New Amplify Shader;6cdc246191bcab64b98a12a2f745caec;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;7;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
@@ -2884,4 +2884,4 @@ WireConnection;499;0;492;0
 WireConnection;203;2;329;0
 WireConnection;203;8;212;0
 ASEEND*/
-//CHKSM=94645288CD36F451C3998D5AFAE9D7249C66F994
+//CHKSM=E2B4C6C2E4832ED3D49A8230A635256B4611E8C0

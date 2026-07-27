@@ -12,7 +12,6 @@ Material:
   m_ValidKeywords:
   - _COOKIEALPHACONTRIBUTION_ON
   - _ENABLECAMERADEPTHFADING_ON
-  - _ENABLEGRADIENT_ON
   - _ENABLESOFTINTERSECTION_ON
   - _FACTORNOISEINTOALPHA_ON
   - _NOISETYPE_GENERATED
@@ -30,7 +29,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3001
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -99,10 +98,10 @@ Material:
     m_Ints: []
     m_Floats:
     - BRDFMAP: 1
-    - _3DNoiseAlphaFalloff: 0
+    - _3DNoiseAlphaFalloff: 0.5
     - _3DNoiseIntensity: 2
-    - _3DNoiseSpeed: 0.111
-    - _3DNoiseTiling: 0.228
+    - _3DNoiseSpeed: 0.025
+    - _3DNoiseTiling: 0.1
     - _Alpha: 1
     - _AlphaCutoff: 0.5
     - _BackGlare: 1
@@ -145,7 +144,7 @@ Material:
     - _EnableDepthFading: 0
     - _EnableDistortedUVs: 0
     - _EnableEdgeColorFalloff: 0
-    - _EnableGradient: 1
+    - _EnableGradient: 0
     - _EnableLightCookieProjection: 0
     - _EnableNoise: 1
     - _EnablePostProcessing: 0
@@ -160,7 +159,7 @@ Material:
     - _FrontalGlare: -7.24
     - _GlareIntensity: 1
     - _GlareSharpness: 1
-    - _GlobalIntensity: 0.025
+    - _GlobalIntensity: 0.075
     - _GradientScrollSpeed: 0
     - _Grayscale: 0
     - _Length: 1
@@ -206,7 +205,7 @@ Material:
     m_Colors:
     - _2DNoiseSpeed: {r: 1, g: 1, b: 0, a: 0}
     - _2DNoiseTiling: {r: 15, g: 15, b: 0, a: 0}
-    - _BeamColor: {r: 5.278032, g: 5.278032, b: 5.278032, a: 1}
+    - _BeamColor: {r: 1, g: 1, b: 1, a: 1}
     - _CausticScale: {r: 1, g: 1, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Color0: {r: 157.5865, g: 157.5865, b: 157.5865, a: 0}

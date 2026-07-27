@@ -24,7 +24,6 @@ Material:
   m_Shader: {fileID: 4800000, guid: 5dbe5fc0283d9144286374078d908065, type: 3}
   m_ValidKeywords:
   - _USEBLUENOISEDIFFUSION_ON
-  - _USECHROMATICABERRATION_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
@@ -120,7 +119,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Reticle:
-        m_Texture: {fileID: 2800000, guid: 09abb6f30dd1611488542b8344df61b0, type: 3}
+        m_Texture: {fileID: 2800000, guid: 67ea5e148d5d9f947a83b49656c72b29, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Reticle_Layer_1:
@@ -208,6 +207,8 @@ Material:
     - _AlphaCutoff: 0.5
     - _BakedMutiplier: 0
     - _Blend: 0
+    - _BlueNoise: 0.035
+    - _BlueNoiseSize: 0.75
     - _BumpScale: 1
     - _CastShadows: 1
     - _ClearCoatMask: 0
@@ -228,11 +229,12 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Height: 1.7
+    - _IsTextureNonAdditiveHasAlpha: 0
     - _Metallic: 0
     - _MetallicType: 1
     - _Metallic_Multiplier: 1
     - _Multiplier: 1
-    - _NoiseDefusion: 0.055
+    - _NoiseDefusion: 0.05
     - _NormalToOcclusion: 0
     - _OcclusionStrength: 1
     - _OffsetFactor: 0
@@ -241,12 +243,14 @@ Material:
     - _Parallax1: 3.93
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _RGBOffset: 0.5
+    - _RGBOffset: 0
     - _ReceiveShadows: 1
     - _Reflection_Fresnel_Power: 20
     - _Reflection_Strength: 0.2
-    - _ReticleDepth: 10.62
-    - _ReticleScale: 0.9
+    - _ReticleContrast: 1.5
+    - _ReticleDepth: 6
+    - _ReticleSaturation: 1
+    - _ReticleScale: 1.5
     - _Reticle_Layer_10_Depth: 8
     - _Reticle_Layer_10_Rotation: 0
     - _Reticle_Layer_10_Rotation_Speed: 0
@@ -305,7 +309,7 @@ Material:
     - _Surface: 1
     - _TimeSpeed: 0
     - _UseBlueNoiseDiffusion: 1
-    - _UseChromaticAberration: 1
+    - _UseChromaticAberration: 0
     - _UseColorMask: 0
     - _UseDetail: 0
     - _UseOcclusion: 0
@@ -325,7 +329,7 @@ Material:
     m_Colors:
     - _BOffset: {r: -0.002, g: -0.002, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 13.76636, g: 0.7207518, b: 0.7207518, a: 1}
+    - _Color: {r: 0.72075164, g: 2.563545, b: 13.76636, a: 1}
     - _ColorShift1: {r: 1, g: 1, b: 1, a: 1}
     - _ColorShift2: {r: 1, g: 1, b: 1, a: 1}
     - _ColorShift3: {r: 1, g: 1, b: 1, a: 1}
