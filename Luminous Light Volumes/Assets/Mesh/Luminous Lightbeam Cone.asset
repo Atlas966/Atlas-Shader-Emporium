@@ -7,7 +7,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Luminous Volumetric Lightbeam Cone
+  m_Name: Luminous Lightbeam Cone
   m_SubMeshes:
   - serializedVersion: 2
     firstByte: 0
