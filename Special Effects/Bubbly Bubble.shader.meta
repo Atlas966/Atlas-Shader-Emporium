@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: eefcdd3d263c57046a06479289cb934a
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _Soap: {fileID: 2800000, guid: bb47b838a0905154496dfe9920ae73b0, type: 3}
+  - _Foam: {fileID: 2800000, guid: d01457b88b1c5174ea4235d140b5fab8, type: 3}
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
