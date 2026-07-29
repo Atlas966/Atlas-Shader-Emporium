@@ -207,7 +207,7 @@ Material:
     - _AlphaCutoff: 0.5
     - _BakedMutiplier: 0
     - _Blend: 0
-    - _BlueNoise: 0.035
+    - _BlueNoise: 0.059
     - _BlueNoiseSize: 0.75
     - _BumpScale: 1
     - _CastShadows: 1

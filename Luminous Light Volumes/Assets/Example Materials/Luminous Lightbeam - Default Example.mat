@@ -114,6 +114,7 @@ Material:
     - _BlendRGBSrc: 1
     - _BlueNoise: 0.5
     - _BlueNoiseOverlay: 0
+    - _BrightenEnvironmentFactor: 0.07
     - _CDDistance: 0.2
     - _CDFalloff: 0.5
     - _ChromaticAberration: 0
@@ -208,7 +209,7 @@ Material:
     - _BeamColor: {r: 1, g: 1, b: 1, a: 1}
     - _CausticScale: {r: 1, g: 1, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Color0: {r: 157.5865, g: 157.5865, b: 157.5865, a: 0}
+    - _Color0: {r: 766.9961, g: 766.9961, b: 766.9961, a: 1}
     - _CookieColor: {r: 1, g: 1, b: 1, a: 1}
     - _EdgeColorFalloff: {r: 1, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
