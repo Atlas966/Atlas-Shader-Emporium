@@ -128,7 +128,7 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable: {}
   spritePackingTag: 
-  pSDRemoveMatte: 0
+  pSDRemoveMatte: 1
   pSDShowRemoveMatteOption: 1
   userData: '{"detailMap":false,"hemiOctNormals":true,"geoRoughness":0,"geoRoughnessPow":1.0,"dontReadSource":false,"fileVersion":0,"settingsVersion":1}'
   assetBundleName: 

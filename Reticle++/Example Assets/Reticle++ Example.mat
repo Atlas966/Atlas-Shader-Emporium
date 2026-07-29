@@ -202,7 +202,7 @@ Material:
     m_Floats:
     - BRDFMAP: 0
     - VertexIllumination: 0
-    - _Alpha: 0.652
+    - _Alpha: 1.5
     - _AlphaClip: 0
     - _AlphaCutoff: 0.5
     - _BakedMutiplier: 0
@@ -247,8 +247,10 @@ Material:
     - _ReceiveShadows: 1
     - _Reflection_Fresnel_Power: 20
     - _Reflection_Strength: 0.2
+    - _ReflectivityBack: 1.5
+    - _ReflectivityFront: 0
     - _ReticleContrast: 1.5
-    - _ReticleDepth: 6
+    - _ReticleDepth: 7.4
     - _ReticleSaturation: 1
     - _ReticleScale: 1.5
     - _Reticle_Layer_10_Depth: 8
@@ -303,6 +305,8 @@ Material:
     - _SceneDepth: 1
     - _Sight_Size: -2
     - _Smoothness: 1
+    - _SmoothnessBack: 1.5
+    - _SmoothnessFront: 1.5
     - _Smoothness_Multiplier: 0
     - _Specmod: 1
     - _SrcBlend: 5
@@ -329,7 +333,7 @@ Material:
     m_Colors:
     - _BOffset: {r: -0.002, g: -0.002, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0.72075164, g: 2.563545, b: 13.76636, a: 1}
+    - _Color: {r: 0, g: 2.6401033, b: 18.379171, a: 1}
     - _ColorShift1: {r: 1, g: 1, b: 1, a: 1}
     - _ColorShift2: {r: 1, g: 1, b: 1, a: 1}
     - _ColorShift3: {r: 1, g: 1, b: 1, a: 1}
@@ -353,7 +357,9 @@ Material:
     - _Reticle_Layer_9_Color: {r: 0.24402116, g: 2.1185474, b: 0, a: 1}
     - _Scale: {r: 1, g: 1, b: 0, a: 0}
     - _ScaleInternal: {r: 1, g: 1, b: 0, a: 0}
-    - _TintColor: {r: 0.12015993, g: 0.12015993, b: 0.12015993, a: 0}
+    - _TintColor: {r: 1, g: 0.5424528, b: 0.5424528, a: 1}
     - _Vector2: {r: 0.5, g: 0.5, b: 0, a: 0}
     - _VectorOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _raas: {r: 0.10107718, g: 1, b: 0, a: 1}
+    - _test: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []

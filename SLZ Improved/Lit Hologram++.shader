@@ -1,34 +1,34 @@
-// Made with Amplify Shader Editor v1.9.1.2
+// Made with Amplify Shader Editor v1.9.9.8
 // Available at the Unity Asset Store - http://u3d.as/y3X 
-Shader "AtlasShaders/Lit Hologram++"
+Shader "AtlasShaders/SLZ Improved/Lit Hologram++"
 {
 	Properties
 	{
 		[HideInInspector] _EmissionColor("Emission Color", Color) = (1,1,1,1)
-		[ASEBegin][HDR]_Color("Color", Color) = (1,1,1,0)
-		_MainTex("Main Tex", 2D) = "white" {}
-		_BumpMap("Bump Map", 2D) = "bump" {}
-		_HologramPattern("Hologram Pattern", 2D) = "white" {}
-		_Multiplier("Multiplier", Range( 0 , 10)) = 1
-		_BumpScale("Bump Scale", Float) = 1
-		_AlphaCutoff("Alpha Cutoff", Range( 0 , 1)) = 0.5
-		_ScanSpeed("Scan Speed", Vector) = (1,1,0,0)
-		[Header(Blue Noise)][Toggle(_ENABLEMAINTEXTUREBLUENOISE_ON)] _EnableMainTextureBlueNoise("Enable Main Texture Blue Noise", Float) = 0
-		_MainBlueNoise("Blue Noise", Range( 0 , 0.25)) = 0.025
-		[Toggle(_ENABLEHOLOGRAMPATTERNBLUENOISE_ON)] _EnableHologramPatternBlueNoise("Enable Hologram Pattern Blue Noise", Float) = 0
-		_HologramPatternBlueNoise("Blue Noise", Range( 0 , 0.25)) = 0.175
-		[Header(Chromatic Aberration)][Toggle(_ENABLEMAINTEXTURECHROMATICABERRATION_ON)] _EnableMainTextureChromaticAberration("Enable Main Texture Chromatic Aberration", Float) = 0
-		_RGBOffsetMainTex("RGB Offset", Range( 0 , 1)) = 0.025
-		[Toggle(_ENABLEHOLOGRAMPATTERNCHROMATICABERRATION_ON)] _EnableHologramPatternChromaticAberration("Enable Hologram Pattern Chromatic Aberration", Float) = 0
-		_RGBOffsetHologramPattern("RGB Offset", Range( 0 , 1)) = 0.025
-		[Header(Depth Fade Options)][Toggle(_ENABLESOFTINTERSECTION_ON)] _EnableSoftIntersection("Enable Soft Intersection", Float) = 1
-		_SoftIntersection("Soft Intersection", Range( 0 , 2)) = 0
-		[Toggle(_ENABLECAMERADEPTHFADING_ON)] _EnableCameraDepthFading("Enable Camera Depth Fading", Float) = 1
-		_Falloff("Falloff", Range( 0 , 0.5)) = 0.05
-		[HideInInspector]_Cull("_Cull", Float) = 0
-		_Distance("Distance", Range( 0 , 1)) = 0.05
-		[Space(20)][Header(BRDF Lut)][Space(10)][Toggle(_BRDFMAP)] BRDFMAP("Enable BRDF map", Float) = 0
-		[ASEEnd][NoScaleOffset][SingleLineTexture]g_tBRDFMap("BRDF map", 2D) = "white" {}
+		[HDR] _Color( "Color", Color ) = ( 1, 1, 1, 0 )
+		_MainTex( "Main Tex", 2D ) = "white" {}
+		_BumpMap( "Bump Map", 2D ) = "bump" {}
+		_HologramPattern( "Hologram Pattern", 2D ) = "white" {}
+		_Multiplier( "Multiplier", Range( 0, 10 ) ) = 1
+		_BumpScale( "Bump Scale", Float ) = 1
+		_AlphaCutoff( "Alpha Cutoff", Range( 0, 1 ) ) = 0.5
+		_ScanSpeed( "Scan Speed", Vector ) = ( 1, 1, 0, 0 )
+		[Header(Blue Noise)][Toggle( _ENABLEMAINTEXTUREBLUENOISE_ON )] _EnableMainTextureBlueNoise( "Enable Main Texture Blue Noise", Float ) = 0
+		_MainBlueNoise( "Blue Noise", Range( 0, 0.25 ) ) = 0.025
+		[Toggle( _ENABLEHOLOGRAMPATTERNBLUENOISE_ON )] _EnableHologramPatternBlueNoise( "Enable Hologram Pattern Blue Noise", Float ) = 0
+		_HologramPatternBlueNoise( "Blue Noise", Range( 0, 0.25 ) ) = 0.175
+		[Header(Chromatic Aberration)][Toggle( _ENABLEMAINTEXTURECHROMATICABERRATION_ON )] _EnableMainTextureChromaticAberration( "Enable Main Texture Chromatic Aberration", Float ) = 0
+		_RGBOffsetMainTex( "RGB Offset", Range( 0, 1 ) ) = 0.025
+		[Toggle( _ENABLEHOLOGRAMPATTERNCHROMATICABERRATION_ON )] _EnableHologramPatternChromaticAberration( "Enable Hologram Pattern Chromatic Aberration", Float ) = 0
+		_RGBOffsetHologramPattern( "RGB Offset", Range( 0, 1 ) ) = 0.025
+		[Header(Depth Fade Options)][Toggle( _ENABLESOFTINTERSECTION_ON )] _EnableSoftIntersection( "Enable Soft Intersection", Float ) = 1
+		_SoftIntersection( "Soft Intersection", Range( 0, 2 ) ) = 0
+		[Toggle( _ENABLECAMERADEPTHFADING_ON )] _EnableCameraDepthFading( "Enable Camera Depth Fading", Float ) = 1
+		_Falloff( "Falloff", Range( 0, 0.5 ) ) = 0.05
+		[HideInInspector] _Cull( "_Cull", Float ) = 0
+		_Distance( "Distance", Range( 0, 1 ) ) = 0.05
+		[Space(20)][Header(BRDF Lut)][Space(10)][Toggle( _BRDFMAP )] BRDFMAP( "Enable BRDF map", Float ) = 0
+		[NoScaleOffset][SingleLineTexture] g_tBRDFMap( "BRDF map", 2D ) = "white" {}
 
 		[HideInInspector]_QueueOffset("_QueueOffset", Float) = 0
         [HideInInspector]_QueueControl("_QueueControl", Float) = -1
@@ -195,6 +195,7 @@ Shader "AtlasShaders/Lit Hologram++"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
+			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
 			#define REQUIRE_DEPTH_TEXTURE 1
 
@@ -210,9 +211,13 @@ Shader "AtlasShaders/Lit Hologram++"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Texture.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/TextureStack.hlsl"
 
+			#define ASE_NEEDS_WORLD_NORMAL
 			#define ASE_NEEDS_FRAG_WORLD_NORMAL
 			#define ASE_NEEDS_FRAG_WORLD_VIEW_DIR
+			#define ASE_NEEDS_TEXTURE_COORDINATES0
+			#define ASE_NEEDS_SCREEN_POSITION
 			#define ASE_NEEDS_FRAG_SCREEN_POSITION
+			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_VERT_POSITION
 			#pragma shader_feature_local_fragment _BRDFMAP
 			#pragma shader_feature_local _ENABLEMAINTEXTURECHROMATICABERRATION_ON
@@ -310,7 +315,6 @@ Shader "AtlasShaders/Lit Hologram++"
 			CBUFFER_END
 			sampler2D _MainTex;
 			sampler2D _HologramPattern;
-			uniform float4 _CameraDepthTexture_TexelSize;
 			sampler2D _BumpMap;
 
 
@@ -345,7 +349,7 @@ Shader "AtlasShaders/Lit Hologram++"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				float3 objectToViewPos = TransformWorldToView(TransformObjectToWorld(v.vertex.xyz));
+				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
 				float eyeDepth = -objectToViewPos.z;
 				o.ase_texcoord8.z = eyeDepth;
 				
@@ -557,7 +561,7 @@ Shader "AtlasShaders/Lit Hologram++"
 				float2 uv_MainTex = IN.ase_texcoord8.xy * _MainTex_ST.xy + _MainTex_ST.zw;
 				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( ScreenPos );
 				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
-				float2 screenUV27_g18 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g18 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g18 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g18 = GetScreenNoiseRGBASlice27_g18( screenUV27_g18 , offsetFrame27_g18 );
 				#ifdef _ENABLEMAINTEXTUREBLUENOISE_ON
@@ -568,17 +572,17 @@ Shader "AtlasShaders/Lit Hologram++"
 				float3 BlueNoiseMainTexture142 = staticSwitch115;
 				float3 temp_output_114_0 = ( float3( uv_MainTex ,  0.0 ) + BlueNoiseMainTexture142 );
 				float4 tex2DNode2 = tex2D( _MainTex, temp_output_114_0.xy );
-				float temp_output_19_0_g13 = _RGBOffsetMainTex;
-				float3 temp_output_20_0_g13 = temp_output_114_0;
-				float4 appendResult3_g13 = (float4(tex2D( _MainTex, ( float3( ( temp_output_19_0_g13 * float2( 0.002,0 ) ) ,  0.0 ) + temp_output_20_0_g13 ).xy ).r , tex2D( _MainTex, ( float3( ( temp_output_19_0_g13 * float2( 0,-0.002 ) ) ,  0.0 ) + temp_output_20_0_g13 ).xy ).g , tex2D( _MainTex, ( float3( ( temp_output_19_0_g13 * float2( -0.002,-0.002 ) ) ,  0.0 ) + temp_output_20_0_g13 ).xy ).b , 0.0));
+				float temp_output_19_0_g21 = _RGBOffsetMainTex;
+				float3 temp_output_20_0_g21 = temp_output_114_0;
+				float4 appendResult3_g21 = (float4(tex2D( _MainTex, ( float3( ( temp_output_19_0_g21 * float2( 0.002,0 ) ) ,  0.0 ) + temp_output_20_0_g21 ).xy ).r , tex2D( _MainTex, ( float3( ( temp_output_19_0_g21 * float2( 0,-0.002 ) ) ,  0.0 ) + temp_output_20_0_g21 ).xy ).g , tex2D( _MainTex, ( float3( ( temp_output_19_0_g21 * float2( -0.002,-0.002 ) ) ,  0.0 ) + temp_output_20_0_g21 ).xy ).b , 0.0));
 				#ifdef _ENABLEMAINTEXTURECHROMATICABERRATION_ON
-				float4 staticSwitch117 = appendResult3_g13;
+				float4 staticSwitch117 = appendResult3_g21;
 				#else
 				float4 staticSwitch117 = tex2DNode2;
 				#endif
 				float4 MainTextureFinal162 = staticSwitch117;
 				float2 uv_HologramPattern = IN.ase_texcoord8.xy * _HologramPattern_ST.xy + _HologramPattern_ST.zw;
-				float2 screenUV27_g20 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g20 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g20 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g20 = GetScreenNoiseRGBASlice27_g20( screenUV27_g20 , offsetFrame27_g20 );
 				#ifdef _ENABLEHOLOGRAMPATTERNBLUENOISE_ON
@@ -599,10 +603,10 @@ Shader "AtlasShaders/Lit Hologram++"
 				#endif
 				float4 HologramPattern167 = staticSwitch131;
 				float4 Emission146 = ( MainTextureFinal162 * HologramPattern167 * _Multiplier );
-				float4 ase_screenPosNorm = ScreenPos / ScreenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_screenPosNorm.xy ),_ZBufferParams);
-				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_screenPosNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float4 ase_positionSSNorm = ScreenPos / ScreenPos.w;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
+				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
 				#ifdef _ENABLESOFTINTERSECTION_ON
 				float staticSwitch186 = distanceDepth96;
 				#else
@@ -896,6 +900,7 @@ Shader "AtlasShaders/Lit Hologram++"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
+			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
 			#define REQUIRE_DEPTH_TEXTURE 1
 
@@ -915,6 +920,8 @@ Shader "AtlasShaders/Lit Hologram++"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
+			#define ASE_NEEDS_TEXTURE_COORDINATES0
+			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_VERT_POSITION
 			#pragma shader_feature_local_fragment _BRDFMAP
 			#pragma shader_feature_local _ENABLEMAINTEXTUREBLUENOISE_ON
@@ -987,7 +994,6 @@ Shader "AtlasShaders/Lit Hologram++"
 			CBUFFER_END
 			sampler2D _MainTex;
 			sampler2D _HologramPattern;
-			uniform float4 _CameraDepthTexture_TexelSize;
 
 
 			inline float4 ASE_ComputeGrabScreenPos( float4 pos )
@@ -1024,10 +1030,10 @@ Shader "AtlasShaders/Lit Hologram++"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
 
-				float4 ase_clipPos = TransformObjectToHClip((v.vertex).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
+				float4 ase_positionCS = TransformObjectToHClip( ( v.vertex ).xyz );
+				float4 screenPos = ComputeScreenPos( ase_positionCS );
 				o.ase_texcoord3 = screenPos;
-				float3 objectToViewPos = TransformWorldToView(TransformObjectToWorld(v.vertex.xyz));
+				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
 				float eyeDepth = -objectToViewPos.z;
 				o.ase_texcoord2.z = eyeDepth;
 				
@@ -1196,7 +1202,7 @@ Shader "AtlasShaders/Lit Hologram++"
 				float4 screenPos = IN.ase_texcoord3;
 				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( screenPos );
 				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
-				float2 screenUV27_g18 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g18 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g18 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g18 = GetScreenNoiseRGBASlice27_g18( screenUV27_g18 , offsetFrame27_g18 );
 				#ifdef _ENABLEMAINTEXTUREBLUENOISE_ON
@@ -1209,7 +1215,7 @@ Shader "AtlasShaders/Lit Hologram++"
 				float4 tex2DNode2 = tex2D( _MainTex, temp_output_114_0.xy );
 				float MainTexAlpha178 = tex2DNode2.a;
 				float2 uv_HologramPattern = IN.ase_texcoord2.xy * _HologramPattern_ST.xy + _HologramPattern_ST.zw;
-				float2 screenUV27_g20 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g20 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g20 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g20 = GetScreenNoiseRGBASlice27_g20( screenUV27_g20 , offsetFrame27_g20 );
 				#ifdef _ENABLEHOLOGRAMPATTERNBLUENOISE_ON
@@ -1232,10 +1238,10 @@ Shader "AtlasShaders/Lit Hologram++"
 				float4 HologramPattern167 = staticSwitch131;
 				float4 break129 = HologramPattern167;
 				float clampResult29 = clamp( ( ( break129.r + break129.g + break129.b ) * 2.0 ) , 0.0 , 1.0 );
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_screenPosNorm.xy ),_ZBufferParams);
-				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_screenPosNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
+				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
 				#ifdef _ENABLESOFTINTERSECTION_ON
 				float staticSwitch186 = distanceDepth96;
 				#else
@@ -1301,6 +1307,7 @@ Shader "AtlasShaders/Lit Hologram++"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
+			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
 			#define REQUIRE_DEPTH_TEXTURE 1
 
@@ -1318,6 +1325,8 @@ Shader "AtlasShaders/Lit Hologram++"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
+			#define ASE_NEEDS_TEXTURE_COORDINATES0
+			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_VERT_POSITION
 			#pragma shader_feature_local_fragment _BRDFMAP
 			#pragma shader_feature_local _ENABLEMAINTEXTUREBLUENOISE_ON
@@ -1390,7 +1399,6 @@ Shader "AtlasShaders/Lit Hologram++"
 			CBUFFER_END
 			sampler2D _MainTex;
 			sampler2D _HologramPattern;
-			uniform float4 _CameraDepthTexture_TexelSize;
 
 
 			inline float4 ASE_ComputeGrabScreenPos( float4 pos )
@@ -1424,10 +1432,10 @@ Shader "AtlasShaders/Lit Hologram++"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				float4 ase_clipPos = TransformObjectToHClip((v.vertex).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
+				float4 ase_positionCS = TransformObjectToHClip( ( v.vertex ).xyz );
+				float4 screenPos = ComputeScreenPos( ase_positionCS );
 				o.ase_texcoord3 = screenPos;
-				float3 objectToViewPos = TransformWorldToView(TransformObjectToWorld(v.vertex.xyz));
+				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
 				float eyeDepth = -objectToViewPos.z;
 				o.ase_texcoord2.z = eyeDepth;
 				
@@ -1576,7 +1584,7 @@ Shader "AtlasShaders/Lit Hologram++"
 				float4 screenPos = IN.ase_texcoord3;
 				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( screenPos );
 				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
-				float2 screenUV27_g18 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g18 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g18 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g18 = GetScreenNoiseRGBASlice27_g18( screenUV27_g18 , offsetFrame27_g18 );
 				#ifdef _ENABLEMAINTEXTUREBLUENOISE_ON
@@ -1589,7 +1597,7 @@ Shader "AtlasShaders/Lit Hologram++"
 				float4 tex2DNode2 = tex2D( _MainTex, temp_output_114_0.xy );
 				float MainTexAlpha178 = tex2DNode2.a;
 				float2 uv_HologramPattern = IN.ase_texcoord2.xy * _HologramPattern_ST.xy + _HologramPattern_ST.zw;
-				float2 screenUV27_g20 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g20 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g20 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g20 = GetScreenNoiseRGBASlice27_g20( screenUV27_g20 , offsetFrame27_g20 );
 				#ifdef _ENABLEHOLOGRAMPATTERNBLUENOISE_ON
@@ -1612,10 +1620,10 @@ Shader "AtlasShaders/Lit Hologram++"
 				float4 HologramPattern167 = staticSwitch131;
 				float4 break129 = HologramPattern167;
 				float clampResult29 = clamp( ( ( break129.r + break129.g + break129.b ) * 2.0 ) , 0.0 , 1.0 );
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_screenPosNorm.xy ),_ZBufferParams);
-				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_screenPosNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
+				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
 				#ifdef _ENABLESOFTINTERSECTION_ON
 				float staticSwitch186 = distanceDepth96;
 				#else
@@ -1673,6 +1681,7 @@ Shader "AtlasShaders/Lit Hologram++"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
+			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
 			#define REQUIRE_DEPTH_TEXTURE 1
 
@@ -1694,7 +1703,10 @@ Shader "AtlasShaders/Lit Hologram++"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
 			#define ASE_NEEDS_VERT_NORMAL
+			#define ASE_NEEDS_WORLD_POSITION
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
+			#define ASE_NEEDS_TEXTURE_COORDINATES0
+			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_VERT_POSITION
 			#pragma shader_feature_local_fragment _BRDFMAP
 			#pragma shader_feature_local _ENABLEMAINTEXTURECHROMATICABERRATION_ON
@@ -1776,7 +1788,6 @@ Shader "AtlasShaders/Lit Hologram++"
 			CBUFFER_END
 			sampler2D _MainTex;
 			sampler2D _HologramPattern;
-			uniform float4 _CameraDepthTexture_TexelSize;
 
 
 			inline float4 ASE_ComputeGrabScreenPos( float4 pos )
@@ -1810,12 +1821,12 @@ Shader "AtlasShaders/Lit Hologram++"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				float3 ase_worldNormal = TransformObjectToWorldNormal(v.ase_normal);
-				o.ase_texcoord4.xyz = ase_worldNormal;
-				float4 ase_clipPos = TransformObjectToHClip((v.vertex).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
+				float3 ase_normalWS = TransformObjectToWorldNormal( v.ase_normal );
+				o.ase_texcoord4.xyz = ase_normalWS;
+				float4 ase_positionCS = TransformObjectToHClip( ( v.vertex ).xyz );
+				float4 screenPos = ComputeScreenPos( ase_positionCS );
 				o.ase_texcoord6 = screenPos;
-				float3 objectToViewPos = TransformWorldToView(TransformObjectToWorld(v.vertex.xyz));
+				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
 				float eyeDepth = -objectToViewPos.z;
 				o.ase_texcoord4.w = eyeDepth;
 				
@@ -1968,17 +1979,17 @@ Shader "AtlasShaders/Lit Hologram++"
 					#endif
 				#endif
 
-				float3 ase_worldNormal = IN.ase_texcoord4.xyz;
-				float3 normalizedWorldNormal = normalize( ase_worldNormal );
-				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
-				ase_worldViewDir = normalize(ase_worldViewDir);
-				float dotResult6 = dot( normalizedWorldNormal , ase_worldViewDir );
+				float3 ase_normalWS = IN.ase_texcoord4.xyz;
+				float3 normalizedWorldNormal = normalize( ase_normalWS );
+				float3 ase_viewVectorWS = ( ( unity_OrthoParams.w == 0 ) ? _WorldSpaceCameraPos - WorldPosition : UNITY_MATRIX_V[ 2 ].xyz );
+				float3 ase_viewDirWS = normalize( ase_viewVectorWS );
+				float dotResult6 = dot( normalizedWorldNormal , ase_viewDirWS );
 				float clampResult12 = clamp( ( dotResult6 * 2.0 ) , 0.0 , 1.0 );
 				float2 uv_MainTex = IN.ase_texcoord5.xy * _MainTex_ST.xy + _MainTex_ST.zw;
 				float4 screenPos = IN.ase_texcoord6;
 				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( screenPos );
 				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
-				float2 screenUV27_g18 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g18 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g18 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g18 = GetScreenNoiseRGBASlice27_g18( screenUV27_g18 , offsetFrame27_g18 );
 				#ifdef _ENABLEMAINTEXTUREBLUENOISE_ON
@@ -1989,17 +2000,17 @@ Shader "AtlasShaders/Lit Hologram++"
 				float3 BlueNoiseMainTexture142 = staticSwitch115;
 				float3 temp_output_114_0 = ( float3( uv_MainTex ,  0.0 ) + BlueNoiseMainTexture142 );
 				float4 tex2DNode2 = tex2D( _MainTex, temp_output_114_0.xy );
-				float temp_output_19_0_g13 = _RGBOffsetMainTex;
-				float3 temp_output_20_0_g13 = temp_output_114_0;
-				float4 appendResult3_g13 = (float4(tex2D( _MainTex, ( float3( ( temp_output_19_0_g13 * float2( 0.002,0 ) ) ,  0.0 ) + temp_output_20_0_g13 ).xy ).r , tex2D( _MainTex, ( float3( ( temp_output_19_0_g13 * float2( 0,-0.002 ) ) ,  0.0 ) + temp_output_20_0_g13 ).xy ).g , tex2D( _MainTex, ( float3( ( temp_output_19_0_g13 * float2( -0.002,-0.002 ) ) ,  0.0 ) + temp_output_20_0_g13 ).xy ).b , 0.0));
+				float temp_output_19_0_g21 = _RGBOffsetMainTex;
+				float3 temp_output_20_0_g21 = temp_output_114_0;
+				float4 appendResult3_g21 = (float4(tex2D( _MainTex, ( float3( ( temp_output_19_0_g21 * float2( 0.002,0 ) ) ,  0.0 ) + temp_output_20_0_g21 ).xy ).r , tex2D( _MainTex, ( float3( ( temp_output_19_0_g21 * float2( 0,-0.002 ) ) ,  0.0 ) + temp_output_20_0_g21 ).xy ).g , tex2D( _MainTex, ( float3( ( temp_output_19_0_g21 * float2( -0.002,-0.002 ) ) ,  0.0 ) + temp_output_20_0_g21 ).xy ).b , 0.0));
 				#ifdef _ENABLEMAINTEXTURECHROMATICABERRATION_ON
-				float4 staticSwitch117 = appendResult3_g13;
+				float4 staticSwitch117 = appendResult3_g21;
 				#else
 				float4 staticSwitch117 = tex2DNode2;
 				#endif
 				float4 MainTextureFinal162 = staticSwitch117;
 				float2 uv_HologramPattern = IN.ase_texcoord5.xy * _HologramPattern_ST.xy + _HologramPattern_ST.zw;
-				float2 screenUV27_g20 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g20 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g20 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g20 = GetScreenNoiseRGBASlice27_g20( screenUV27_g20 , offsetFrame27_g20 );
 				#ifdef _ENABLEHOLOGRAMPATTERNBLUENOISE_ON
@@ -2020,10 +2031,10 @@ Shader "AtlasShaders/Lit Hologram++"
 				#endif
 				float4 HologramPattern167 = staticSwitch131;
 				float4 Emission146 = ( MainTextureFinal162 * HologramPattern167 * _Multiplier );
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_screenPosNorm.xy ),_ZBufferParams);
-				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_screenPosNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
+				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
 				#ifdef _ENABLESOFTINTERSECTION_ON
 				float staticSwitch186 = distanceDepth96;
 				#else
@@ -2195,6 +2206,7 @@ Shader "AtlasShaders/Lit Hologram++"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
+			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
 			#define REQUIRE_DEPTH_TEXTURE 1
 
@@ -2213,7 +2225,10 @@ Shader "AtlasShaders/Lit Hologram++"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 			
 			#define ASE_NEEDS_VERT_NORMAL
+			#define ASE_NEEDS_WORLD_POSITION
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
+			#define ASE_NEEDS_TEXTURE_COORDINATES0
+			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_VERT_POSITION
 			#pragma shader_feature_local_fragment _BRDFMAP
 			#pragma shader_feature_local _ENABLEMAINTEXTURECHROMATICABERRATION_ON
@@ -2288,7 +2303,6 @@ Shader "AtlasShaders/Lit Hologram++"
 			CBUFFER_END
 			sampler2D _MainTex;
 			sampler2D _HologramPattern;
-			uniform float4 _CameraDepthTexture_TexelSize;
 
 
 			inline float4 ASE_ComputeGrabScreenPos( float4 pos )
@@ -2322,12 +2336,12 @@ Shader "AtlasShaders/Lit Hologram++"
 				UNITY_TRANSFER_INSTANCE_ID( v, o );
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
 
-				float3 ase_worldNormal = TransformObjectToWorldNormal(v.ase_normal);
-				o.ase_texcoord2.xyz = ase_worldNormal;
-				float4 ase_clipPos = TransformObjectToHClip((v.vertex).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
+				float3 ase_normalWS = TransformObjectToWorldNormal( v.ase_normal );
+				o.ase_texcoord2.xyz = ase_normalWS;
+				float4 ase_positionCS = TransformObjectToHClip( ( v.vertex ).xyz );
+				float4 screenPos = ComputeScreenPos( ase_positionCS );
 				o.ase_texcoord4 = screenPos;
-				float3 objectToViewPos = TransformWorldToView(TransformObjectToWorld(v.vertex.xyz));
+				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
 				float eyeDepth = -objectToViewPos.z;
 				o.ase_texcoord2.w = eyeDepth;
 				
@@ -2466,17 +2480,17 @@ Shader "AtlasShaders/Lit Hologram++"
 					#endif
 				#endif
 
-				float3 ase_worldNormal = IN.ase_texcoord2.xyz;
-				float3 normalizedWorldNormal = normalize( ase_worldNormal );
-				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
-				ase_worldViewDir = normalize(ase_worldViewDir);
-				float dotResult6 = dot( normalizedWorldNormal , ase_worldViewDir );
+				float3 ase_normalWS = IN.ase_texcoord2.xyz;
+				float3 normalizedWorldNormal = normalize( ase_normalWS );
+				float3 ase_viewVectorWS = ( ( unity_OrthoParams.w == 0 ) ? _WorldSpaceCameraPos - WorldPosition : UNITY_MATRIX_V[ 2 ].xyz );
+				float3 ase_viewDirWS = normalize( ase_viewVectorWS );
+				float dotResult6 = dot( normalizedWorldNormal , ase_viewDirWS );
 				float clampResult12 = clamp( ( dotResult6 * 2.0 ) , 0.0 , 1.0 );
 				float2 uv_MainTex = IN.ase_texcoord3.xy * _MainTex_ST.xy + _MainTex_ST.zw;
 				float4 screenPos = IN.ase_texcoord4;
 				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( screenPos );
 				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
-				float2 screenUV27_g18 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g18 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g18 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g18 = GetScreenNoiseRGBASlice27_g18( screenUV27_g18 , offsetFrame27_g18 );
 				#ifdef _ENABLEMAINTEXTUREBLUENOISE_ON
@@ -2487,17 +2501,17 @@ Shader "AtlasShaders/Lit Hologram++"
 				float3 BlueNoiseMainTexture142 = staticSwitch115;
 				float3 temp_output_114_0 = ( float3( uv_MainTex ,  0.0 ) + BlueNoiseMainTexture142 );
 				float4 tex2DNode2 = tex2D( _MainTex, temp_output_114_0.xy );
-				float temp_output_19_0_g13 = _RGBOffsetMainTex;
-				float3 temp_output_20_0_g13 = temp_output_114_0;
-				float4 appendResult3_g13 = (float4(tex2D( _MainTex, ( float3( ( temp_output_19_0_g13 * float2( 0.002,0 ) ) ,  0.0 ) + temp_output_20_0_g13 ).xy ).r , tex2D( _MainTex, ( float3( ( temp_output_19_0_g13 * float2( 0,-0.002 ) ) ,  0.0 ) + temp_output_20_0_g13 ).xy ).g , tex2D( _MainTex, ( float3( ( temp_output_19_0_g13 * float2( -0.002,-0.002 ) ) ,  0.0 ) + temp_output_20_0_g13 ).xy ).b , 0.0));
+				float temp_output_19_0_g21 = _RGBOffsetMainTex;
+				float3 temp_output_20_0_g21 = temp_output_114_0;
+				float4 appendResult3_g21 = (float4(tex2D( _MainTex, ( float3( ( temp_output_19_0_g21 * float2( 0.002,0 ) ) ,  0.0 ) + temp_output_20_0_g21 ).xy ).r , tex2D( _MainTex, ( float3( ( temp_output_19_0_g21 * float2( 0,-0.002 ) ) ,  0.0 ) + temp_output_20_0_g21 ).xy ).g , tex2D( _MainTex, ( float3( ( temp_output_19_0_g21 * float2( -0.002,-0.002 ) ) ,  0.0 ) + temp_output_20_0_g21 ).xy ).b , 0.0));
 				#ifdef _ENABLEMAINTEXTURECHROMATICABERRATION_ON
-				float4 staticSwitch117 = appendResult3_g13;
+				float4 staticSwitch117 = appendResult3_g21;
 				#else
 				float4 staticSwitch117 = tex2DNode2;
 				#endif
 				float4 MainTextureFinal162 = staticSwitch117;
 				float2 uv_HologramPattern = IN.ase_texcoord3.xy * _HologramPattern_ST.xy + _HologramPattern_ST.zw;
-				float2 screenUV27_g20 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g20 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g20 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g20 = GetScreenNoiseRGBASlice27_g20( screenUV27_g20 , offsetFrame27_g20 );
 				#ifdef _ENABLEHOLOGRAMPATTERNBLUENOISE_ON
@@ -2518,10 +2532,10 @@ Shader "AtlasShaders/Lit Hologram++"
 				#endif
 				float4 HologramPattern167 = staticSwitch131;
 				float4 Emission146 = ( MainTextureFinal162 * HologramPattern167 * _Multiplier );
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_screenPosNorm.xy ),_ZBufferParams);
-				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_screenPosNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
+				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
 				#ifdef _ENABLESOFTINTERSECTION_ON
 				float staticSwitch186 = distanceDepth96;
 				#else
@@ -2583,6 +2597,7 @@ Shader "AtlasShaders/Lit Hologram++"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
+			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
 			#define REQUIRE_DEPTH_TEXTURE 1
 
@@ -2597,6 +2612,8 @@ Shader "AtlasShaders/Lit Hologram++"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
+			#define ASE_NEEDS_TEXTURE_COORDINATES0
+			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_VERT_POSITION
 			#pragma shader_feature_local_fragment _BRDFMAP
 			#pragma shader_feature_local _ENABLEMAINTEXTUREBLUENOISE_ON
@@ -2673,7 +2690,6 @@ Shader "AtlasShaders/Lit Hologram++"
 			sampler2D _BumpMap;
 			sampler2D _MainTex;
 			sampler2D _HologramPattern;
-			uniform float4 _CameraDepthTexture_TexelSize;
 
 
 			inline float4 ASE_ComputeGrabScreenPos( float4 pos )
@@ -2707,11 +2723,11 @@ Shader "AtlasShaders/Lit Hologram++"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				float4 ase_clipPos = TransformObjectToHClip((v.vertex).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
+				float4 ase_positionCS = TransformObjectToHClip( ( v.vertex ).xyz );
+				float4 screenPos = ComputeScreenPos( ase_positionCS );
 				o.ase_texcoord5 = screenPos;
 				
-				float3 objectToViewPos = TransformWorldToView(TransformObjectToWorld(v.vertex.xyz));
+				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
 				float eyeDepth = -objectToViewPos.z;
 				o.ase_texcoord4.z = eyeDepth;
 				
@@ -2871,7 +2887,7 @@ Shader "AtlasShaders/Lit Hologram++"
 				float4 screenPos = IN.ase_texcoord5;
 				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( screenPos );
 				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
-				float2 screenUV27_g18 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g18 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g18 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g18 = GetScreenNoiseRGBASlice27_g18( screenUV27_g18 , offsetFrame27_g18 );
 				#ifdef _ENABLEMAINTEXTUREBLUENOISE_ON
@@ -2889,7 +2905,7 @@ Shader "AtlasShaders/Lit Hologram++"
 				float4 tex2DNode2 = tex2D( _MainTex, temp_output_114_0.xy );
 				float MainTexAlpha178 = tex2DNode2.a;
 				float2 uv_HologramPattern = IN.ase_texcoord4.xy * _HologramPattern_ST.xy + _HologramPattern_ST.zw;
-				float2 screenUV27_g20 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g20 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g20 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g20 = GetScreenNoiseRGBASlice27_g20( screenUV27_g20 , offsetFrame27_g20 );
 				#ifdef _ENABLEHOLOGRAMPATTERNBLUENOISE_ON
@@ -2912,10 +2928,10 @@ Shader "AtlasShaders/Lit Hologram++"
 				float4 HologramPattern167 = staticSwitch131;
 				float4 break129 = HologramPattern167;
 				float clampResult29 = clamp( ( ( break129.r + break129.g + break129.b ) * 2.0 ) , 0.0 , 1.0 );
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_screenPosNorm.xy ),_ZBufferParams);
-				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_screenPosNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
+				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
 				#ifdef _ENABLESOFTINTERSECTION_ON
 				float staticSwitch186 = distanceDepth96;
 				#else
@@ -2990,7 +3006,7 @@ Shader "AtlasShaders/Lit Hologram++"
 			
 
 			HLSLPROGRAM
-#define _NORMAL_DROPOFF_TS 1#pragma multi_compile_instancing#pragma multi_compile _ LOD_FADE_CROSSFADE#pragma multi_compile_fog#define ASE_FOG 1#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED#define _EMISSION#define _ALPHATEST_ON 1#define _NORMALMAP 1#define ASE_SRP_VERSION -1#define REQUIRE_DEPTH_TEXTURE 1
+#define _NORMAL_DROPOFF_TS 1#pragma multi_compile_instancing#pragma multi_compile _ LOD_FADE_CROSSFADE#pragma multi_compile_fog#define ASE_FOG 1#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED#define _EMISSION#define _ALPHATEST_ON 1#define _NORMALMAP 1#define ASE_VERSION 19908#define ASE_SRP_VERSION -1#define REQUIRE_DEPTH_TEXTURE 1
 #if FALSE
 			#pragma multi_compile _ LIGHTMAP_ON
 			#pragma multi_compile _ DYNAMICLIGHTMAP_ON
@@ -3026,9 +3042,13 @@ Shader "AtlasShaders/Lit Hologram++"
 			    #define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
+			#define ASE_NEEDS_WORLD_NORMAL
 			#define ASE_NEEDS_FRAG_WORLD_NORMAL
 			#define ASE_NEEDS_FRAG_WORLD_VIEW_DIR
+			#define ASE_NEEDS_TEXTURE_COORDINATES0
+			#define ASE_NEEDS_SCREEN_POSITION
 			#define ASE_NEEDS_FRAG_SCREEN_POSITION
+			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_VERT_POSITION
 			#pragma shader_feature_local_fragment _BRDFMAP
 			#pragma shader_feature_local _ENABLEMAINTEXTURECHROMATICABERRATION_ON
@@ -3113,7 +3133,6 @@ Shader "AtlasShaders/Lit Hologram++"
 			CBUFFER_END
 			sampler2D _MainTex;
 			sampler2D _HologramPattern;
-			uniform float4 _CameraDepthTexture_TexelSize;
 			sampler2D _BumpMap;
 
 
@@ -3148,7 +3167,7 @@ Shader "AtlasShaders/Lit Hologram++"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				float3 objectToViewPos = TransformWorldToView(TransformObjectToWorld(v.vertex.xyz));
+				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
 				float eyeDepth = -objectToViewPos.z;
 				o.ase_texcoord8.z = eyeDepth;
 				
@@ -3357,7 +3376,7 @@ Shader "AtlasShaders/Lit Hologram++"
 				float2 uv_MainTex = IN.ase_texcoord8.xy * _MainTex_ST.xy + _MainTex_ST.zw;
 				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( ScreenPos );
 				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
-				float2 screenUV27_g18 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g18 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g18 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g18 = GetScreenNoiseRGBASlice27_g18( screenUV27_g18 , offsetFrame27_g18 );
 				#ifdef _ENABLEMAINTEXTUREBLUENOISE_ON
@@ -3368,17 +3387,17 @@ Shader "AtlasShaders/Lit Hologram++"
 				float3 BlueNoiseMainTexture142 = staticSwitch115;
 				float3 temp_output_114_0 = ( float3( uv_MainTex ,  0.0 ) + BlueNoiseMainTexture142 );
 				float4 tex2DNode2 = tex2D( _MainTex, temp_output_114_0.xy );
-				float temp_output_19_0_g13 = _RGBOffsetMainTex;
-				float3 temp_output_20_0_g13 = temp_output_114_0;
-				float4 appendResult3_g13 = (float4(tex2D( _MainTex, ( float3( ( temp_output_19_0_g13 * float2( 0.002,0 ) ) ,  0.0 ) + temp_output_20_0_g13 ).xy ).r , tex2D( _MainTex, ( float3( ( temp_output_19_0_g13 * float2( 0,-0.002 ) ) ,  0.0 ) + temp_output_20_0_g13 ).xy ).g , tex2D( _MainTex, ( float3( ( temp_output_19_0_g13 * float2( -0.002,-0.002 ) ) ,  0.0 ) + temp_output_20_0_g13 ).xy ).b , 0.0));
+				float temp_output_19_0_g21 = _RGBOffsetMainTex;
+				float3 temp_output_20_0_g21 = temp_output_114_0;
+				float4 appendResult3_g21 = (float4(tex2D( _MainTex, ( float3( ( temp_output_19_0_g21 * float2( 0.002,0 ) ) ,  0.0 ) + temp_output_20_0_g21 ).xy ).r , tex2D( _MainTex, ( float3( ( temp_output_19_0_g21 * float2( 0,-0.002 ) ) ,  0.0 ) + temp_output_20_0_g21 ).xy ).g , tex2D( _MainTex, ( float3( ( temp_output_19_0_g21 * float2( -0.002,-0.002 ) ) ,  0.0 ) + temp_output_20_0_g21 ).xy ).b , 0.0));
 				#ifdef _ENABLEMAINTEXTURECHROMATICABERRATION_ON
-				float4 staticSwitch117 = appendResult3_g13;
+				float4 staticSwitch117 = appendResult3_g21;
 				#else
 				float4 staticSwitch117 = tex2DNode2;
 				#endif
 				float4 MainTextureFinal162 = staticSwitch117;
 				float2 uv_HologramPattern = IN.ase_texcoord8.xy * _HologramPattern_ST.xy + _HologramPattern_ST.zw;
-				float2 screenUV27_g20 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g20 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g20 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g20 = GetScreenNoiseRGBASlice27_g20( screenUV27_g20 , offsetFrame27_g20 );
 				#ifdef _ENABLEHOLOGRAMPATTERNBLUENOISE_ON
@@ -3399,10 +3418,10 @@ Shader "AtlasShaders/Lit Hologram++"
 				#endif
 				float4 HologramPattern167 = staticSwitch131;
 				float4 Emission146 = ( MainTextureFinal162 * HologramPattern167 * _Multiplier );
-				float4 ase_screenPosNorm = ScreenPos / ScreenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_screenPosNorm.xy ),_ZBufferParams);
-				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_screenPosNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float4 ase_positionSSNorm = ScreenPos / ScreenPos.w;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
+				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
 				#ifdef _ENABLESOFTINTERSECTION_ON
 				float staticSwitch186 = distanceDepth96;
 				#else
@@ -3578,6 +3597,7 @@ Shader "AtlasShaders/Lit Hologram++"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
+			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
 			#define REQUIRE_DEPTH_TEXTURE 1
 
@@ -3598,6 +3618,8 @@ Shader "AtlasShaders/Lit Hologram++"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
         
+			#define ASE_NEEDS_TEXTURE_COORDINATES0
+			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_VERT_POSITION
 			#pragma shader_feature_local_fragment _BRDFMAP
 			#pragma shader_feature_local _ENABLEMAINTEXTUREBLUENOISE_ON
@@ -3654,7 +3676,6 @@ Shader "AtlasShaders/Lit Hologram++"
 
 			sampler2D _MainTex;
 			sampler2D _HologramPattern;
-			uniform float4 _CameraDepthTexture_TexelSize;
 
 
 			inline float4 ASE_ComputeGrabScreenPos( float4 pos )
@@ -3700,10 +3721,10 @@ Shader "AtlasShaders/Lit Hologram++"
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
 
-				float4 ase_clipPos = TransformObjectToHClip((v.vertex).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
+				float4 ase_positionCS = TransformObjectToHClip( ( v.vertex ).xyz );
+				float4 screenPos = ComputeScreenPos( ase_positionCS );
 				o.ase_texcoord1 = screenPos;
-				float3 objectToViewPos = TransformWorldToView(TransformObjectToWorld(v.vertex.xyz));
+				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
 				float eyeDepth = -objectToViewPos.z;
 				o.ase_texcoord.z = eyeDepth;
 				
@@ -3816,7 +3837,7 @@ Shader "AtlasShaders/Lit Hologram++"
 				float4 screenPos = IN.ase_texcoord1;
 				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( screenPos );
 				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
-				float2 screenUV27_g18 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g18 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g18 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g18 = GetScreenNoiseRGBASlice27_g18( screenUV27_g18 , offsetFrame27_g18 );
 				#ifdef _ENABLEMAINTEXTUREBLUENOISE_ON
@@ -3829,7 +3850,7 @@ Shader "AtlasShaders/Lit Hologram++"
 				float4 tex2DNode2 = tex2D( _MainTex, temp_output_114_0.xy );
 				float MainTexAlpha178 = tex2DNode2.a;
 				float2 uv_HologramPattern = IN.ase_texcoord.xy * _HologramPattern_ST.xy + _HologramPattern_ST.zw;
-				float2 screenUV27_g20 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g20 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g20 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g20 = GetScreenNoiseRGBASlice27_g20( screenUV27_g20 , offsetFrame27_g20 );
 				#ifdef _ENABLEHOLOGRAMPATTERNBLUENOISE_ON
@@ -3852,10 +3873,10 @@ Shader "AtlasShaders/Lit Hologram++"
 				float4 HologramPattern167 = staticSwitch131;
 				float4 break129 = HologramPattern167;
 				float clampResult29 = clamp( ( ( break129.r + break129.g + break129.b ) * 2.0 ) , 0.0 , 1.0 );
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_screenPosNorm.xy ),_ZBufferParams);
-				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_screenPosNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
+				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
 				#ifdef _ENABLESOFTINTERSECTION_ON
 				float staticSwitch186 = distanceDepth96;
 				#else
@@ -3909,6 +3930,7 @@ Shader "AtlasShaders/Lit Hologram++"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
+			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
 			#define REQUIRE_DEPTH_TEXTURE 1
 
@@ -3931,6 +3953,8 @@ Shader "AtlasShaders/Lit Hologram++"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
         
+			#define ASE_NEEDS_TEXTURE_COORDINATES0
+			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_VERT_POSITION
 			#pragma shader_feature_local_fragment _BRDFMAP
 			#pragma shader_feature_local _ENABLEMAINTEXTUREBLUENOISE_ON
@@ -3987,7 +4011,6 @@ Shader "AtlasShaders/Lit Hologram++"
 
 			sampler2D _MainTex;
 			sampler2D _HologramPattern;
-			uniform float4 _CameraDepthTexture_TexelSize;
 
 
 			inline float4 ASE_ComputeGrabScreenPos( float4 pos )
@@ -4034,10 +4057,10 @@ Shader "AtlasShaders/Lit Hologram++"
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
 
-				float4 ase_clipPos = TransformObjectToHClip((v.vertex).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
+				float4 ase_positionCS = TransformObjectToHClip( ( v.vertex ).xyz );
+				float4 screenPos = ComputeScreenPos( ase_positionCS );
 				o.ase_texcoord1 = screenPos;
-				float3 objectToViewPos = TransformWorldToView(TransformObjectToWorld(v.vertex.xyz));
+				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
 				float eyeDepth = -objectToViewPos.z;
 				o.ase_texcoord.z = eyeDepth;
 				
@@ -4150,7 +4173,7 @@ Shader "AtlasShaders/Lit Hologram++"
 				float4 screenPos = IN.ase_texcoord1;
 				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( screenPos );
 				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
-				float2 screenUV27_g18 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g18 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g18 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g18 = GetScreenNoiseRGBASlice27_g18( screenUV27_g18 , offsetFrame27_g18 );
 				#ifdef _ENABLEMAINTEXTUREBLUENOISE_ON
@@ -4163,7 +4186,7 @@ Shader "AtlasShaders/Lit Hologram++"
 				float4 tex2DNode2 = tex2D( _MainTex, temp_output_114_0.xy );
 				float MainTexAlpha178 = tex2DNode2.a;
 				float2 uv_HologramPattern = IN.ase_texcoord.xy * _HologramPattern_ST.xy + _HologramPattern_ST.zw;
-				float2 screenUV27_g20 = (ase_grabScreenPosNorm).xy;
+				float2 screenUV27_g20 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
 				float offsetFrame27_g20 = 0.0;
 				float4 localGetScreenNoiseRGBASlice27_g20 = GetScreenNoiseRGBASlice27_g20( screenUV27_g20 , offsetFrame27_g20 );
 				#ifdef _ENABLEHOLOGRAMPATTERNBLUENOISE_ON
@@ -4186,10 +4209,10 @@ Shader "AtlasShaders/Lit Hologram++"
 				float4 HologramPattern167 = staticSwitch131;
 				float4 break129 = HologramPattern167;
 				float clampResult29 = clamp( ( ( break129.r + break129.g + break129.b ) * 2.0 ) , 0.0 , 1.0 );
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_screenPosNorm.xy ),_ZBufferParams);
-				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_screenPosNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float4 ase_positionSSNorm = screenPos / screenPos.w;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
+				float screenDepth96 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth96 = saturate( abs( ( screenDepth96 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
 				#ifdef _ENABLESOFTINTERSECTION_ON
 				float staticSwitch186 = distanceDepth96;
 				#else
@@ -4229,127 +4252,179 @@ Shader "AtlasShaders/Lit Hologram++"
 		
 	}
 	
-	CustomEditor "UnityEditor.ShaderGraphLitGUI"
+	CustomEditor "SLZImproved"
 	Fallback "Hidden/InternalErrorShader"
 	
 }
 /*ASEBEGIN
-Version=19102
-Node;AmplifyShaderEditor.CommentaryNode;177;159.0081,-721.3913;Inherit;False;800.2063;322.1903;;5;27;163;168;69;146;Register Emission;1,0.8197488,0,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode;176;1009.866,649.91;Inherit;False;1291.59;294.968;Register Blue Noises;8;110;111;115;108;107;105;142;160;Blue Noise Diffusion;0,0.5700049,1,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode;175;-682.42,418.7939;Inherit;False;1548.593;752.9939;Calculate Hologram Pattern texture;16;78;134;79;77;81;80;76;132;128;161;130;67;131;174;167;184;Hologram Pattern;1,0.1839623,0.980557,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode;173;1016.791,-74.20905;Inherit;False;1283.615;614.7978;Calculate Alpha;16;169;154;152;129;26;28;29;171;181;180;24;179;165;164;149;101;Alpha;0.5678704,1,0.3254717,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode;166;-371.9618,-201.476;Inherit;False;1236.058;554.9326;Process Main Texture;10;162;117;123;114;116;121;159;113;2;178;Main Texture;0.808639,0,1,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode;158;1021.899,-713.6548;Inherit;False;1263.075;593.0508;;21;7;9;6;11;12;147;139;155;10;156;95;94;90;91;92;83;88;85;89;87;86;Color;1,0.3773603,0,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode;157;1033.735,-1129.335;Inherit;False;1236.054;310.5537;Register depth fade and camera depth fade;11;151;153;187;186;137;136;135;138;97;96;188;Register Depth Faders;1,0,0.4406843,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode;144;1003.515,1019.861;Inherit;False;1002.101;291.13;;6;118;70;119;143;3;141;Bump Map;0.2843539,0.4235687,0.8490566,1;0;0
-Node;AmplifyShaderEditor.SimpleAddOpNode;118;1334.627,1069.86;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.RangedFloatNode;70;1307.739,1172.939;Float;False;Property;_BumpScale;Bump Scale;5;0;Create;True;0;0;0;False;0;False;1;-14.63;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.TextureCoordinatesNode;119;1070.627,1069.86;Inherit;False;0;3;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.GetLocalVarNode;143;1053.516,1194.99;Inherit;False;142;BlueNoiseMainTexture;1;0;OBJECT;;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.SamplerNode;3;1487.454,1072.15;Inherit;True;Property;_BumpMap;Bump Map;2;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;True;bump;Auto;True;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.RegisterLocalVarNode;141;1781.618,1073.945;Inherit;False;BumpMap;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.DepthFade;96;1493.368,-1076.345;Inherit;False;True;True;True;2;1;FLOAT3;0,0,0;False;0;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;86;1510.942,-270.0854;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;87;1510.942,-270.0854;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;89;1510.942,-270.0854;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;85;1510.942,-270.0854;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;88;1510.942,-270.0854;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;83;1993.118,-411.7639;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;92;1510.942,-190.0854;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ScenePickingPass;0;9;ScenePickingPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Picking;False;True;4;d3d11;glcore;gles;gles3;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;91;1510.942,-190.0854;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;SceneSelectionPass;0;8;SceneSelectionPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=SceneSelectionPass;False;True;4;d3d11;glcore;gles;gles3;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;90;1510.942,-270.0854;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;1;LightMode=UniversalGBuffer;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;94;1921.478,-660.8572;Inherit;False;4;4;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.ColorNode;95;1653.437,-663.6548;Inherit;False;Property;_Color;Color;0;1;[HDR];Create;True;0;0;0;False;0;False;1,1,1,0;1,1,1,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.GetLocalVarNode;156;1684.425,-493.4457;Inherit;False;151;DepthFade;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;10;1656.572,-421.5258;Inherit;True;2;2;0;FLOAT;0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.GetLocalVarNode;155;1652.182,-203.5631;Inherit;False;153;DepthFadeCamera;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;139;2060.973,-653.7621;Inherit;False;Color;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.SamplerNode;2;44.41091,-151.476;Inherit;True;Property;_fart;fart;2;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.TextureCoordinatesNode;113;-337.2613,53.65398;Inherit;False;0;121;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.GetLocalVarNode;159;-362.9618,183.5069;Inherit;False;142;BlueNoiseMainTexture;1;0;OBJECT;;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.TexturePropertyNode;121;-351.347,-150.2246;Inherit;True;Property;_MainTex;Main Tex;1;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.FunctionNode;116;107.9034,56.92559;Inherit;False;ChromaticAberration;-1;;13;88ea3ffa8f3a64a45a39e677c304e66a;0;3;21;SAMPLER2D;;False;20;FLOAT3;0,0,0;False;19;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.SimpleAddOpNode;114;-101.2616,59.65398;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.RangedFloatNode;123;-238.1739,273.4565;Inherit;False;Property;_RGBOffsetMainTex;RGB Offset;13;0;Create;False;0;0;0;False;0;False;0.025;0.025;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;162;661.0958,-145.6026;Inherit;False;MainTextureFinal;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.SaturateNode;101;1981.402,-22.87688;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;149;2110.68,-20.61458;Inherit;False;Alpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleAddOpNode;78;-172.4205,767.7874;Inherit;False;3;3;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;2;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;134;-170.0216,900.1318;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;100;False;1;FLOAT;0
-Node;AmplifyShaderEditor.TextureCoordinatesNode;79;-415.4201,659.7875;Inherit;False;0;132;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.FractNode;77;-313.4201,789.7875;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;81;-445.4201,790.7875;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.Vector2Node;80;-617.4205,1007.787;Float;False;Property;_ScanSpeed;Scan Speed;7;0;Create;True;0;0;0;False;0;False;1,1;0.5,1;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
-Node;AmplifyShaderEditor.SimpleTimeNode;76;-632.42,794.7875;Inherit;True;1;0;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.TexturePropertyNode;132;-415.8576,468.7938;Inherit;True;Property;_HologramPattern;Hologram Pattern;3;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.RangedFloatNode;128;-440.7986,966.6403;Inherit;False;Property;_RGBOffsetHologramPattern;RGB Offset;15;0;Create;False;0;0;0;False;0;False;0.025;0.025;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode;161;-435.8796,888.5479;Inherit;False;160;BlueNoiseHologramPattern;1;0;OBJECT;;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.FunctionNode;130;28.9723,663.0258;Inherit;False;ChromaticAberration;-1;;16;88ea3ffa8f3a64a45a39e677c304e66a;0;3;21;SAMPLER2D;;False;20;FLOAT3;0,0,0;False;19;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.StaticSwitch;131;347.8298,477.0874;Inherit;False;Property;_EnableHologramPatternChromaticAberration;Enable Hologram Pattern Chromatic Aberration;14;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.WireNode;174;299.1231,618.5776;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;167;631.1733,478.0441;Inherit;False;HologramPattern;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.FunctionNode;110;1334.868,699.9099;Inherit;False;Blue Noise Diffusion;-1;;17;5e6df176aa279d846818294540ea1f3f;0;1;8;FLOAT;0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.RangedFloatNode;111;1065.869,700.9099;Inherit;False;Property;_MainBlueNoise;Blue Noise;9;0;Create;False;0;0;0;False;0;False;0.025;0.05;0;0.25;0;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch;115;1728.61,701.4822;Inherit;False;Property;_EnableMainTextureBlueNoise;Enable Main Texture Blue Noise;8;0;Create;True;0;0;0;False;1;Header(Blue Noise);False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT3;0,0,0;False;0;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;4;FLOAT3;0,0,0;False;5;FLOAT3;0,0,0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.StaticSwitch;108;1719.255,804.8779;Inherit;False;Property;_EnableHologramPatternBlueNoise;Enable Hologram Pattern Blue Noise;10;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT3;0,0,0;False;0;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;4;FLOAT3;0,0,0;False;5;FLOAT3;0,0,0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.FunctionNode;107;1327.264,803.7439;Inherit;False;Blue Noise Diffusion;-1;;19;5e6df176aa279d846818294540ea1f3f;0;1;8;FLOAT;0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.RangedFloatNode;105;1059.865,802.7439;Inherit;False;Property;_HologramPatternBlueNoise;Blue Noise;11;0;Create;False;0;0;0;False;0;False;0.175;0.05;0;0.25;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;142;2005.112,701.3842;Inherit;False;BlueNoiseMainTexture;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;160;2011.455,804.4944;Inherit;False;BlueNoiseHologramPattern;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;27;528.7133,-671.3913;Inherit;True;3;3;0;COLOR;0,0,0,0;False;1;COLOR;1,1,1,0;False;2;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.RangedFloatNode;69;209.0081,-515.2009;Float;False;Property;_Multiplier;Multiplier;4;0;Create;True;0;0;0;False;0;False;1;1.52;0;10;0;1;FLOAT;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;84;2645.184,-1059.676;Float;False;True;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;AtlasShaders/Lit Hologram++;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;23;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;True;True;2;True;_Cull;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;True;2;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;48;Workflow;1;0;Surface;1;0;  Refraction Model;0;0;  Blend;0;0;Two Sided;0;639024563969937802;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;0;0;  Transmission Shadow;0.5,False,;0;Translucency;0;0;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;1;0;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;Lightmaps;1;0;Volumetrics;1;0;Decals;0;0;Screen Space Occlusion;1;0;Reflection Probe Blend/Projection;1;0;Light Layers;0;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;GBuffer Pass;0;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;Debug Display;0;0;Clear Coat;0;0;Fluorescence;0;0;0;10;False;True;True;True;True;True;True;True;True;True;False;;False;0
-Node;AmplifyShaderEditor.StaticSwitch;117;366.8799,-146.0909;Inherit;False;Property;_EnableMainTextureChromaticAberration;Enable Main Texture Chromatic Aberration;12;0;Create;True;0;0;0;False;1;Header(Chromatic Aberration);False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.GetLocalVarNode;163;264.5757,-669.6753;Inherit;False;162;MainTextureFinal;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.FunctionNode;93;2694.138,-1139.172;Inherit;False;BRDFMap;22;;21;1affaac2d6e57354aaa8d6573a2b32b8;0;1;3;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode;147;1474.66,-335.5078;Inherit;False;146;Emission;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.GetLocalVarNode;168;272.9485,-595.8773;Inherit;False;167;HologramPattern;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;146;735.2145,-668.6094;Inherit;False;Emission;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;178;362.5264,-42.3512;Inherit;False;MainTexAlpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode;164;1443.069,61.06174;Inherit;False;162;MainTextureFinal;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.BreakToComponentsNode;165;1643.818,57.76337;Inherit;False;COLOR;1;0;COLOR;0,0,0,0;False;16;FLOAT;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT;5;FLOAT;6;FLOAT;7;FLOAT;8;FLOAT;9;FLOAT;10;FLOAT;11;FLOAT;12;FLOAT;13;FLOAT;14;FLOAT;15
-Node;AmplifyShaderEditor.GetLocalVarNode;179;1575.372,-23.91803;Inherit;False;178;MainTexAlpha;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;24;1847.866,-21.89357;Inherit;False;5;5;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.WireNode;180;1847.084,184.0065;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.WireNode;181;1815.084,148.0065;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode;145;2416.548,-984.6426;Inherit;False;141;BumpMap;1;0;OBJECT;;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.GetLocalVarNode;140;2418.458,-1064.401;Inherit;False;139;Color;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.GetLocalVarNode;148;2418.627,-907.8232;Inherit;False;146;Emission;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.RangedFloatNode;71;2310.683,-748.1409;Float;False;Property;_AlphaCutoff;Alpha Cutoff;6;0;Create;True;0;0;0;False;0;False;0.5;0.5;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode;150;2415.983,-829.7289;Inherit;False;149;Alpha;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SamplerNode;67;26.41712,472.1154;Inherit;True;Property;_fgatg;fgatg;4;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.RegisterLocalVarNode;184;345.1033,591.4211;Inherit;False;HologramPatternAlpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode;171;1533.591,197.4082;Inherit;False;184;HologramPatternAlpha;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.ClampOpNode;29;1628.349,272.6957;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;28;1493.321,273.0687;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;2;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleAddOpNode;26;1368.576,275.7056;Inherit;False;3;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.BreakToComponentsNode;129;1244.992,278.4708;Inherit;False;COLOR;1;0;COLOR;0,0,0,0;False;16;FLOAT;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT;5;FLOAT;6;FLOAT;7;FLOAT;8;FLOAT;9;FLOAT;10;FLOAT;11;FLOAT;12;FLOAT;13;FLOAT;14;FLOAT;15
-Node;AmplifyShaderEditor.GetLocalVarNode;152;1597.844,390.2487;Inherit;False;151;DepthFade;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode;154;1557.844,467.2485;Inherit;False;153;DepthFadeCamera;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode;169;1036.535,280.1544;Inherit;False;167;HologramPattern;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;153;2057.583,-954.9571;Inherit;False;DepthFadeCamera;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;151;2011.487,-1065.574;Inherit;False;DepthFade;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;11;1353.598,-460.3721;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;2;False;1;FLOAT;0
-Node;AmplifyShaderEditor.DotProductOpNode;6;1235.474,-459.251;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.WorldNormalVector;9;1037.474,-456.2509;Inherit;False;True;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.ViewDirInputsCoordNode;7;1058.474,-313.251;Float;False;World;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.ClampOpNode;12;1490.018,-460.6891;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;137;1083.736,-899.9349;Inherit;False;Property;_Distance;Distance;21;0;Create;True;0;0;0;False;0;False;0.05;0;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.CameraDepthFade;135;1356.233,-976.4987;Inherit;False;3;2;FLOAT3;0,0,0;False;0;FLOAT;1;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SaturateNode;138;1595.523,-977.0599;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;136;1087.096,-976.6554;Inherit;False;Property;_Falloff;Falloff;19;1;[Header];Create;True;0;0;0;False;0;False;0.05;0;0;0.5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;188;1598.794,-904.2587;Inherit;False;Constant;_Float0;Float 0;22;0;Create;True;0;0;0;False;0;False;1;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch;187;1750.692,-956.1956;Inherit;False;Property;_EnableCameraDepthFading;Enable Camera Depth Fading;18;0;Create;True;0;0;0;False;0;False;0;1;1;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;97;1222.448,-1079.335;Inherit;False;Property;_SoftIntersection;Soft Intersection;17;0;Create;True;0;0;0;False;0;False;0;0;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch;186;1752.692,-1070.196;Inherit;False;Property;_EnableSoftIntersection;Enable Soft Intersection;16;0;Create;True;0;0;0;False;1;Header(Depth Fade Options);False;0;1;1;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;189;2746.899,-1221.609;Inherit;False;Property;_Cull;_Cull;20;1;[HideInInspector];Create;True;0;0;0;True;0;False;0;0;0;0;0;1;FLOAT;0
+Version=19908
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;175;-682.42,418.7939;Inherit;False;1548.593;752.9939;Calculate Hologram Pattern texture;16;78;134;79;77;81;80;76;132;128;161;130;67;131;174;167;184;Hologram Pattern;1,0.1839623,0.980557,1;0;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;128;-440.7986,966.6403;Inherit;False;Property;_RGBOffsetHologramPattern;RGB Offset;15;0;Create;False;0;0;0;False;0;False;0.025;0.025;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;176;1009.866,649.91;Inherit;False;1291.59;294.968;Register Blue Noises;8;110;111;115;108;107;105;142;160;Blue Noise Diffusion;0,0.5700049,1,1;0;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;134;-170.0216,900.1318;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;100;False;1;FLOAT;0
+Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;130;28.9723,663.0258;Inherit;False;Chromatic Aberration (Texture);-1;;16;88ea3ffa8f3a64a45a39e677c304e66a;0;4;21;SAMPLER2D;;False;20;FLOAT3;0,0,0;False;19;FLOAT;0;False;27;SAMPLERSTATE;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;111;1065.869,700.9099;Inherit;False;Property;_MainBlueNoise;Blue Noise;9;0;Create;False;0;0;0;False;0;False;0.025;0.05;0;0.25;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;105;1059.865,802.7439;Inherit;False;Property;_HologramPatternBlueNoise;Blue Noise;11;0;Create;False;0;0;0;False;0;False;0.175;0.05;0;0.25;0;1;FLOAT;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;157;1033.735,-1129.335;Inherit;False;1236.054;310.5537;Register depth fade and camera depth fade;11;151;153;187;186;137;136;135;138;97;96;188;Register Depth Faders;1,0,0.4406843,1;0;0
+Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;174;299.1231,618.5776;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;110;1334.868,699.9099;Inherit;False;Blue Noise Diffusion;-1;;17;5e6df176aa279d846818294540ea1f3f;0;2;8;FLOAT;0;False;9;FLOAT;1;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;107;1327.264,803.7439;Inherit;False;Blue Noise Diffusion;-1;;19;5e6df176aa279d846818294540ea1f3f;0;2;8;FLOAT;0;False;9;FLOAT;1;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.Vector2Node, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;80;-617.4205,1007.787;Float;False;Property;_ScanSpeed;Scan Speed;7;0;Create;True;0;0;0;False;0;False;1,1;0.5,1;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
+Node;AmplifyShaderEditor.SimpleTimeNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;76;-632.42,794.7875;Inherit;True;1;0;FLOAT;1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;131;347.8298,477.0874;Inherit;False;Property;_EnableHologramPatternChromaticAberration;Enable Hologram Pattern Chromatic Aberration;14;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;115;1728.61,701.4822;Inherit;False;Property;_EnableMainTextureBlueNoise;Enable Main Texture Blue Noise;8;0;Create;True;0;0;0;False;1;Header(Blue Noise);False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT3;0,0,0;False;0;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;4;FLOAT3;0,0,0;False;5;FLOAT3;0,0,0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;108;1719.255,804.8779;Inherit;False;Property;_EnableHologramPatternBlueNoise;Enable Hologram Pattern Blue Noise;10;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT3;0,0,0;False;0;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;4;FLOAT3;0,0,0;False;5;FLOAT3;0,0,0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;137;1083.736,-899.9349;Inherit;False;Property;_Distance;Distance;21;0;Create;True;0;0;0;False;0;False;0.05;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;136;1087.096,-976.6554;Inherit;False;Property;_Falloff;Falloff;19;1;[Header];Create;True;0;0;0;False;0;False;0.05;0;0;0.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;173;1016.791,-74.20905;Inherit;False;1283.615;614.7978;Calculate Alpha;16;169;154;152;129;26;28;29;171;181;180;24;179;165;164;149;101;Alpha;0.5678704,1,0.3254717,1;0;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;166;-371.9618,-201.476;Inherit;False;1236.058;554.9326;Process Main Texture;10;162;117;123;114;116;121;159;113;2;178;Main Texture;0.808639,0,1,1;0;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;81;-445.4201,790.7875;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;167;631.1733,478.0441;Inherit;False;HologramPattern;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;142;2005.112,701.3842;Inherit;False;BlueNoiseMainTexture;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;160;2011.455,804.4944;Inherit;False;BlueNoiseHologramPattern;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.CameraDepthFade, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;135;1356.233,-976.4987;Inherit;False;3;2;FLOAT3;0,0,0;False;0;FLOAT;1;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;97;1222.448,-1079.335;Inherit;False;Property;_SoftIntersection;Soft Intersection;17;0;Create;True;0;0;0;False;0;False;0;0;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.DepthFade, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;96;1493.368,-1076.345;Inherit;False;True;True;True;2;1;FLOAT3;0,0,0;False;0;FLOAT;1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;113;-337.2613,53.65398;Inherit;False;0;121;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;159;-362.9618,183.5069;Inherit;False;142;BlueNoiseMainTexture;1;0;OBJECT;;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;79;-415.4201,659.7875;Inherit;False;0;132;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.FractNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;77;-313.4201,789.7875;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;161;-435.8796,888.5479;Inherit;False;160;BlueNoiseHologramPattern;1;0;OBJECT;;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;169;1036.535,280.1544;Inherit;False;167;HologramPattern;1;0;OBJECT;;False;1;COLOR;0
+Node;AmplifyShaderEditor.SaturateNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;138;1595.523,-977.0599;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;188;1598.794,-904.2587;Inherit;False;Constant;_Float0;Float 0;22;0;Create;True;0;0;0;False;0;False;1;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TexturePropertyNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;121;-351.347,-150.2246;Inherit;True;Property;_MainTex;Main Tex;1;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;False;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.SimpleAddOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;114;-101.2616,59.65398;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.SimpleAddOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;78;-172.4205,767.7874;Inherit;False;3;3;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;2;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.TexturePropertyNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;132;-415.8576,468.7938;Inherit;True;Property;_HologramPattern;Hologram Pattern;3;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;False;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.BreakToComponentsNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;129;1244.992,278.4708;Inherit;False;COLOR;1;0;COLOR;0,0,0,0;False;16;FLOAT;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT;5;FLOAT;6;FLOAT;7;FLOAT;8;FLOAT;9;FLOAT;10;FLOAT;11;FLOAT;12;FLOAT;13;FLOAT;14;FLOAT;15
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;187;1750.692,-956.1956;Inherit;False;Property;_EnableCameraDepthFading;Enable Camera Depth Fading;18;0;Create;True;0;0;0;False;0;False;0;1;1;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;186;1752.692,-1070.196;Inherit;False;Property;_EnableSoftIntersection;Enable Soft Intersection;16;0;Create;True;0;0;0;False;1;Header(Depth Fade Options);False;0;1;1;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;2;44.41091,-151.476;Inherit;True;Property;_fart;fart;2;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;67;26.41712,472.1154;Inherit;True;Property;_fgatg;fgatg;4;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.SimpleAddOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;26;1368.576,275.7056;Inherit;False;3;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;153;2057.583,-954.9571;Inherit;False;DepthFadeCamera;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;151;2011.487,-1065.574;Inherit;False;DepthFade;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;178;362.5264,-42.3512;Inherit;False;MainTexAlpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;184;345.1033,591.4211;Inherit;False;HologramPatternAlpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;28;1493.321,273.0687;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;2;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;152;1597.844,390.2487;Inherit;False;151;DepthFade;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;154;1557.844,467.2485;Inherit;False;153;DepthFadeCamera;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;179;1575.372,-23.91803;Inherit;False;178;MainTexAlpha;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;180;1847.084,184.0065;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;181;1815.084,148.0065;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;171;1533.591,197.4082;Inherit;False;184;HologramPatternAlpha;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.ClampOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;29;1628.349,272.6957;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;24;1847.866,-21.89357;Inherit;False;5;5;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SaturateNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;101;1981.402,-22.87688;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;177;159.0081,-721.3913;Inherit;False;800.2063;322.1903;;5;27;163;168;69;146;Register Emission;1,0.8197488,0,1;0;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;158;1021.899,-713.6548;Inherit;False;1263.075;593.0508;;21;7;9;6;11;12;147;139;155;10;156;95;94;90;91;92;83;88;85;89;87;86;Color;1,0.3773603,0,1;0;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;144;1003.515,1019.861;Inherit;False;1002.101;291.13;;6;118;70;119;143;3;141;Bump Map;0.2843539,0.4235687,0.8490566,1;0;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;149;2110.68,-20.61458;Inherit;False;Alpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleAddOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;118;1334.627,1069.86;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;70;1307.739,1172.939;Float;False;Property;_BumpScale;Bump Scale;5;0;Create;True;0;0;0;False;0;False;1;-14.63;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;119;1070.627,1069.86;Inherit;False;0;3;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;143;1053.516,1194.99;Inherit;False;142;BlueNoiseMainTexture;1;0;OBJECT;;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;3;1487.454,1072.15;Inherit;True;Property;_BumpMap;Bump Map;2;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;True;bump;Auto;True;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;141;1781.618,1073.945;Inherit;False;BumpMap;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;94;1921.478,-660.8572;Inherit;False;4;4;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.ColorNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;95;1653.437,-663.6548;Inherit;False;Property;_Color;Color;0;1;[HDR];Create;True;0;0;0;False;0;False;1,1,1,0;1,1,1,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;156;1684.425,-493.4457;Inherit;False;151;DepthFade;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;10;1656.572,-421.5258;Inherit;True;2;2;0;FLOAT;0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;155;1652.182,-203.5631;Inherit;False;153;DepthFadeCamera;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;139;2060.973,-653.7621;Inherit;False;Color;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;116;107.9034,56.92559;Inherit;False;Chromatic Aberration (Texture);-1;;21;88ea3ffa8f3a64a45a39e677c304e66a;0;4;21;SAMPLER2D;;False;20;FLOAT3;0,0,0;False;19;FLOAT;0;False;27;SAMPLERSTATE;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;123;-238.1739,273.4565;Inherit;False;Property;_RGBOffsetMainTex;RGB Offset;13;0;Create;False;0;0;0;False;0;False;0.025;0.025;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;162;661.0958,-145.6026;Inherit;False;MainTextureFinal;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;27;528.7133,-671.3913;Inherit;True;3;3;0;COLOR;0,0,0,0;False;1;COLOR;1,1,1,0;False;2;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;69;209.0081,-515.2009;Float;False;Property;_Multiplier;Multiplier;4;0;Create;True;0;0;0;False;0;False;1;1.52;0;10;0;1;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;117;366.8799,-146.0909;Inherit;False;Property;_EnableMainTextureChromaticAberration;Enable Main Texture Chromatic Aberration;12;0;Create;True;0;0;0;False;1;Header(Chromatic Aberration);False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;163;264.5757,-669.6753;Inherit;False;162;MainTextureFinal;1;0;OBJECT;;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;93;2694.138,-1139.172;Inherit;False;BRDFMap;22;;22;1affaac2d6e57354aaa8d6573a2b32b8;0;1;3;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;147;1474.66,-335.5078;Inherit;False;146;Emission;1;0;OBJECT;;False;1;COLOR;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;168;272.9485,-595.8773;Inherit;False;167;HologramPattern;1;0;OBJECT;;False;1;COLOR;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;146;735.2145,-668.6094;Inherit;False;Emission;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;164;1443.069,61.06174;Inherit;False;162;MainTextureFinal;1;0;OBJECT;;False;1;COLOR;0
+Node;AmplifyShaderEditor.BreakToComponentsNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;165;1643.818,57.76337;Inherit;False;COLOR;1;0;COLOR;0,0,0,0;False;16;FLOAT;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT;5;FLOAT;6;FLOAT;7;FLOAT;8;FLOAT;9;FLOAT;10;FLOAT;11;FLOAT;12;FLOAT;13;FLOAT;14;FLOAT;15
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;145;2416.548,-984.6426;Inherit;False;141;BumpMap;1;0;OBJECT;;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;140;2418.458,-1064.401;Inherit;False;139;Color;1;0;OBJECT;;False;1;COLOR;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;148;2418.627,-907.8232;Inherit;False;146;Emission;1;0;OBJECT;;False;1;COLOR;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;71;2310.683,-748.1409;Float;False;Property;_AlphaCutoff;Alpha Cutoff;6;0;Create;True;0;0;0;False;0;False;0.5;0.5;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;150;2415.983,-829.7289;Inherit;False;149;Alpha;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;11;1353.598,-460.3721;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;2;False;1;FLOAT;0
+Node;AmplifyShaderEditor.DotProductOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;6;1235.474,-459.251;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.WorldNormalVector, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;9;1037.474,-456.2509;Inherit;False;True;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.ViewDirInputsCoordNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;7;1058.474,-313.251;Float;False;World;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.ClampOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;12;1490.018,-460.6891;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;189;2746.899,-1221.609;Inherit;False;Property;_Cull;_Cull;20;1;[HideInInspector];Create;True;0;0;0;True;0;False;0;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;86;1510.942,-270.0854;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;87;1510.942,-270.0854;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;89;1510.942,-270.0854;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;85;1510.942,-270.0854;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;88;1510.942,-270.0854;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;83;1993.118,-411.7639;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;92;1510.942,-190.0854;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ScenePickingPass;0;9;ScenePickingPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Picking;False;True;4;d3d11;glcore;gles;gles3;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;91;1510.942,-190.0854;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;SceneSelectionPass;0;8;SceneSelectionPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=SceneSelectionPass;False;True;4;d3d11;glcore;gles;gles3;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;90;1510.942,-270.0854;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;False;True;1;LightMode=UniversalGBuffer;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;84;2645.184,-1059.676;Float;False;True;-1;2;SLZImproved;0;15;AtlasShaders/SLZ Improved/Lit Hologram++;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;23;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;True;True;2;True;_Cull;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;True;2;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;False;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;48;Workflow;1;0;Surface;1;0;  Refraction Model;0;0;  Blend;0;0;Two Sided;0;639024563969937802;Fragment Normal Space;0;0;Transmission;0;0;  Transmission Shadow;0.5,False,;0;Translucency;0;0;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;1;0;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;Lightmaps;1;0;Volumetrics;1;0;Decals;0;0;Screen Space Occlusion;1;0;Reflection Probe Blend/Projection;1;0;Light Layers;0;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;GBuffer Pass;0;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position;1;0;Debug Display;0;0;Clear Coat;0;0;Fluorescence;0;0;0;10;False;True;True;True;True;True;True;True;True;True;False;;False;0
+WireConnection;134;0;128;0
+WireConnection;130;21;132;0
+WireConnection;130;20;78;0
+WireConnection;130;19;134;0
+WireConnection;174;0;130;0
+WireConnection;110;8;111;0
+WireConnection;107;8;105;0
+WireConnection;131;1;67;0
+WireConnection;131;0;174;0
+WireConnection;115;0;110;0
+WireConnection;108;0;107;0
+WireConnection;81;0;76;0
+WireConnection;81;1;80;0
+WireConnection;167;0;131;0
+WireConnection;142;0;115;0
+WireConnection;160;0;108;0
+WireConnection;135;0;136;0
+WireConnection;135;1;137;0
+WireConnection;96;0;97;0
+WireConnection;77;0;81;0
+WireConnection;138;0;135;0
+WireConnection;114;0;113;0
+WireConnection;114;1;159;0
+WireConnection;78;0;79;0
+WireConnection;78;1;77;0
+WireConnection;78;2;161;0
+WireConnection;129;0;169;0
+WireConnection;187;1;188;0
+WireConnection;187;0;138;0
+WireConnection;186;1;188;0
+WireConnection;186;0;96;0
+WireConnection;2;0;121;0
+WireConnection;2;1;114;0
+WireConnection;67;0;132;0
+WireConnection;67;1;78;0
+WireConnection;26;0;129;0
+WireConnection;26;1;129;1
+WireConnection;26;2;129;2
+WireConnection;153;0;187;0
+WireConnection;151;0;186;0
+WireConnection;178;0;2;4
+WireConnection;184;0;67;4
+WireConnection;28;0;26;0
+WireConnection;180;0;154;0
+WireConnection;181;0;152;0
+WireConnection;29;0;28;0
+WireConnection;24;0;179;0
+WireConnection;24;1;171;0
+WireConnection;24;2;29;0
+WireConnection;24;3;181;0
+WireConnection;24;4;180;0
+WireConnection;101;0;24;0
+WireConnection;149;0;101;0
 WireConnection;118;0;119;0
 WireConnection;118;1;143;0
 WireConnection;3;1;118;0
 WireConnection;3;5;70;0
 WireConnection;141;0;3;0
-WireConnection;96;0;97;0
 WireConnection;94;0;95;0
 WireConnection;94;1;10;0
 WireConnection;94;2;156;0
@@ -4357,77 +4432,25 @@ WireConnection;94;3;155;0
 WireConnection;10;0;12;0
 WireConnection;10;1;147;0
 WireConnection;139;0;94;0
-WireConnection;2;0;121;0
-WireConnection;2;1;114;0
 WireConnection;116;21;121;0
 WireConnection;116;20;114;0
 WireConnection;116;19;123;0
-WireConnection;114;0;113;0
-WireConnection;114;1;159;0
 WireConnection;162;0;117;0
-WireConnection;101;0;24;0
-WireConnection;149;0;101;0
-WireConnection;78;0;79;0
-WireConnection;78;1;77;0
-WireConnection;78;2;161;0
-WireConnection;134;0;128;0
-WireConnection;77;0;81;0
-WireConnection;81;0;76;0
-WireConnection;81;1;80;0
-WireConnection;130;21;132;0
-WireConnection;130;20;78;0
-WireConnection;130;19;134;0
-WireConnection;131;1;67;0
-WireConnection;131;0;174;0
-WireConnection;174;0;130;0
-WireConnection;167;0;131;0
-WireConnection;110;8;111;0
-WireConnection;115;0;110;0
-WireConnection;108;0;107;0
-WireConnection;107;8;105;0
-WireConnection;142;0;115;0
-WireConnection;160;0;108;0
 WireConnection;27;0;163;0
 WireConnection;27;1;168;0
 WireConnection;27;2;69;0
+WireConnection;117;1;2;0
+WireConnection;117;0;116;0
+WireConnection;146;0;27;0
+WireConnection;165;0;164;0
+WireConnection;11;0;6;0
+WireConnection;6;0;9;0
+WireConnection;6;1;7;0
+WireConnection;12;0;11;0
 WireConnection;84;0;140;0
 WireConnection;84;1;145;0
 WireConnection;84;2;148;0
 WireConnection;84;6;150;0
 WireConnection;84;7;71;0
-WireConnection;117;1;2;0
-WireConnection;117;0;116;0
-WireConnection;146;0;27;0
-WireConnection;178;0;2;4
-WireConnection;165;0;164;0
-WireConnection;24;0;179;0
-WireConnection;24;1;171;0
-WireConnection;24;2;29;0
-WireConnection;24;3;181;0
-WireConnection;24;4;180;0
-WireConnection;180;0;154;0
-WireConnection;181;0;152;0
-WireConnection;67;0;132;0
-WireConnection;67;1;78;0
-WireConnection;184;0;67;4
-WireConnection;29;0;28;0
-WireConnection;28;0;26;0
-WireConnection;26;0;129;0
-WireConnection;26;1;129;1
-WireConnection;26;2;129;2
-WireConnection;129;0;169;0
-WireConnection;153;0;187;0
-WireConnection;151;0;186;0
-WireConnection;11;0;6;0
-WireConnection;6;0;9;0
-WireConnection;6;1;7;0
-WireConnection;12;0;11;0
-WireConnection;135;0;136;0
-WireConnection;135;1;137;0
-WireConnection;138;0;135;0
-WireConnection;187;1;188;0
-WireConnection;187;0;138;0
-WireConnection;186;1;188;0
-WireConnection;186;0;96;0
 ASEEND*/
-//CHKSM=927A09F158DAC209D0FC96FF733F6A121A08ED08
+//CHKSM=52F8DB855FA3C61F962606ACA2071F0ADA537504

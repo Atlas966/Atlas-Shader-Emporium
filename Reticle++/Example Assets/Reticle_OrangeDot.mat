@@ -120,7 +120,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Reticle:
-        m_Texture: {fileID: 2800000, guid: b0b00792e2e45ac409037af5db5f1c5c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 381977a3398473940ae1868985b1faba, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Reticle_Layer_1:
@@ -208,6 +208,8 @@ Material:
     - _AlphaCutoff: 0.5
     - _BakedMutiplier: 0
     - _Blend: 0
+    - _BlueNoise: 0.315
+    - _BlueNoiseSize: 0.415
     - _BumpScale: 1
     - _CastShadows: 1
     - _ClearCoatMask: 0
@@ -228,6 +230,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Height: 1.7
+    - _IsTextureNonAdditiveHasAlpha: 0
     - _Metallic: 0
     - _MetallicType: 1
     - _Metallic_Multiplier: 1
@@ -245,8 +248,10 @@ Material:
     - _ReceiveShadows: 1
     - _Reflection_Fresnel_Power: 20
     - _Reflection_Strength: 0.2
-    - _ReticleDepth: 10.62
-    - _ReticleScale: 0.9
+    - _ReticleContrast: 1.45
+    - _ReticleDepth: 15
+    - _ReticleSaturation: 1.5
+    - _ReticleScale: 3.5
     - _Reticle_Layer_10_Depth: 8
     - _Reticle_Layer_10_Rotation: 0
     - _Reticle_Layer_10_Rotation_Speed: 0
@@ -334,7 +339,7 @@ Material:
     - _FlowmapTiliing: {r: 1, g: 1, b: 0, a: 0}
     - _GOffset: {r: 0, g: -0.002, b: 0, a: 0}
     - _Main_Color: {r: 0.030887008, g: 1, b: 0, a: 1}
-    - _Offset: {r: 0.38, g: 0.34, b: 0, a: 0}
+    - _Offset: {r: -0, g: 0, b: 0, a: 0}
     - _OffsetUseONLYifreticleismisalignedUseIsoviewtoalign: {r: 0, g: 0, b: 0, a: 0}
     - _ROffset: {r: 0.002, g: 0, b: 0, a: 0}
     - _Reticle_Layer_10_Color: {r: 0.24402116, g: 2.1185474, b: 0, a: 1}
@@ -349,7 +354,7 @@ Material:
     - _Reticle_Layer_9_Color: {r: 0.24402116, g: 2.1185474, b: 0, a: 1}
     - _Scale: {r: 1, g: 1, b: 0, a: 0}
     - _ScaleInternal: {r: 1, g: 1, b: 0, a: 0}
-    - _TintColor: {r: 0.12015993, g: 0.12015993, b: 0.12015993, a: 0}
+    - _TintColor: {r: 1, g: 0.8803358, b: 0.6839622, a: 0}
     - _Vector2: {r: 0.5, g: 0.5, b: 0, a: 0}
     - _VectorOffset: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
