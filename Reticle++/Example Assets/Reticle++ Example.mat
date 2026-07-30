@@ -21,21 +21,42 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Reticle++ Example
-  m_Shader: {fileID: 4800000, guid: 5dbe5fc0283d9144286374078d908065, type: 3}
-  m_ValidKeywords:
+  m_Shader: {fileID: 4800000, guid: 7c5329d5404c736468abd6ee774a2a4c, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _BLUENOISEOVERLAY_ON
+  - _ENABLECAMERADEPTHFADING_ON
+  - _ENABLESOFTINTERSECTION_ON
+  - _METALLICTYPE_METALLICSMOOTHNESS
+  - _SURFACE_TYPE_TRANSPARENT
   - _USEBLUENOISEDIFFUSION_ON
-  m_InvalidKeywords: []
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _Albedo:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _AmbientOcclusion:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Ambient_Occlusion:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BRDFLUT:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BackgroundTexture:
+        m_Texture: {fileID: 2800000, guid: cf68537d40f8f3044ab70261c57eb04b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
@@ -46,7 +67,15 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _BumpMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _ColorMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CubeBG:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -66,15 +95,31 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Emission:
+    - _Distortion:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Emission:
+        m_Texture: {fileID: 2800000, guid: 18ab3c6084bb01f489d9a92b81df81f9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _EmissionMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Flowmap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GALAXYMASK:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -86,8 +131,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _HeightTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HitRamp:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 7d2b35b540bd16a418903cb72818b4bf, type: 3}
+        m_Texture: {fileID: 2800000, guid: 134c58fb2bd7f0b48aadd82d4d413d36, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Main_Texture:
@@ -102,6 +155,18 @@ Material:
         m_Texture: {fileID: 2800000, guid: 09d470003bf37cd40a33d8792ac06dd6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MetallicSmoothness:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -111,6 +176,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParticleTexture:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -174,8 +243,28 @@ Material:
         m_Texture: {fileID: 2800000, guid: 09abb6f30dd1611488542b8344df61b0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Texture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _TextureSample0:
         m_Texture: {fileID: 2800000, guid: 09abb6f30dd1611488542b8344df61b0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ThicknessROcclusionGSSSMaskAOptional:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _fade:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
@@ -205,25 +294,57 @@ Material:
     - _Alpha: 1.5
     - _AlphaClip: 0
     - _AlphaCutoff: 0.5
+    - _AlphaFalloff: 1
+    - _Ambient: 0.9
+    - _AmbientOcclusionAmount: 1
+    - _Animationspeed: 0
     - _BakedMutiplier: 0
     - _Blend: 0
     - _BlueNoise: 0.059
+    - _BlueNoiseOverlay: 1
     - _BlueNoiseSize: 0.75
     - _BumpScale: 1
+    - _CDDistance1: 0.025
+    - _CDFalloff1: 0.035
+    - _Camera_Size: 0
     - _CastShadows: 1
+    - _CircleMaskDebugView: 0
+    - _CircleMaskFalloff: 0.025
+    - _CircleMaskSize: 0.13
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
+    - _CloneTransparency: 0.5
+    - _CloneTransparencyStart: 0.447
     - _Cull: 2
     - _Cutoff: 0.5
     - _Depth: 3
+    - _DepthFadeAmount: 0
+    - _DepthFadeBlueNoise: 1
+    - _DepthFadeBlueNoiseSize: 1
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DetailSmoothnessMapScale: 1
+    - _Direct: 0.9
+    - _Distance: 0.2
+    - _DistortBackground: 0.1
+    - _DistortEmission: 0.1
     - _DstBlend: 10
+    - _EdgeFalloff: 1
+    - _EmissionFading: 1
     - _EmissionFalloff: 1
     - _EmitAlbedo: 0
+    - _EnableCameraDepthFading: 1
+    - _EnableCameraFade: 0
+    - _EnableDepthFade: 0
+    - _EnableSoftIntersection: 1
+    - _Fade: 1
+    - _Fade1: 0.8
+    - _Falloff: 0.5
+    - _Far_Plane_Depth: 0
     - _Float0: 0.47
     - _FlowmapDistortOverlay: 0
+    - _FresnelBlur: 0
+    - _GALAXYMASKAMOUNT: 0
     - _Glass_Opacity_Multiplier: 0.25
     - _GlossMapScale: 0
     - _Glossiness: 0
@@ -234,13 +355,27 @@ Material:
     - _MetallicType: 1
     - _Metallic_Multiplier: 1
     - _Multiplier: 1
+    - _Near_Plane_Depth: 0
     - _NoiseDefusion: 0.05
+    - _NormalAcrossIntensity: 0.6
+    - _NormalDistortion: 0.085
+    - _NormalIntensity: 1
+    - _NormalScale: 1
+    - _NormalScale1: 1
+    - _NormalStrength: 1
     - _NormalToOcclusion: 0
+    - _NumberOfHits: 0
     - _OcclusionStrength: 1
     - _OffsetFactor: 0
     - _OffsetUnits: 0
+    - _PCDebug: 0
     - _Parallax: 0
     - _Parallax1: 3.93
+    - _ParallaxDepth: 0
+    - _ParallaxHeightOffset: 0
+    - _Power: 0
+    - _QuestDepthFade: 0.25
+    - _QuestDepthFadeBlueNoiseSize: 1
     - _QueueControl: 0
     - _QueueOffset: 0
     - _RGBOffset: 0
@@ -293,6 +428,7 @@ Material:
     - _Reticle_Layer_9_Rotation: 0
     - _Reticle_Layer_9_Rotation_Speed: 3.3
     - _Reticle_Layer_9_Scale: 1
+    - _Reticle_Size: 0
     - _Rotation: 0
     - _RotationAmount: 0
     - _RotationSpeed: 0
@@ -301,29 +437,43 @@ Material:
     - _ScanlineCount: 32
     - _ScanlineIntensity: 0.5
     - _ScanlineSpeed: 0.1
+    - _ScatteringAmount: 2
     - _SceneColorMultiplier: 1
     - _SceneDepth: 1
+    - _Shadow: 0.9
     - _Sight_Size: -2
     - _Smoothness: 1
     - _SmoothnessBack: 1.5
     - _SmoothnessFront: 1.5
     - _Smoothness_Multiplier: 0
+    - _SoftIntersection: 0.15
     - _Specmod: 1
     - _SrcBlend: 5
     - _Surface: 1
+    - _TextureScaling: 0.03
     - _TimeSpeed: 0
+    - _TransluencyStrength: 1
+    - _Transparency: 1
     - _UseBlueNoiseDiffusion: 1
     - _UseChromaticAberration: 0
     - _UseColorMask: 0
     - _UseDetail: 0
     - _UseOcclusion: 0
+    - _UseOcclusionFromTexture: 0
     - _UseTinting: 0
+    - _Use_Reticle_Colour: 0
+    - _VenomDissolve: 0.8
     - _VertexColors: 0
+    - _VertexDisplacerea: 0
     - _VertexOcclusion: 0
     - _VertexTint: 0
     - _Vignette_Depth_Multiplier: 15
     - _Vignette_Hardness: 0.45
     - _Vignette_Radius: 2.08
+    - _WaterSmoothness: 0.8
+    - _WaterSpeedA: 0.01
+    - _WaterSpeedB: 0.01
+    - _WaterSpeedC: 0.01
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 0
@@ -331,20 +481,35 @@ Material:
     - _alpha: 1
     - _test: 6.29
     m_Colors:
+    - _AntiColor: {r: 1, g: 1, b: 1, a: 1}
     - _BOffset: {r: -0.002, g: -0.002, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0, g: 2.6401033, b: 18.379171, a: 1}
+    - _BloodyColor: {r: 1, g: 1, b: 1, a: 0.5607843}
+    - _Boxscale: {r: 0, g: 0, b: 0, a: 0}
+    - _Boxscale1: {r: 1000, g: 1000, b: 1000, a: 0}
+    - _Color: {r: 0, g: 0.060851544, b: 0.41509432, a: 1}
     - _ColorShift1: {r: 1, g: 1, b: 1, a: 1}
     - _ColorShift2: {r: 1, g: 1, b: 1, a: 1}
     - _ColorShift3: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Far_Plane_Vignette: {r: 0, g: 0, b: 0, a: 0}
     - _FlowmapOverlayOffset: {r: 0.05, g: 0, b: 0, a: 0}
     - _FlowmapTiliing: {r: 1, g: 1, b: 0, a: 0}
     - _GOffset: {r: 0, g: -0.002, b: 0, a: 0}
     - _Main_Color: {r: 0.030887008, g: 1, b: 0, a: 1}
+    - _Near_Plane_Vignette: {r: 0, g: 0, b: 0, a: 0}
+    - _NormalAcrossTiling: {r: 0.2, g: 0.2, b: 0, a: 0}
+    - _NormalTiling: {r: 0.2, g: 0.2, b: 0, a: 0}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
+    - _OffsetDistance: {r: 1, g: 0, b: 0, a: 0}
     - _OffsetUseONLYifreticleismisalignedUseIsoviewtoalign: {r: 0, g: 0, b: 0, a: 0}
+    - _Pos: {r: 0, g: 0, b: 0, a: 0}
+    - _Pos1: {r: 0, g: 0, b: 0, a: 0}
+    - _Pos2: {r: 0, g: 0, b: 0, a: 0}
+    - _Pos3: {r: 0, g: 0, b: 0, a: 0}
     - _ROffset: {r: 0.002, g: 0, b: 0, a: 0}
+    - _Real_Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Reticle_Colour_1: {r: 1, g: 1, b: 1, a: 0}
     - _Reticle_Layer_10_Color: {r: 0.24402116, g: 2.1185474, b: 0, a: 1}
     - _Reticle_Layer_1_Color: {r: 4.237095, g: 0.110918716, b: 0.110918716, a: 1}
     - _Reticle_Layer_2_Color: {r: 5.632174, g: 0, b: 0, a: 1}
@@ -357,6 +522,8 @@ Material:
     - _Reticle_Layer_9_Color: {r: 0.24402116, g: 2.1185474, b: 0, a: 1}
     - _Scale: {r: 1, g: 1, b: 0, a: 0}
     - _ScaleInternal: {r: 1, g: 1, b: 0, a: 0}
+    - _ScatteringColor: {r: 0.36862746, g: 0.03921569, b: 0.01568628, a: 1}
+    - _ScreenColor: {r: 1, g: 1, b: 1, a: 1}
     - _TintColor: {r: 1, g: 0.5424528, b: 0.5424528, a: 1}
     - _Vector2: {r: 0.5, g: 0.5, b: 0, a: 0}
     - _VectorOffset: {r: 0, g: 0, b: 0, a: 0}
