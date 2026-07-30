@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 1d7bb7cab8c206d4faea4582ecfce1d6
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _EmissionOverlay: {fileID: 2800000, guid: 80cb9145056afff4997271b329ca1c2c, type: 3}
+  - _Flowmap: {fileID: 2800000, guid: 80cb9145056afff4997271b329ca1c2c, type: 3}
+  - _TopograpicalLines: {fileID: 2800000, guid: 80cb9145056afff4997271b329ca1c2c, type: 3}
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
