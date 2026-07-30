@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Luminous Lightbeam - Cookie Projection
-  m_Shader: {fileID: 4800000, guid: 4593dcbb7be2ed64680584d78c8db32e, type: 3}
+  m_Shader: {fileID: 4800000, guid: 27eda1870098188468d6f276d8d6dc7d, type: 3}
   m_ValidKeywords:
   - _COOKIEALPHACONTRIBUTION_ON
   - _ENABLEBLUENOISEOVERLAY_ON
@@ -31,7 +31,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:

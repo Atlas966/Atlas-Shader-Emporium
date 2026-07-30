@@ -226,6 +226,25 @@ public class LuminousLightbeamGUI : ShaderGUI
         }
     }
 
+    // Returns true only when this GUI is being used by the lit Luminous Lightbeam shader.
+    bool IsLuminousLightbeamLit()
+    {
+        if (m_MaterialEditor == null || m_MaterialEditor.targets == null)
+            return false;
+
+        foreach (var target in m_MaterialEditor.targets)
+        {
+            var material = target as Material;
+            if (material == null || material.shader == null ||
+                material.shader.name != "AtlasShaders/Luminous Light Volumes/Luminous Lightbeam Lit")
+            {
+                return false;
+            }
+        }
+
+        return m_MaterialEditor.targets.Length > 0;
+    }
+
     // ---------- MAIN GUI ----------
 
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props)
@@ -401,6 +420,23 @@ public class LuminousLightbeamGUI : ShaderGUI
             ToggleProp(P(props, "_PCDebug"));
 
         });
+
+        // BRDF settings only exist on the lit Luminous Lightbeam shader.
+        if (IsLuminousLightbeamLit())
+        {
+            var EnableBRDFMap = P(props, "BRDFMAP");
+
+            DrawBox("BRDF Settings", TopAccent, () => {
+
+                ToggleProp(EnableBRDFMap, "Enable BRDF Map");
+
+                if (IsOn(EnableBRDFMap))
+                {
+                    Tex(P(props, "g_tBRDFMap"));
+                }
+
+            });
+        }
 
         // Our toggles above are drawn manually (EditorGUI.Toggle) instead of through
         // MaterialEditor.ShaderProperty, so Unity's automatic keyword syncing for any
