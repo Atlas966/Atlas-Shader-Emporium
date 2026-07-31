@@ -18,11 +18,6 @@ public class LitEpidermisGUI : ShaderGUI
     // as LuminousLightbeamGUI, so hierarchy reads clearly without extra color.
     static readonly Color NestedAccent = new Color(0.6f, 0.6f, 0.6f);
 
-    // How much the rainbow title gets washed out toward white.
-    // 0 = full saturation rainbow, 1 = pure white. Raised from the
-    // previous implicit 0 to give a softer, more pastel look.
-    const float RainbowFadeAmount = 0.55f;
-
     MaterialProperty P(MaterialProperty[] props, string name)
     {
         try { return FindProperty(name, props, false); }
@@ -174,6 +169,68 @@ public class LitEpidermisGUI : ShaderGUI
         EditorGUI.showMixedValue = false;
     }
 
+    // _Cull stores a UnityEngine.Rendering.CullMode value (Off/Front/Back) and
+    // controls which faces of the mesh get rendered. It is hidden in the shader,
+    // but FindProperty can still retrieve it for this custom control.
+    void CullProp(MaterialProperty p, string name = "Render Face")
+    {
+        if (p == null)
+            return;
+
+        EditorGUI.showMixedValue = p.hasMixedValue;
+        EditorGUI.BeginChangeCheck();
+
+        int mode = Mathf.RoundToInt(p.floatValue);
+
+        string[] options =
+        {
+            "Both",
+            "Front",
+            "Back"
+        };
+
+        int selected;
+
+        switch (mode)
+        {
+            case 0: // Off
+                selected = 0;
+                break;
+
+            case 1: // Front
+                selected = 2;
+                break;
+
+            default: // Back
+                selected = 1;
+                break;
+        }
+
+        selected = EditorGUILayout.Popup(name, selected, options);
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            m_MaterialEditor.RegisterPropertyChangeUndo(name);
+
+            switch (selected)
+            {
+                case 0: // Both
+                    p.floatValue = 0;
+                    break;
+
+                case 1: // Front (renders front faces, culls back)
+                    p.floatValue = 2;
+                    break;
+
+                case 2: // Back (renders back faces, culls front)
+                    p.floatValue = 1;
+                    break;
+            }
+        }
+
+        EditorGUI.showMixedValue = false;
+    }
+
     void Title(string text)
     {
         if (titleStyle == null)
@@ -222,8 +279,17 @@ public class LitEpidermisGUI : ShaderGUI
 
         GUILayout.Space(4);
 
+        var cull = P(props, "_Cull");
+
+        DrawBox("Render Face", TopAccent, () =>
+        {
+            CullProp(cull);
+        });
+
         DrawBox("Main", TopAccent, () =>
         {
+            CullProp(P(props, "_Cull"));
+
             ColorProp(P(props, "_Color"));
             Tex(P(props, "_Albedo"));
         });
