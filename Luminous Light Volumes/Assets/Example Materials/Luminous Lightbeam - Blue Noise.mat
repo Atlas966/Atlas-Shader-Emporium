@@ -160,11 +160,11 @@ Material:
     - _FrontalGlare: -7.24
     - _GlareIntensity: 1
     - _GlareSharpness: 1
-    - _GlobalIntensity: 0.153
+    - _GlobalIntensity: 1
     - _GradientScrollSpeed: 0
     - _Grayscale: 0
     - _Length: 1
-    - _LengthFalloff: 0.65
+    - _LengthFalloff: 6.9
     - _NoiseDefusion: 0.025
     - _NoiseIntensity: 3
     - _NoiseSpeed: 0.001
