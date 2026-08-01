@@ -385,6 +385,7 @@ public class LuminousLightbeamGUI : ShaderGUI
                 Prop(P(props, "_3DNoiseSpeed"));
                 Prop(P(props, "_FactorNoiseIntoAlpha"));
                 Prop(P(props, "_3DNoiseAlphaFalloff"));
+                Prop(P(props, "_3DNoiseAlphaIntensity"));
             }
 
         });
