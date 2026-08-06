@@ -33,16 +33,16 @@ MonoBehaviour:
     AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;6;433.667,-559.6373;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;1;False;1;FLOAT;0\nNode;AmplifyShaderEditor.LerpOp,
     AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;5;713.9659,-564.0373;Inherit;False;3;0;FLOAT;1;False;1;FLOAT;0.5;False;2;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.SimpleMultiplyOpNode,
     AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;4;579.574,-422.7314;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.SimpleMultiplyOpNode,
-    AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;14;-710.9719,-252.6721;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionNode,
-    AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;23;-1968,-448;Inherit;False;Global
-    Blue Noise Sample;-1;;34;65496ced1d1d0a041969a9ecf9b0b6ad;0;1;33;FLOAT;1;False;1;FLOAT4;0\nNode;AmplifyShaderEditor.FunctionInput,
-    AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;24;-2224,-448;Inherit;False;Blue
-    Noise Size (0-1);1;2;False;1;0;FLOAT;1;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput,
+    AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;14;-710.9719,-252.6721;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput,
     AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;1;199.9736,-735.9238;Inherit;False;Alpha;1;0;False;1;0;FLOAT;1;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput,
     AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;2;-1540.45,-192.1242;Inherit;False;Depth
-    Fader;1;1;False;1;0;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionOutput,
+    Fader;1;1;False;1;0;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput,
+    AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;24;-2160,-368;Inherit;False;Blue
+    Noise Size (0-1);1;2;False;1;0;FLOAT;1;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionNode,
+    AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;25;-1952,-368;Inherit;False;Global
+    Blue Noise Sample (Atlas);-1;;1;144de263ce13aac47949afe49812bc27;0;1;33;FLOAT;1;False;1;FLOAT4;0\nNode;AmplifyShaderEditor.FunctionOutput,
     AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;0;1256.799,-510.6486;Inherit;False;True;-1;Depth
-    Value;0;False;1;0;FLOAT;0;False;1;FLOAT;0\nWireConnection;12;0;23;0\nWireConnection;22;0;23;0\nWireConnection;21;0;20;4\nWireConnection;21;1;10;0\nWireConnection;20;0;17;0\nWireConnection;16;0;14;0\nWireConnection;15;0;11;0\nWireConnection;13;0;21;0\nWireConnection;13;1;19;3\nWireConnection;11;0;16;0\nWireConnection;11;1;13;0\nWireConnection;10;0;12;0\nWireConnection;10;1;2;0\nWireConnection;9;0;6;0\nWireConnection;8;0;5;0\nWireConnection;7;0;15;0\nWireConnection;7;1;8;0\nWireConnection;6;0;22;0\nWireConnection;5;0;9;0\nWireConnection;5;2;1;0\nWireConnection;14;0;21;0\nWireConnection;14;1;19;4\nWireConnection;23;33;24;0\nWireConnection;0;0;7;0\nASEEND*/\n//CHKSM=E588137B21ADDCB4C02B63A13DDD8857643E3923"
+    Value;0;False;1;0;FLOAT;0;False;1;FLOAT;0\nWireConnection;12;0;25;0\nWireConnection;21;0;20;4\nWireConnection;21;1;10;0\nWireConnection;20;0;17;0\nWireConnection;16;0;14;0\nWireConnection;15;0;11;0\nWireConnection;13;0;21;0\nWireConnection;13;1;19;3\nWireConnection;11;0;16;0\nWireConnection;11;1;13;0\nWireConnection;10;0;12;0\nWireConnection;10;1;2;0\nWireConnection;9;0;6;0\nWireConnection;8;0;5;0\nWireConnection;7;0;15;0\nWireConnection;7;1;8;0\nWireConnection;6;0;22;0\nWireConnection;5;0;9;0\nWireConnection;5;2;1;0\nWireConnection;14;0;21;0\nWireConnection;14;1;19;4\nWireConnection;25;33;24;0\nWireConnection;0;0;7;0\nASEEND*/\n//CHKSM=0CD1BE38C76DF7A440E7A9373026CB92EA65F536"
   m_functionName: 
   m_description: 
   m_additionalIncludes:

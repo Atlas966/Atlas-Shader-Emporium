@@ -13,7 +13,9 @@ Shader "AtlasShaders/Vertigo2/Particles/Unlit Particles Additive"
 		_AlphaFalloff( "Alpha Falloff", Range( 0, 5 ) ) = 5
 		[Header (Depth Fading)][Toggle( _ENABLEDEPTHFADE_ON )] _EnableDepthFade( "Enable Depth Fade", Float ) = 0
 		_DepthFade( "Depth Fade", Range( 0, 5 ) ) = 0
-		[Toggle( _ENABLECAMERADEPTHFADE_ON )] _EnableCameraDepthFade( "Enable Camera Depth Fade", Float ) = 0
+		_DepthFadeBlueNoise( "Depth Fade Blue Noise", Range( 0, 5 ) ) = 1
+		_DepthFadeBlueNoiseSize( "Depth Fade Blue Noise Size", Range( 0, 1 ) ) = 1
+		[Space (10)][Toggle( _ENABLECAMERADEPTHFADE_ON )] _EnableCameraDepthFade( "Enable Camera Depth Fade", Float ) = 0
 		_Falloff( "Falloff", Range( 0, 0.5 ) ) = 0.1
 		_Offset( "Offset", Range( 0, 1 ) ) = 0.1
 		[Header(Extra)][Toggle( _ENABLEBLUENOISE_ON )] _EnableBlueNoise( "Enable Blue Noise", Float ) = 0
@@ -257,6 +259,8 @@ Shader "AtlasShaders/Vertigo2/Particles/Unlit Particles Additive"
 			int _Cull;
 			float _BlueNoiseDiffusion;
 			float _ChromaticAberration;
+			float _DepthFadeBlueNoiseSize;
+			float _DepthFadeBlueNoise;
 			float _DepthFade;
 			float _Falloff;
 			float _Offset;
@@ -288,6 +292,11 @@ Shader "AtlasShaders/Vertigo2/Particles/Unlit Particles Additive"
 			}
 			
 			inline float4 GetScreenNoiseRGBASlice27_g5( float2 screenUV, float offsetFrame )
+			{
+				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
+			}
+			
+			inline float4 GetScreenNoiseRGBASlice27_g83( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
@@ -489,32 +498,37 @@ Shader "AtlasShaders/Vertigo2/Particles/Unlit Particles Additive"
 				float4 staticSwitch206 = tex2DNode208;
 				#endif
 				int OneInt178 = 1;
+				float3 temp_cast_9 = OneInt178;
+				float2 screenUV27_g83 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g83 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g83 = GetScreenNoiseRGBASlice27_g83( screenUV27_g83 , offsetFrame27_g83 );
 				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
-				float screenDepth123 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
-				float distanceDepth123 = saturate( ( screenDepth123 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _DepthFade ) );
+				float screenDepth4_g81 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth4_g81 = saturate( abs( ( screenDepth4_g81 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _DepthFade ) ) );
+				float3 lerpResult6_g81 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g83).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g81);
 				#ifdef _ENABLEDEPTHFADE_ON
-				float staticSwitch182 = distanceDepth123;
+				float3 staticSwitch182 = saturate( ( lerpResult6_g81 * distanceDepth4_g81 ) );
 				#else
-				float staticSwitch182 = (float)OneInt178;
+				float3 staticSwitch182 = temp_cast_9;
 				#endif
 				float eyeDepth = IN.ase_texcoord4.z;
-				float cameraDepthFade172 = (( eyeDepth -_ProjectionParams.y - _Offset ) / _Falloff);
+				float cameraDepthFade14_g81 = (( eyeDepth -_ProjectionParams.y - _Offset ) / _Falloff);
 				#ifdef _ENABLECAMERADEPTHFADE_ON
-				float staticSwitch173 = saturate( cameraDepthFade172 );
+				float staticSwitch173 = saturate( cameraDepthFade14_g81 );
 				#else
 				float staticSwitch173 = (float)OneInt178;
 				#endif
-				float DepthFaders183 = ( staticSwitch182 * staticSwitch173 );
-				float4 temp_output_122_0 = ( ( staticSwitch206 * float4( _Color , 0.0 ) ) * DepthFaders183 );
+				float3 DepthFaders183 = ( staticSwitch182 * staticSwitch173 );
+				float4 temp_output_122_0 = ( ( staticSwitch206 * float4( _Color , 0.0 ) ) * float4( DepthFaders183 , 0.0 ) );
 				float4 lerpResult138 = lerp( float4( 0,0,0,0 ) , temp_output_122_0 , tex2DNode208.a);
 				#ifdef _ISTEXTURENONADDITIVEHASALPHA_ON
 				float4 staticSwitch130 = lerpResult138;
 				#else
 				float4 staticSwitch130 = temp_output_122_0;
 				#endif
-				float4 temp_cast_11 = (_AlphaFalloff).xxxx;
-				float4 smoothstepResult126 = smoothstep( float4( 0,0,0,0 ) , temp_cast_11 , staticSwitch130);
+				float4 temp_cast_12 = (_AlphaFalloff).xxxx;
+				float4 smoothstepResult126 = smoothstep( float4( 0,0,0,0 ) , temp_cast_12 , staticSwitch130);
 				#ifdef _FALLOFFCONTROL_ON
 				float4 staticSwitch152 = smoothstepResult126;
 				#else
@@ -656,6 +670,8 @@ Shader "AtlasShaders/Vertigo2/Particles/Unlit Particles Additive"
 			int _Cull;
 			float _BlueNoiseDiffusion;
 			float _ChromaticAberration;
+			float _DepthFadeBlueNoiseSize;
+			float _DepthFadeBlueNoise;
 			float _DepthFade;
 			float _Falloff;
 			float _Offset;
@@ -912,6 +928,8 @@ Shader "AtlasShaders/Vertigo2/Particles/Unlit Particles Additive"
 			int _Cull;
 			float _BlueNoiseDiffusion;
 			float _ChromaticAberration;
+			float _DepthFadeBlueNoiseSize;
+			float _DepthFadeBlueNoise;
 			float _DepthFade;
 			float _Falloff;
 			float _Offset;
@@ -943,6 +961,11 @@ Shader "AtlasShaders/Vertigo2/Particles/Unlit Particles Additive"
 			}
 			
 			inline float4 GetScreenNoiseRGBASlice27_g5( float2 screenUV, float offsetFrame )
+			{
+				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
+			}
+			
+			inline float4 GetScreenNoiseRGBASlice27_g83( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
@@ -1123,32 +1146,37 @@ Shader "AtlasShaders/Vertigo2/Particles/Unlit Particles Additive"
 				float4 staticSwitch206 = tex2DNode208;
 				#endif
 				int OneInt178 = 1;
+				float3 temp_cast_9 = OneInt178;
+				float2 screenUV27_g83 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g83 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g83 = GetScreenNoiseRGBASlice27_g83( screenUV27_g83 , offsetFrame27_g83 );
 				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
-				float screenDepth123 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
-				float distanceDepth123 = saturate( ( screenDepth123 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _DepthFade ) );
+				float screenDepth4_g81 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth4_g81 = saturate( abs( ( screenDepth4_g81 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _DepthFade ) ) );
+				float3 lerpResult6_g81 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g83).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g81);
 				#ifdef _ENABLEDEPTHFADE_ON
-				float staticSwitch182 = distanceDepth123;
+				float3 staticSwitch182 = saturate( ( lerpResult6_g81 * distanceDepth4_g81 ) );
 				#else
-				float staticSwitch182 = (float)OneInt178;
+				float3 staticSwitch182 = temp_cast_9;
 				#endif
 				float eyeDepth = IN.ase_texcoord4.z;
-				float cameraDepthFade172 = (( eyeDepth -_ProjectionParams.y - _Offset ) / _Falloff);
+				float cameraDepthFade14_g81 = (( eyeDepth -_ProjectionParams.y - _Offset ) / _Falloff);
 				#ifdef _ENABLECAMERADEPTHFADE_ON
-				float staticSwitch173 = saturate( cameraDepthFade172 );
+				float staticSwitch173 = saturate( cameraDepthFade14_g81 );
 				#else
 				float staticSwitch173 = (float)OneInt178;
 				#endif
-				float DepthFaders183 = ( staticSwitch182 * staticSwitch173 );
-				float4 temp_output_122_0 = ( ( staticSwitch206 * float4( _Color , 0.0 ) ) * DepthFaders183 );
+				float3 DepthFaders183 = ( staticSwitch182 * staticSwitch173 );
+				float4 temp_output_122_0 = ( ( staticSwitch206 * float4( _Color , 0.0 ) ) * float4( DepthFaders183 , 0.0 ) );
 				float4 lerpResult138 = lerp( float4( 0,0,0,0 ) , temp_output_122_0 , tex2DNode208.a);
 				#ifdef _ISTEXTURENONADDITIVEHASALPHA_ON
 				float4 staticSwitch130 = lerpResult138;
 				#else
 				float4 staticSwitch130 = temp_output_122_0;
 				#endif
-				float4 temp_cast_11 = (_AlphaFalloff).xxxx;
-				float4 smoothstepResult126 = smoothstep( float4( 0,0,0,0 ) , temp_cast_11 , staticSwitch130);
+				float4 temp_cast_12 = (_AlphaFalloff).xxxx;
+				float4 smoothstepResult126 = smoothstep( float4( 0,0,0,0 ) , temp_cast_12 , staticSwitch130);
 				#ifdef _FALLOFFCONTROL_ON
 				float4 staticSwitch152 = smoothstepResult126;
 				#else
@@ -1250,6 +1278,8 @@ Shader "AtlasShaders/Vertigo2/Particles/Unlit Particles Additive"
 			int _Cull;
 			float _BlueNoiseDiffusion;
 			float _ChromaticAberration;
+			float _DepthFadeBlueNoiseSize;
+			float _DepthFadeBlueNoise;
 			float _DepthFade;
 			float _Falloff;
 			float _Offset;
@@ -1467,6 +1497,8 @@ Shader "AtlasShaders/Vertigo2/Particles/Unlit Particles Additive"
 			int _Cull;
 			float _BlueNoiseDiffusion;
 			float _ChromaticAberration;
+			float _DepthFadeBlueNoiseSize;
+			float _DepthFadeBlueNoise;
 			float _DepthFade;
 			float _Falloff;
 			float _Offset;
@@ -1695,6 +1727,8 @@ Shader "AtlasShaders/Vertigo2/Particles/Unlit Particles Additive"
 			int _Cull;
 			float _BlueNoiseDiffusion;
 			float _ChromaticAberration;
+			float _DepthFadeBlueNoiseSize;
+			float _DepthFadeBlueNoise;
 			float _DepthFade;
 			float _Falloff;
 			float _Offset;
@@ -1918,6 +1952,8 @@ Shader "AtlasShaders/Vertigo2/Particles/Unlit Particles Additive"
 			int _Cull;
 			float _BlueNoiseDiffusion;
 			float _ChromaticAberration;
+			float _DepthFadeBlueNoiseSize;
+			float _DepthFadeBlueNoise;
 			float _DepthFade;
 			float _Falloff;
 			float _Offset;
@@ -2083,62 +2119,60 @@ Shader "AtlasShaders/Vertigo2/Particles/Unlit Particles Additive"
 /*ASEBEGIN
 Version=19908
 Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;170;-2368,224;Inherit;False;1236;187;;4;77;75;76;169;Blue Noise;0,0.7149544,1,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;188;-1088,224;Inherit;False;1492;371;;13;123;181;186;187;176;172;174;175;124;185;183;182;173;Depth Faders;1,0.7848822,0,1;0;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;188;-1088,224;Inherit;False;1448.929;482.2655;;11;175;174;124;244;243;242;183;185;182;173;245;Depth Faders;1,0.7848822,0,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;179;-1664,528;Inherit;False;436;163;;2;178;180;Register One;0,0,0,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;202;-2464,-608;Inherit;False;2971.242;706.2387;;23;199;82;241;240;152;207;210;130;126;127;138;122;151;189;206;194;204;208;11;45;205;44;171;Final Color;0.9245283,0.2311321,0.2311321,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;231;-1088,672;Inherit;False;1378.496;251.9352;;7;238;237;236;235;234;233;232;Quest Depth Fade;1,0.3646275,0,1;0;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;77;-2320,288;Inherit;False;Property;_BlueNoiseDiffusion;Blue Noise Diffusion;11;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;124;-1040,288;Inherit;False;Property;_DepthFade;Depth Fade;6;0;Create;True;0;0;0;False;0;False;0;0;0;5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;231;-1088,768;Inherit;False;1378.496;251.9352;;7;238;237;236;235;234;233;232;Quest Depth Fade;1,0.3646275,0,1;0;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;77;-2320,288;Inherit;False;Property;_BlueNoiseDiffusion;Blue Noise Diffusion;13;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;75;-2048,288;Inherit;False;Blue Noise Diffusion;-1;;1;5e6df176aa279d846818294540ea1f3f;0;2;8;FLOAT;0;False;9;FLOAT;1;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.IntNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;180;-1616,576;Inherit;False;Constant;_One;One;14;0;Create;True;0;0;0;False;0;False;1;0;False;0;0;0;1;INT;0
-Node;AmplifyShaderEditor.DepthFade, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;123;-768,288;Inherit;False;True;True;False;2;1;FLOAT3;0,0,0;False;0;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;174;-976,400;Inherit;False;Property;_Falloff;Falloff;8;0;Create;True;0;0;0;False;0;False;0.1;0;0;0.5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;175;-976,480;Inherit;False;Property;_Offset;Offset;9;0;Create;True;0;0;0;False;0;False;0.1;0;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;76;-1648,288;Inherit;False;Property;_EnableBlueNoise;Enable Blue Noise;10;0;Create;True;0;0;0;False;1;Header(Extra);False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT3;0,0,0;False;0;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;4;FLOAT3;0,0,0;False;5;FLOAT3;0,0,0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;76;-1648,288;Inherit;False;Property;_EnableBlueNoise;Enable Blue Noise;12;0;Create;True;0;0;0;False;1;Header(Extra);False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT3;0,0,0;False;0;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;4;FLOAT3;0,0,0;False;5;FLOAT3;0,0,0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT3;0,0,0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;178;-1472,576;Inherit;False;OneInt;-1;True;1;0;INT;0;False;1;INT;0
-Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;186;-512,272;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.CameraDepthFade, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;172;-704,400;Inherit;False;3;2;FLOAT3;0,0,0;False;0;FLOAT;1;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;169;-1376,288;Inherit;False;BlueNoise;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;181;-496,320;Inherit;False;178;OneInt;1;0;OBJECT;;False;1;INT;0
-Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;187;-352,272;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SaturateNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;176;-464,400;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;171;-2336,-336;Inherit;False;169;BlueNoise;1;0;OBJECT;;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;44;-2368,-256;Inherit;False;0;207;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;205;-2432,-128;Inherit;False;Property;_ChromaticAberration;Chromatic Aberration;13;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;173;-288,384;Inherit;False;Property;_EnableCameraDepthFade;Enable Camera Depth Fade;7;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;182;-288,288;Inherit;False;Property;_EnableDepthFade;Enable Depth Fade;5;0;Create;True;0;0;0;False;1;Header (Depth Fading);False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;205;-2432,-128;Inherit;False;Property;_ChromaticAberration;Chromatic Aberration;15;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;182;-320,288;Inherit;False;Property;_EnableDepthFade;Enable Depth Fade;5;0;Create;True;0;0;0;False;1;Header (Depth Fading);False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT3;0,0,0;False;0;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;4;FLOAT3;0,0,0;False;5;FLOAT3;0,0,0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT3;0,0,0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.SimpleAddOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;45;-2160,-336;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;FLOAT2;0,0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.ColorNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;11;-1632,-448;Inherit;False;Property;_Color;Color;1;1;[HDR];Create;True;0;0;0;False;0;False;1,1,1,1;1,1,1,0;True;False;0;6;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;185;16,288;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;185;-16,288;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;FLOAT;0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;208;-2000,-544;Inherit;True;Property;_TextureSample0;Texture Sample 0;17;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
 Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;204;-2016,-336;Inherit;False;Chromatic Aberration (Texture);-1;;76;88ea3ffa8f3a64a45a39e677c304e66a;0;4;21;SAMPLER2D;;False;20;FLOAT3;0,0,0;False;19;FLOAT;0;False;27;SAMPLERSTATE;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;194;-1424,-480;Inherit;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;183;160,288;Inherit;False;DepthFaders;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;206;-1696,-544;Inherit;False;Property;_EnableChromaticAberration;Enable Chromatic Aberration;12;0;Create;True;0;0;0;False;1;Header (Chromatic Aberration);False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;189;-1392,-416;Inherit;False;183;DepthFaders;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;183;128,288;Inherit;False;DepthFaders;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;206;-1696,-544;Inherit;False;Property;_EnableChromaticAberration;Enable Chromatic Aberration;14;0;Create;True;0;0;0;False;1;Header (Chromatic Aberration);False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;189;-1392,-416;Inherit;False;183;DepthFaders;1;0;OBJECT;;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;151;-1328,-544;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;FLOAT3;0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;122;-1120,-544;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;122;-1120,-544;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;FLOAT3;0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.LerpOp, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;138;-912,-464;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;127;-720,-400;Inherit;False;Property;_AlphaFalloff;Alpha Falloff;4;0;Create;True;0;0;0;False;0;False;5;0;0;5;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SmoothstepOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;126;-448,-448;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;COLOR;1,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;130;-752,-560;Inherit;False;Property;_IsTextureNonAdditiveHasAlpha;Is Texture Non-Additive? (Has Alpha);2;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.TFHCRemapNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;210;-2144,-160;Inherit;False;5;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;3;FLOAT;0;False;4;FLOAT;15;False;1;FLOAT;0
 Node;AmplifyShaderEditor.TexturePropertyNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;207;-2256,-544;Inherit;True;Property;_MainTex;Texture;0;0;Create;False;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;False;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;232;-384,720;Inherit;False;Property;_SHADER_API_MOBILE;SHADER_API_MOBILE;33;0;Create;True;0;0;0;False;0;False;0;0;0;False;SHADER_API_MOBILE;Toggle;2;Key0;Key1;Fetch;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;233;-128,720;Inherit;False;Property;_PCDebug;PC Debug;16;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;234;80,720;Inherit;False;QuestDepthFade;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;235;-768,816;Inherit;False;BlueNoiseFakeTransparencyDepthOffset;-1;;77;e0e0f8e10bf068a43b805df662b593ba;0;3;1;FLOAT;1;False;2;FLOAT;0.15;False;24;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;236;-768,720;Inherit;False;BlueNoiseFakeTransparencyDepthOffset;-1;;79;e0e0f8e10bf068a43b805df662b593ba;0;3;1;FLOAT;1;False;2;FLOAT;0;False;24;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;237;-192,816;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.IntNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;128;800,64;Inherit;False;Property;_Cull;_Cull;14;1;[HideInInspector];Create;True;0;0;0;True;0;False;0;0;False;0;0;0;1;INT;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;232;-384,816;Inherit;False;Property;_SHADER_API_MOBILE;SHADER_API_MOBILE;33;0;Create;True;0;0;0;False;0;False;0;0;0;False;SHADER_API_MOBILE;Toggle;2;Key0;Key1;Fetch;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;233;-128,816;Inherit;False;Property;_PCDebug;PC Debug;18;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;234;80,816;Inherit;False;QuestDepthFade;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;237;-192,912;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.IntNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;128;800,64;Inherit;False;Property;_Cull;_Cull;16;1;[HideInInspector];Create;True;0;0;0;True;0;False;0;0;False;0;0;0;1;INT;0
 Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;201;528,144;Inherit;False;199;FinalColor;1;0;OBJECT;;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;239;496,224;Inherit;False;234;QuestDepthFade;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;238;-1056,816;Inherit;False;Property;_QuestDepthFade;Quest Depth Fade;15;1;[Header];Create;True;1;Quest Depth Fade;0;0;False;0;False;0.025;0;0;3;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;238;-1056,912;Inherit;False;Property;_QuestDepthFade;Quest Depth Fade;17;1;[Header];Create;True;1;Quest Depth Fade;0;0;False;0;False;0.025;0;0;3;0;1;FLOAT;0
 Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;152;-272,-560;Inherit;False;Property;_FalloffControl;Falloff Control;3;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;240;16,-560;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;241;160,-560;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;FLOAT;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.VertexColorNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;82;-176,-448;Inherit;False;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;199;304,-560;Inherit;False;FinalColor;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;242;-736,288;Inherit;False;Depth Faders;-1;;81;d82d20eda006c484093d6adf8fee07db;0;5;28;FLOAT;0;False;30;FLOAT;1;False;24;FLOAT;0;False;25;FLOAT;0;False;26;FLOAT;0;False;2;FLOAT3;0;FLOAT;23
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;243;-1040,288;Inherit;False;Property;_DepthFadeBlueNoise;Depth Fade Blue Noise;7;0;Create;True;0;0;0;False;0;False;1;0;0;5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;244;-1040,368;Inherit;False;Property;_DepthFadeBlueNoiseSize;Depth Fade Blue Noise Size;8;0;Create;True;0;0;0;False;0;False;1;1;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;124;-1040,448;Inherit;False;Property;_DepthFade;Depth Fade;6;0;Create;True;0;0;0;False;0;False;0;0;0;5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;174;-1040,528;Inherit;False;Property;_Falloff;Falloff;10;0;Create;True;0;0;0;False;0;False;0.1;0;0;0.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;175;-1040,608;Inherit;False;Property;_Offset;Offset;11;0;Create;True;0;0;0;False;0;False;0.1;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;173;-320,384;Inherit;False;Property;_EnableCameraDepthFade;Enable Camera Depth Fade;9;0;Create;True;0;0;0;False;1;Space (10);False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;236;-768,816;Inherit;False;BlueNoiseFakeTransparencyDepthOffset;-1;;79;e0e0f8e10bf068a43b805df662b593ba;0;3;1;FLOAT;1;False;2;FLOAT;0;False;24;FLOAT;1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;235;-768,912;Inherit;False;BlueNoiseFakeTransparencyDepthOffset;-1;;77;e0e0f8e10bf068a43b805df662b593ba;0;3;1;FLOAT;1;False;2;FLOAT;0.15;False;24;FLOAT;1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;245;-512,464;Inherit;False;178;OneInt;1;0;OBJECT;;False;1;INT;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;221;704,144;Float;False;False;-1;3;UnityEditor.ShaderGraphUnlitGUI;0;1;New Amplify Shader;6cdc246191bcab64b98a12a2f745caec;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;7;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;222;704,144;Float;False;True;-1;3;Vertigo2GUI;0;13;AtlasShaders/Vertigo2/Particles/Unlit Particles Additive;6cdc246191bcab64b98a12a2f745caec;True;Forward;0;1;Forward;9;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;True;True;0;True;_Cull;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;True;7;True;12;all;0;False;True;1;1;False;;1;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;2;False;;True;3;False;;True;True;0;False;;0;False;;False;True;1;LightMode=UniversalForwardOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;24;Surface;1;639204473353598658;  Blend;2;639204473370845125;Two Sided;1;0;Cast Shadows;0;639204473375854515;  Use Shadow Threshold;0;0;Receive Shadows;0;639204473380628676;GPU Instancing;1;0;LOD CrossFade;0;0;Built-in Fog;0;0;Volumetrics;0;0;DOTS Instancing;0;0;Meta Pass;0;0;Extra Pre Pass;0;0;Tessellation;0;0;Write Depth;1;639204473458616896;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Vertex Position;1;0;0;10;False;True;False;True;False;True;True;True;True;True;False;;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;223;592,128;Float;False;False;-1;3;UnityEditor.ShaderGraphUnlitGUI;0;1;New Amplify Shader;6cdc246191bcab64b98a12a2f745caec;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;7;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
@@ -2150,19 +2184,11 @@ Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Versi
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;229;592,128;Float;False;False;-1;3;UnityEditor.ShaderGraphUnlitGUI;0;1;New Amplify Shader;6cdc246191bcab64b98a12a2f745caec;True;DepthNormals;0;8;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;7;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;False;True;1;LightMode=DepthNormalsOnly;False;True;4;d3d11;glcore;gles;gles3;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;230;592,128;Float;False;False;-1;3;UnityEditor.ShaderGraphUnlitGUI;0;1;New Amplify Shader;6cdc246191bcab64b98a12a2f745caec;True;DepthNormalsOnly;0;9;DepthNormalsOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;7;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;False;True;1;LightMode=DepthNormalsOnly;False;True;9;d3d11;metal;vulkan;xboxone;xboxseries;playstation;ps4;ps5;switch;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 WireConnection;75;8;77;0
-WireConnection;123;0;124;0
 WireConnection;76;0;75;0
 WireConnection;178;0;180;0
-WireConnection;186;0;123;0
-WireConnection;172;0;174;0
-WireConnection;172;1;175;0
 WireConnection;169;0;76;0
-WireConnection;187;0;186;0
-WireConnection;176;0;172;0
-WireConnection;173;1;181;0
-WireConnection;173;0;176;0
-WireConnection;182;1;181;0
-WireConnection;182;0;187;0
+WireConnection;182;1;245;0
+WireConnection;182;0;242;0
 WireConnection;45;0;171;0
 WireConnection;45;1;44;0
 WireConnection;185;0;182;0
@@ -2192,7 +2218,6 @@ WireConnection;232;0;235;0
 WireConnection;233;1;232;0
 WireConnection;233;0;237;0
 WireConnection;234;0;233;0
-WireConnection;235;2;238;0
 WireConnection;237;0;235;0
 WireConnection;152;1;130;0
 WireConnection;152;0;126;0
@@ -2201,7 +2226,15 @@ WireConnection;240;1;82;0
 WireConnection;241;0;240;0
 WireConnection;241;1;82;4
 WireConnection;199;0;241;0
+WireConnection;242;28;243;0
+WireConnection;242;30;244;0
+WireConnection;242;24;124;0
+WireConnection;242;25;174;0
+WireConnection;242;26;175;0
+WireConnection;173;1;245;0
+WireConnection;173;0;242;23
+WireConnection;235;2;238;0
 WireConnection;222;2;201;0
 WireConnection;222;8;239;0
 ASEEND*/
-//CHKSM=A964B357CB4C75B5870AEB63DA79AC856D114E63
+//CHKSM=5E662FF36A249316470DEE84C1839FD281FB0886

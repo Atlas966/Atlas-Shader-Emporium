@@ -16,7 +16,7 @@ Material:
   - _ENABLECOOKIEPROJECTION_ON
   - _ENABLESOFTINTERSECTION_ON
   - _FACTORNOISEINTOALPHA_ON
-  - _NOISETYPE_GENERATED
+  - _NOISETYPE_3DTEXTURE
   - _WORLDSPACENOISE_ON
   m_InvalidKeywords:
   - _BLENDMODE_ADDITIVE
@@ -100,7 +100,8 @@ Material:
     m_Ints: []
     m_Floats:
     - BRDFMAP: 1
-    - _3DNoiseAlphaFalloff: 0.5
+    - _3DNoiseAlphaFalloff: 4
+    - _3DNoiseAlphaIntensity: 1
     - _3DNoiseIntensity: 2
     - _3DNoiseSpeed: 0.025
     - _3DNoiseTiling: 0.1
@@ -161,7 +162,7 @@ Material:
     - _FrontalGlare: -7.24
     - _GlareIntensity: 1
     - _GlareSharpness: 1
-    - _GlobalIntensity: 0.781
+    - _GlobalIntensity: 1
     - _GradientScrollSpeed: 0
     - _Grayscale: 0
     - _Length: 1
@@ -169,7 +170,7 @@ Material:
     - _NoiseDefusion: 0.025
     - _NoiseIntensity: 3
     - _NoiseSpeed: 0.001
-    - _NoiseType: 1
+    - _NoiseType: 0
     - _PCDebug: 0
     - _PCDebug1: 0
     - _Pow: 3

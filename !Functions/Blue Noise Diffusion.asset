@@ -21,13 +21,13 @@ MonoBehaviour:
     AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;1;-352,144;Inherit;False;Constant;_Float1;Float
     1;8;0;Create;True;0;0;0;False;0;False;2;0;0;0;0;1;FLOAT;0\nNode;AmplifyShaderEditor.WireNode,
     AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;10;-208,64;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput,
-    AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;9;-1136,-48;Inherit;False;Blue
-    Noise Size (0-1);1;1;False;1;0;FLOAT;1;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput,
     AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;8;-608,48;Inherit;False;Noise
-    Defusion (0 - 1);1;0;False;1;0;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionNode,
-    AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;11;-928,-48;Inherit;True;Global
-    Blue Noise Sample;-1;;5;65496ced1d1d0a041969a9ecf9b0b6ad;0;1;33;FLOAT;1;False;1;FLOAT4;0\nNode;AmplifyShaderEditor.FunctionOutput,
-    AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;0;-16,-48;Inherit;False;True;-1;Output;0;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0\nWireConnection;4;0;11;0\nWireConnection;5;0;4;0\nWireConnection;2;0;8;0\nWireConnection;6;0;5;0\nWireConnection;6;1;2;0\nWireConnection;6;2;10;0\nWireConnection;10;0;1;0\nWireConnection;11;33;9;0\nWireConnection;0;0;6;0\nASEEND*/\n//CHKSM=7CCFD8EE20534F3E0FEE9D886EF5FC2DEA4A3B70"
+    Defusion (0 - 1);1;0;False;1;0;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput,
+    AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;9;-1168,-48;Inherit;False;Blue
+    Noise Size (0-1);1;1;False;1;0;FLOAT;1;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionNode,
+    AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;12;-960,-48;Inherit;False;Global
+    Blue Noise Sample (Atlas);-1;;1;144de263ce13aac47949afe49812bc27;0;1;33;FLOAT;1;False;1;FLOAT4;0\nNode;AmplifyShaderEditor.FunctionOutput,
+    AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;0;-16,-48;Inherit;False;True;-1;Output;0;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0\nWireConnection;4;0;12;0\nWireConnection;5;0;4;0\nWireConnection;2;0;8;0\nWireConnection;6;0;5;0\nWireConnection;6;1;2;0\nWireConnection;6;2;10;0\nWireConnection;10;0;1;0\nWireConnection;12;33;9;0\nWireConnection;0;0;6;0\nASEEND*/\n//CHKSM=B05C40E314E4012387DB30881E2BBF793A76C9A7"
   m_functionName: 
   m_description: Add into texture UV's for blue noise diffusion.
   m_additionalIncludes:
