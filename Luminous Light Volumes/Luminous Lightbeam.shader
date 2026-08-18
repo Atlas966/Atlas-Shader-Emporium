@@ -774,7 +774,7 @@ Shader "AtlasShaders/Luminous Light Volumes/Luminous Lightbeam"
 				#endif
 				half4 output = half4(Color, Alpha);
 				#ifdef _VOLUMETRICS_ENABLED
-					output = Volumetrics(output, IN.worldPos);
+					output = VolumetricsSurf(output, IN.worldPos, 1);
 				#endif
 
 				#ifdef ASE_DEPTH_WRITE_ON
