@@ -1,36 +1,33 @@
 // Made with Amplify Shader Editor v1.9.9.8
 // Available at the Unity Asset Store - http://u3d.as/y3X 
-Shader "AtlasShaders/Vertigo 2/Water/Splash"
+Shader "AtlasShaders/Particle/Lit Particle Depth Fade (Additive)"
 {
 	Properties
 	{
-		[HideInInspector] _Cutoff("Alpha Cutoff", Range(0, 1)) = 0.5
-		_Color( "Color", Color ) = ( 1, 1, 1, 1 )
-		[HideInInspector] _DummyFloatOne( "DummyFloatOne", Float ) = 1
-		[HDR] _EmissionColor( "Emission Color", Color ) = ( 0, 0, 0 )
-		[HideInInspector] _DummyFloatZero( "DummyFloatZero", Float ) = 0
-		_MainTex( "Main Texture", 2D ) = "white" {}
-		[Normal] _DistortionMap( "Distortion", 2D ) = "bump" {}
-		_DistortionAmount( "Distortion amount", Float ) = 0
-		_NoiseAmount( "Noise amount", Float ) = 0
-		_Anim( "Animation Speed (XY)", Vector ) = ( 0, 0, 0, 0 )
-		[Space(20)][Header(Extra)] _Smoothness( "Smoothness", Range( 0, 1 ) ) = 0
-		_ReflectivityBoost( "Reflectivity Boost", Range( 0, 3 ) ) = 0
-		_TransmissionBoost( "Transmission Boost", Float ) = 2
-		_SplashFalloff( "Splash Falloff", Range( 0, 5 ) ) = 1
-		[Header(Depth Fading Options)][Toggle( _ENABLEDEPTHFADE_ON )] _EnableDepthFade( "Enable Depth Fade", Float ) = 0
-		_DepthFadeAmount( "Depth Fade Amount", Range( 0, 3 ) ) = 0
-		_DepthFadeBlueNoise( "Depth Fade Blue Noise", Range( 0, 5 ) ) = 1.5
-		_DepthFadeBlueNoiseSize( "Blue Noise Size", Range( 0, 1 ) ) = 1
-		[Toggle( _ENABLECAMERADEPTHFADE_ON )] _EnableCameraDepthFade( "Enable Camera Depth Fade", Float ) = 0
-		_CameraDFFalloff( "Falloff", Range( 0, 0.5 ) ) = 0
-		_Offset( "Offset", Range( 0, 1 ) ) = 0.1
-		[Header(Blue Noise)][Toggle( _ENABLEBLUENOISE_ON )] _EnableBlueNoise( "Enable Blue Noise", Float ) = 0
+		[HideInInspector] _EmissionColor("Emission Color", Color) = (1,1,1,1)
+		[Header(Base Attributes)] _ParticleTexture( "Particle Texture", 2D ) = "white" {}
+		[NoScaleOffset] _NormalMap( "Normal Map", 2D ) = "bump" {}
+		_NormalIntensity( "Normal Intensity", Range( 0, 3 ) ) = 1
+		[HDR] _Color( "Color", Color ) = ( 0.5019608, 0.5019608, 0.5019608, 1 )
+		_Transparency( "Transparency", Range( 0, 1 ) ) = 1
+		_AlphaClip( "Alpha Clip", Range( 0, 1 ) ) = 0
+		_EdgeFalloff( "Edge Falloff", Range( 0, 2 ) ) = 1
+		[Header(Blue Noise) ][Toggle( _BLUENOISEOVERLAY_ON )] _BlueNoiseOverlay( "Blue Noise Overlay", Float ) = 1
 		_BlueNoise( "Blue Noise", Range( 0, 1 ) ) = 0
+		_BlueNoiseSize( "Blue Noise Size", Range( 0, 1 ) ) = 1
+		[Header(Soft Intersection Options)][Toggle( _ENABLESOFTINTERSECTION_ON )] _EnableSoftIntersection( "Enable Soft Intersection", Float ) = 1
+		_SoftIntersection( "Soft Intersection", Range( 0, 5 ) ) = 0.15
+		_DepthFadeBlueNoise( "Depth Fade Blue Noise", Range( 0, 5 ) ) = 1
+		_DepthFadeBlueNoiseSize( "Blue Noise Size", Range( 0, 1 ) ) = 1
+		[Space (10)][Toggle( _ENABLECAMERADEPTHFADING_ON )] _EnableCameraDepthFading( "Enable Camera Depth Fading", Float ) = 1
+		_CDFalloff1( "Falloff", Range( 0, 0.5 ) ) = 0.035
+		_CDDistance1( "Distance", Range( 0, 1 ) ) = 0.025
+		[Header(Quest Depth Fade)] _QuestDepthFade( "Quest Depth Fade", Range( 0, 3 ) ) = 0.25
+		_QuestDepthFadeBlueNoiseSize( "Blue Noise Size", Range( 0, 1 ) ) = 1
+		[Toggle( _PCDEBUG_ON )] _PCDebug( "PC Debug", Float ) = 0
 		[Space(20)][Header(BRDF Lut)][Space(10)][Toggle( _BRDFMAP )] BRDFMAP( "Enable BRDF map", Float ) = 0
 		[NoScaleOffset][SingleLineTexture] g_tBRDFMap( "BRDF map", 2D ) = "white" {}
-		[Header(Quest Depth Fade)] _QuestDepthFade( "Quest Depth Fade", Range( 0, 3 ) ) = 0.025
-		[Toggle( _PCDEBUG_ON )] _PCDebug( "PC Debug", Float ) = 0
+		[HideInInspector] _Cull( "_Cull", Int ) = 2
 
 		[HideInInspector]_QueueOffset("_QueueOffset", Float) = 0
         [HideInInspector]_QueueControl("_QueueControl", Float) = -1
@@ -38,12 +35,12 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
         [HideInInspector][NoScaleOffset]unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {}
         [HideInInspector][NoScaleOffset]unity_ShadowMasks("unity_ShadowMasks", 2DArray) = "" {}
 		//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
-		//_TransStrength( "Strength", Range( 0, 50 ) ) = 1
-		//_TransNormal( "Normal Distortion", Range( 0, 1 ) ) = 0.5
-		//_TransScattering( "Scattering", Range( 1, 50 ) ) = 2
-		//_TransDirect( "Direct", Range( 0, 1 ) ) = 0.9
-		//_TransAmbient( "Ambient", Range( 0, 1 ) ) = 0.1
-		//_TransShadow( "Shadow", Range( 0, 1 ) ) = 0.5
+		//_TransStrength( "Trans Strength", Range( 0, 50 ) ) = 1
+		//_TransNormal( "Trans Normal Distortion", Range( 0, 1 ) ) = 0.5
+		//_TransScattering( "Trans Scattering", Range( 1, 50 ) ) = 2
+		//_TransDirect( "Trans Direct", Range( 0, 1 ) ) = 0.9
+		//_TransAmbient( "Trans Ambient", Range( 0, 1 ) ) = 0.1
+		//_TransShadow( "Trans Shadow", Range( 0, 1 ) ) = 0.5
 		//_TessPhongStrength( "Tess Phong Strength", Range( 0, 1 ) ) = 0.5
 		//_TessValue( "Tess Max Tessellation", Range( 1, 32 ) ) = 16
 		//_TessMin( "Tess Min Distance", Float ) = 10
@@ -60,7 +57,7 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 		
 		
 		Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Transparent" "Queue"="Transparent" }
-		Cull Back
+		Cull [_Cull]
 		ZWrite Off
 		ZTest LEqual
 		Offset 0 , 0
@@ -192,14 +189,14 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED
-			#define _SPECULAR_SETUP 1
-			#define _TRANSLUCENCY_ASE 1
+			#define _RECEIVE_SHADOWS_OFF 1
 			#define ASE_DEPTH_WRITE_ON
-			#define _EMISSION
+			#pragma multi_compile_instancing
+			#define _ALPHATEST_ON 1
+			#define _NORMALMAP 1
 			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
 			#define REQUIRE_DEPTH_TEXTURE 1
-			#define ASE_USING_SAMPLING_MACROS 1
 
 			#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/PlatformCompiler.hlsl"
 			#pragma vertex vert
@@ -214,17 +211,17 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/TextureStack.hlsl"
 
 			#define ASE_NEEDS_TEXTURE_COORDINATES0
-			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_SCREEN_POSITION
 			#define ASE_NEEDS_FRAG_SCREEN_POSITION
+			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_FRAG_COLOR
 			#define ASE_NEEDS_VERT_POSITION
 			#define ASE_NEEDS_FRAG_POSITION
 			#pragma shader_feature_local_fragment _BRDFMAP
-			#pragma shader_feature_local _ENABLEBLUENOISE_ON
-			#pragma shader_feature_local _ENABLEDEPTHFADE_ON
-			#pragma shader_feature_local _ENABLECAMERADEPTHFADE_ON
+			#pragma shader_feature_local _BLUENOISEOVERLAY_ON
+			#pragma shader_feature_local _ENABLECAMERADEPTHFADING_ON
 			#pragma shader_feature_local _PCDEBUG_ON
+			#pragma shader_feature_local _ENABLESOFTINTERSECTION_ON
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SLZBlueNoise.hlsl"
 
 			#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DefaultLitVariants.hlsl"
@@ -270,33 +267,29 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				#if defined(DYNAMICLIGHTMAP_ON)
 				float2 dynamicLightmapUV : TEXCOORD7;
 				#endif
-				float4 ase_texcoord8 : TEXCOORD8;
 				float4 ase_color : COLOR;
+				float4 ase_texcoord8 : TEXCOORD8;
 				float4 ase_texcoord9 : TEXCOORD9;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
+			float4 _ParticleTexture_ST;
 			float4 _Color;
-			float4 _MainTex_ST;
-			float4 _DistortionMap_ST;
-			float4 _Anim;
-			float3 _EmissionColor;
-			float _CameraDFFalloff;
-			float _DepthFadeAmount;
-			float _DepthFadeBlueNoise;
-			float _DepthFadeBlueNoiseSize;
-			float _SplashFalloff;
-			float _Smoothness;
-			float _DummyFloatOne;
-			float _Offset;
-			float _DistortionAmount;
-			float _NoiseAmount;
+			int _Cull;
+			float _BlueNoiseSize;
 			float _BlueNoise;
-			float _TransmissionBoost;
-			float _DummyFloatZero;
-			float _ReflectivityBoost;
+			float _NormalIntensity;
+			float _CDFalloff1;
+			float _CDDistance1;
+			float _DepthFadeBlueNoiseSize;
+			float _DepthFadeBlueNoise;
+			float _SoftIntersection;
+			float _EdgeFalloff;
+			float _Transparency;
+			float _AlphaClip;
+			float _QuestDepthFadeBlueNoiseSize;
 			float _QuestDepthFade;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
@@ -318,19 +311,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			TEXTURE2D(_MainTex);
-			TEXTURE2D(_DistortionMap);
-			SAMPLER(sampler_DistortionMap);
-			SAMPLER(sampler_Linear_Clamp);
-			
-			#ifdef UNITY_DOTS_INSTANCING_ENABLED
-			UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
-				UNITY_DOTS_INSTANCED_PROP(float, _DummyFloatOne)
-				UNITY_DOTS_INSTANCED_PROP(float, _DummyFloatZero)
-			UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
-			#define _DummyFloatOne UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float , Metadata__DummyFloatOne)
-			#define _DummyFloatZero UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float , Metadata__DummyFloatZero)
-			#endif
+			sampler2D _ParticleTexture;
+			sampler2D _NormalMap;
 
 
 			inline float4 ASE_ComputeGrabScreenPos( float4 pos )
@@ -346,50 +328,22 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				return o;
 			}
 			
-			inline float4 GetScreenNoiseRGBASlice27_g3( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g8( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
 			
-			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float2 mod2D289( float2 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float3 permute( float3 x ) { return mod2D289( ( ( x * 34.0 ) + 1.0 ) * x ); }
-			float snoise( float2 v )
-			{
-				const float4 C = float4( 0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439 );
-				float2 i = floor( v + dot( v, C.yy ) );
-				float2 x0 = v - i + dot( i, C.xx );
-				float2 i1;
-				i1 = ( x0.x > x0.y ) ? float2( 1.0, 0.0 ) : float2( 0.0, 1.0 );
-				float4 x12 = x0.xyxy + C.xxzz;
-				x12.xy -= i1;
-				i = mod2D289( i );
-				float3 p = permute( permute( i.y + float3( 0.0, i1.y, 1.0 ) ) + i.x + float3( 0.0, i1.x, 1.0 ) );
-				float3 m = max( 0.5 - float3( dot( x0, x0 ), dot( x12.xy, x12.xy ), dot( x12.zw, x12.zw ) ), 0.0 );
-				m = m * m;
-				m = m * m;
-				float3 x = 2.0 * frac( p * C.www ) - 1.0;
-				float3 h = abs( x ) - 0.5;
-				float3 ox = floor( x + 0.5 );
-				float3 a0 = x - ox;
-				m *= 1.79284291400159 - 0.85373472095314 * ( a0 * a0 + h * h );
-				float3 g;
-				g.x = a0.x * x0.x + h.x * x0.y;
-				g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-				return 130.0 * dot( m, g );
-			}
-			
-			inline float4 GetScreenNoiseRGBASlice27_g61516( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g142( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
 			
-			inline float4 GetScreenNoiseRGBASlice27_g61519( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g147( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
 			
-			inline float4 GetScreenNoiseRGBASlice27_g61521( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g145( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
@@ -406,8 +360,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				float eyeDepth = -objectToViewPos.z;
 				o.ase_texcoord8.z = eyeDepth;
 				
-				o.ase_texcoord8.xy = v.texcoord.xy;
 				o.ase_color = v.ase_color;
+				o.ase_texcoord8.xy = v.texcoord.xy;
 				o.ase_texcoord9 = v.vertex;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
@@ -611,101 +565,98 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 	
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
-				float2 uv_MainTex = IN.ase_texcoord8.xy * _MainTex_ST.xy + _MainTex_ST.zw;
-				float2 uv_DistortionMap = IN.ase_texcoord8.xy * _DistortionMap_ST.xy + _DistortionMap_ST.zw;
-				float2 appendResult24 = (float2(_Anim.x , _Anim.y));
+				float4 VertexColor116 = IN.ase_color;
+				float2 uv_ParticleTexture = IN.ase_texcoord8.xy * _ParticleTexture_ST.xy + _ParticleTexture_ST.zw;
 				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( ScreenPos );
 				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
-				float2 screenUV27_g3 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g3 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g3 = GetScreenNoiseRGBASlice27_g3( screenUV27_g3 , offsetFrame27_g3 );
-				#ifdef _ENABLEBLUENOISE_ON
-				float3 staticSwitch66 = ( ( (localGetScreenNoiseRGBASlice27_g3).xyz - float3( 0.5,0.5,0.5 ) ) * ( _BlueNoise * 0.1 ) * 2.0 );
+				float2 screenUV27_g8 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _BlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g8 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g8 = GetScreenNoiseRGBASlice27_g8( screenUV27_g8 , offsetFrame27_g8 );
+				#ifdef _BLUENOISEOVERLAY_ON
+				float3 staticSwitch81 = ( ( (localGetScreenNoiseRGBASlice27_g8).xyz - float3( 0.5,0.5,0.5 ) ) * ( _BlueNoise * 0.1 ) * 2.0 );
 				#else
-				float3 staticSwitch66 = float3( 0,0,0 );
+				float3 staticSwitch81 = float3( 0,0,0 );
 				#endif
-				float3 BlueNoise67 = staticSwitch66;
-				float simplePerlin2D89 = snoise( uv_DistortionMap*_NoiseAmount );
-				simplePerlin2D89 = simplePerlin2D89*0.5 + 0.5;
-				float3 tex2DNode8 = UnpackNormalScale( SAMPLE_TEXTURE2D( _DistortionMap, sampler_DistortionMap, ( float3( uv_DistortionMap ,  0.0 ) + float3( ( appendResult24 * _TimeParameters.x ) ,  0.0 ) + BlueNoise67 + simplePerlin2D89 ).xy ), 1.0f );
-				float2 appendResult47 = (float2(tex2DNode8.r , tex2DNode8.g));
-				float2 DistortedUVs28 = ( appendResult47 * ( _DistortionAmount * 0.25 ) );
-				float4 tex2DNode5 = SAMPLE_TEXTURE2D( _MainTex, sampler_Linear_Clamp, ( float3( uv_MainTex ,  0.0 ) + float3( DistortedUVs28 ,  0.0 ) + BlueNoise67 ).xy );
-				float4 VertexColor38 = IN.ase_color;
-				float4 Final_Color14 = ( tex2DNode5 * _Color * VertexColor38 );
+				float3 BlueNoiseMain130 = staticSwitch81;
+				float4 tex2DNode45 = tex2D( _ParticleTexture, ( float3( uv_ParticleTexture ,  0.0 ) + BlueNoiseMain130 ).xy );
+				float4 ColorFinal175 = ( VertexColor116 * ( tex2DNode45 * _Color ) );
 				
-				float4 MainTextureColor13 = tex2DNode5;
-				float VertexAlpha37 = IN.ase_color.a;
-				float4 Emission11 = ( MainTextureColor13 * float4( _EmissionColor , 0.0 ) * VertexColor38 * VertexAlpha37 );
+				float3 unpack244 = UnpackNormalScale( tex2D( _NormalMap, ( float3( uv_ParticleTexture ,  0.0 ) + BlueNoiseMain130 ).xy ), _NormalIntensity );
+				unpack244.z = lerp( 1, unpack244.z, saturate(_NormalIntensity) );
+				float3 Normal246 = unpack244;
 				
-				float3 temp_cast_9 = (_ReflectivityBoost).xxx;
-				
-				float3 temp_cast_10 = (_SplashFalloff).xxx;
-				float MainTexAlpha33 = tex2DNode5.a;
-				int One61 = 1;
-				float3 temp_cast_11 = One61;
-				float2 screenUV27_g61516 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g61516 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g61516 = GetScreenNoiseRGBASlice27_g61516( screenUV27_g61516 , offsetFrame27_g61516 );
+				float VertexColorAlpha117 = IN.ase_color.a;
+				float eyeDepth = IN.ase_texcoord8.z;
+				float cameraDepthFade14_g140 = (( eyeDepth -_ProjectionParams.y - _CDDistance1 ) / _CDFalloff1);
+				#ifdef _ENABLECAMERADEPTHFADING_ON
+				float staticSwitch234 = saturate( cameraDepthFade14_g140 );
+				#else
+				float staticSwitch234 = 1.0;
+				#endif
+				float DepthFadeCameraDepthFade235 = staticSwitch234;
+				float3 temp_cast_5 = (1.0).xxx;
+				float2 screenUV27_g142 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g142 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g142 = GetScreenNoiseRGBASlice27_g142( screenUV27_g142 , offsetFrame27_g142 );
 				float4 ase_positionSSNorm = ScreenPos / ScreenPos.w;
 				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
-				float screenDepth4_g61514 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
-				float distanceDepth4_g61514 = saturate( abs( ( screenDepth4_g61514 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _DepthFadeAmount ) ) );
-				float3 lerpResult6_g61514 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g61516).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g61514);
-				#ifdef _ENABLEDEPTHFADE_ON
-				float3 staticSwitch55 = saturate( ( lerpResult6_g61514 * distanceDepth4_g61514 ) );
+				float screenDepth4_g140 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth4_g140 = saturate( abs( ( screenDepth4_g140 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float3 lerpResult6_g140 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g142).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g140);
+				#ifdef _ENABLESOFTINTERSECTION_ON
+				float3 staticSwitch233 = saturate( ( lerpResult6_g140 * distanceDepth4_g140 ) );
 				#else
-				float3 staticSwitch55 = temp_cast_11;
+				float3 staticSwitch233 = temp_cast_5;
 				#endif
-				float eyeDepth = IN.ase_texcoord8.z;
-				float cameraDepthFade14_g61514 = (( eyeDepth -_ProjectionParams.y - _Offset ) / _CameraDFFalloff);
-				#ifdef _ENABLECAMERADEPTHFADE_ON
-				float staticSwitch56 = saturate( cameraDepthFade14_g61514 );
+				float3 temp_cast_6 = (1.0).xxx;
+				#ifdef _PCDEBUG_ON
+				float3 staticSwitch241 = temp_cast_6;
 				#else
-				float staticSwitch56 = (float)One61;
+				float3 staticSwitch241 = staticSwitch233;
 				#endif
-				float3 DepthFadeAlpha58 = ( staticSwitch55 * staticSwitch56 );
-				float ColorAlpha105 = _Color.a;
-				float3 smoothstepResult100 = smoothstep( float3( 0,0,0 ) , temp_cast_10 , ( MainTexAlpha33 * VertexAlpha37 * DepthFadeAlpha58 * ColorAlpha105 ));
-				float3 Alpha43 = saturate( smoothstepResult100 );
+				float3 DepthFadeSoftIntersection236 = staticSwitch241;
+				float ParticleAlpha173 = tex2DNode45.a;
+				float smoothstepResult208 = smoothstep( 0.0 , _EdgeFalloff , ( _Transparency * ParticleAlpha173 ));
+				float4 LuminanceAlpha256 = tex2DNode45;
+				float4 Alpha211 = saturate( ( float4( ( VertexColorAlpha117 * DepthFadeCameraDepthFade235 * DepthFadeSoftIntersection236 * smoothstepResult208 ) , 0.0 ) * LuminanceAlpha256 ) );
 				
-				float4 unityObjectToClipPos20_g61518 = TransformWorldToHClip( TransformObjectToWorld( ( IN.ase_texcoord9.xyz ).xyz ) );
-				float2 screenUV27_g61519 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g61519 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g61519 = GetScreenNoiseRGBASlice27_g61519( screenUV27_g61519 , offsetFrame27_g61519 );
-				float temp_output_21_0_g61518 = ( unityObjectToClipPos20_g61518.w + ( (localGetScreenNoiseRGBASlice27_g61519).w * 0.0 ) );
-				float lerpResult5_g61518 = lerp( ( ( (float4( 0,0,0,0 )).w - 1.0 ) * 2.0 ) , 0.5 , 1.0);
-				float4 unityObjectToClipPos20_g61520 = TransformWorldToHClip( TransformObjectToWorld( ( IN.ase_texcoord9.xyz ).xyz ) );
-				float2 screenUV27_g61521 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g61521 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g61521 = GetScreenNoiseRGBASlice27_g61521( screenUV27_g61521 , offsetFrame27_g61521 );
-				float temp_output_21_0_g61520 = ( unityObjectToClipPos20_g61520.w + ( (localGetScreenNoiseRGBASlice27_g61521).w * _QuestDepthFade ) );
-				float lerpResult5_g61520 = lerp( ( ( (float4( 0,0,0,0 )).w - 1.0 ) * 2.0 ) , 0.5 , 1.0);
-				float temp_output_112_0 = ( ( ( 1.0 - ( temp_output_21_0_g61520 * _ZBufferParams.w ) ) / ( temp_output_21_0_g61520 * _ZBufferParams.z ) ) * ceil( lerpResult5_g61520 ) );
+				float4 unityObjectToClipPos20_g146 = TransformWorldToHClip( TransformObjectToWorld( ( IN.ase_texcoord9.xyz ).xyz ) );
+				float2 screenUV27_g147 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g147 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g147 = GetScreenNoiseRGBASlice27_g147( screenUV27_g147 , offsetFrame27_g147 );
+				float temp_output_21_0_g146 = ( unityObjectToClipPos20_g146.w + ( (localGetScreenNoiseRGBASlice27_g147).w * 0.0 ) );
+				float lerpResult5_g146 = lerp( ( ( (float4( 0,0,0,0 )).w - 1.0 ) * 2.0 ) , 0.5 , 1.0);
+				float4 unityObjectToClipPos20_g144 = TransformWorldToHClip( TransformObjectToWorld( ( IN.ase_texcoord9.xyz ).xyz ) );
+				float2 screenUV27_g145 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _QuestDepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g145 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g145 = GetScreenNoiseRGBASlice27_g145( screenUV27_g145 , offsetFrame27_g145 );
+				float temp_output_21_0_g144 = ( unityObjectToClipPos20_g144.w + ( (localGetScreenNoiseRGBASlice27_g145).w * _QuestDepthFade ) );
+				float lerpResult5_g144 = lerp( ( ( (float4( 0,0,0,0 )).w - 1.0 ) * 2.0 ) , 0.5 , 1.0);
+				float temp_output_239_0 = ( ( ( 1.0 - ( temp_output_21_0_g144 * _ZBufferParams.w ) ) / ( temp_output_21_0_g144 * _ZBufferParams.z ) ) * ceil( lerpResult5_g144 ) );
 				#ifdef SHADER_API_MOBILE
-				float staticSwitch109 = temp_output_112_0;
+				float staticSwitch214 = temp_output_239_0;
 				#else
-				float staticSwitch109 = ( ( ( 1.0 - ( temp_output_21_0_g61518 * _ZBufferParams.w ) ) / ( temp_output_21_0_g61518 * _ZBufferParams.z ) ) * ceil( lerpResult5_g61518 ) );
+				float staticSwitch214 = ( ( ( 1.0 - ( temp_output_21_0_g146 * _ZBufferParams.w ) ) / ( temp_output_21_0_g146 * _ZBufferParams.z ) ) * ceil( lerpResult5_g146 ) );
 				#endif
 				#ifdef _PCDEBUG_ON
-				float staticSwitch110 = temp_output_112_0;
+				float staticSwitch215 = temp_output_239_0;
 				#else
-				float staticSwitch110 = staticSwitch109;
+				float staticSwitch215 = staticSwitch214;
 				#endif
-				float QuestDepthFade111 = staticSwitch110;
+				float QuestDepthFade217 = staticSwitch215;
 				
-				float3 Albedo = Final_Color14.rgb;
-				float3 Normal = float3(0, 0, 1);
-				float3 Emission = Emission11.rgb;
+				float3 Albedo = ColorFinal175.rgb;
+				float3 Normal = Normal246;
+				float3 Emission = 0;
 #if 0
 				float3 BakedEmission = 0;
 #endif
-				float3 Specular = temp_cast_9;
-				float Metallic = 0;
-				float Smoothness = _Smoothness;
+				float3 Specular = 0.5;
+				float Metallic = 0.0;
+				float Smoothness = 0.0;
 				float Occlusion = 1;
-				float Alpha = Alpha43.x;
-				float AlphaClipThreshold = 0.5;
+				float Alpha = Alpha211.r;
+				float AlphaClipThreshold = _AlphaClip;
 				float AlphaClipThresholdShadow = 0.5;
 				float3 BakedGI = 0;
 				float3 RefractionColor = 1;
@@ -713,7 +664,7 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				float3 Transmission = 1;
 				float3 Translucency = 1;
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = QuestDepthFade111;
+				float DepthValue = QuestDepthFade217;
 				#endif
 				
 				#ifdef _CLEARCOAT
@@ -871,12 +822,12 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 
 				#ifdef _TRANSLUCENCY_ASE
 				{
-					float shadow = _DummyFloatZero;
-					float normal = _DummyFloatOne;
-					float scattering = _DummyFloatOne;
-					float direct = _DummyFloatZero;
-					float ambient = _DummyFloatOne;
-					float strength = _TransmissionBoost;
+					float shadow = _TransShadow;
+					float normal = _TransNormal;
+					float scattering = _TransScattering;
+					float direct = _TransDirect;
+					float ambient = _TransAmbient;
+					float strength = _TransStrength;
 
 					Light mainLight = GetMainLight( inputData.shadowCoord );
 					float3 mainAtten = mainLight.color * mainLight.distanceAttenuation;
@@ -954,14 +905,14 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED
-			#define _SPECULAR_SETUP 1
-			#define _TRANSLUCENCY_ASE 1
+			#define _RECEIVE_SHADOWS_OFF 1
 			#define ASE_DEPTH_WRITE_ON
-			#define _EMISSION
+			#pragma multi_compile_instancing
+			#define _ALPHATEST_ON 1
+			#define _NORMALMAP 1
 			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
 			#define REQUIRE_DEPTH_TEXTURE 1
-			#define ASE_USING_SAMPLING_MACROS 1
 
 			#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/PlatformCompiler.hlsl"
 			#pragma vertex vert
@@ -977,15 +928,14 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
-			#define ASE_NEEDS_TEXTURE_COORDINATES0
-			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_VERT_POSITION
+			#define ASE_NEEDS_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_FRAG_POSITION
 			#pragma shader_feature_local_fragment _BRDFMAP
-			#pragma shader_feature_local _ENABLEBLUENOISE_ON
-			#pragma shader_feature_local _ENABLEDEPTHFADE_ON
-			#pragma shader_feature_local _ENABLECAMERADEPTHFADE_ON
+			#pragma shader_feature_local _ENABLECAMERADEPTHFADING_ON
 			#pragma shader_feature_local _PCDEBUG_ON
+			#pragma shader_feature_local _ENABLESOFTINTERSECTION_ON
+			#pragma shader_feature_local _BLUENOISEOVERLAY_ON
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SLZBlueNoise.hlsl"
 
 
@@ -993,8 +943,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			{
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
-				float4 ase_texcoord : TEXCOORD0;
 				float4 ase_color : COLOR;
+				float4 ase_texcoord : TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1007,34 +957,30 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 				float4 shadowCoord : TEXCOORD1;
 				#endif
+				float4 ase_color : COLOR;
 				float4 ase_texcoord2 : TEXCOORD2;
 				float4 ase_texcoord3 : TEXCOORD3;
-				float4 ase_color : COLOR;
 				float4 ase_texcoord4 : TEXCOORD4;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
+			float4 _ParticleTexture_ST;
 			float4 _Color;
-			float4 _MainTex_ST;
-			float4 _DistortionMap_ST;
-			float4 _Anim;
-			float3 _EmissionColor;
-			float _CameraDFFalloff;
-			float _DepthFadeAmount;
-			float _DepthFadeBlueNoise;
-			float _DepthFadeBlueNoiseSize;
-			float _SplashFalloff;
-			float _Smoothness;
-			float _DummyFloatOne;
-			float _Offset;
-			float _DistortionAmount;
-			float _NoiseAmount;
+			int _Cull;
+			float _BlueNoiseSize;
 			float _BlueNoise;
-			float _TransmissionBoost;
-			float _DummyFloatZero;
-			float _ReflectivityBoost;
+			float _NormalIntensity;
+			float _CDFalloff1;
+			float _CDDistance1;
+			float _DepthFadeBlueNoiseSize;
+			float _DepthFadeBlueNoise;
+			float _SoftIntersection;
+			float _EdgeFalloff;
+			float _Transparency;
+			float _AlphaClip;
+			float _QuestDepthFadeBlueNoiseSize;
 			float _QuestDepthFade;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
@@ -1056,19 +1002,7 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			TEXTURE2D(_MainTex);
-			TEXTURE2D(_DistortionMap);
-			SAMPLER(sampler_DistortionMap);
-			SAMPLER(sampler_Linear_Clamp);
-			
-			#ifdef UNITY_DOTS_INSTANCING_ENABLED
-			UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
-				UNITY_DOTS_INSTANCED_PROP(float, _DummyFloatOne)
-				UNITY_DOTS_INSTANCED_PROP(float, _DummyFloatZero)
-			UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
-			#define _DummyFloatOne UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float , Metadata__DummyFloatOne)
-			#define _DummyFloatZero UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float , Metadata__DummyFloatZero)
-			#endif
+			sampler2D _ParticleTexture;
 
 
 			inline float4 ASE_ComputeGrabScreenPos( float4 pos )
@@ -1084,50 +1018,22 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				return o;
 			}
 			
-			inline float4 GetScreenNoiseRGBASlice27_g3( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g142( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
 			
-			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float2 mod2D289( float2 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float3 permute( float3 x ) { return mod2D289( ( ( x * 34.0 ) + 1.0 ) * x ); }
-			float snoise( float2 v )
-			{
-				const float4 C = float4( 0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439 );
-				float2 i = floor( v + dot( v, C.yy ) );
-				float2 x0 = v - i + dot( i, C.xx );
-				float2 i1;
-				i1 = ( x0.x > x0.y ) ? float2( 1.0, 0.0 ) : float2( 0.0, 1.0 );
-				float4 x12 = x0.xyxy + C.xxzz;
-				x12.xy -= i1;
-				i = mod2D289( i );
-				float3 p = permute( permute( i.y + float3( 0.0, i1.y, 1.0 ) ) + i.x + float3( 0.0, i1.x, 1.0 ) );
-				float3 m = max( 0.5 - float3( dot( x0, x0 ), dot( x12.xy, x12.xy ), dot( x12.zw, x12.zw ) ), 0.0 );
-				m = m * m;
-				m = m * m;
-				float3 x = 2.0 * frac( p * C.www ) - 1.0;
-				float3 h = abs( x ) - 0.5;
-				float3 ox = floor( x + 0.5 );
-				float3 a0 = x - ox;
-				m *= 1.79284291400159 - 0.85373472095314 * ( a0 * a0 + h * h );
-				float3 g;
-				g.x = a0.x * x0.x + h.x * x0.y;
-				g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-				return 130.0 * dot( m, g );
-			}
-			
-			inline float4 GetScreenNoiseRGBASlice27_g61516( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g8( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
 			
-			inline float4 GetScreenNoiseRGBASlice27_g61519( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g147( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
 			
-			inline float4 GetScreenNoiseRGBASlice27_g61521( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g145( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
@@ -1140,15 +1046,15 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
+				float eyeDepth = -objectToViewPos.z;
+				o.ase_texcoord2.x = eyeDepth;
 				float4 ase_positionCS = TransformObjectToHClip( ( v.vertex ).xyz );
 				float4 screenPos = ComputeScreenPos( ase_positionCS );
 				o.ase_texcoord3 = screenPos;
-				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
-				float eyeDepth = -objectToViewPos.z;
-				o.ase_texcoord2.z = eyeDepth;
 				
-				o.ase_texcoord2.xy = v.ase_texcoord.xy;
 				o.ase_color = v.ase_color;
+				o.ase_texcoord2.yz = v.ase_texcoord.xy;
 				o.ase_texcoord4 = v.vertex;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
@@ -1188,8 +1094,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			{
 				float4 vertex : INTERNALTESSPOS;
 				float3 ase_normal : NORMAL;
-				float4 ase_texcoord : TEXCOORD0;
 				float4 ase_color : COLOR;
+				float4 ase_texcoord : TEXCOORD0;
 
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -1207,8 +1113,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.vertex = v.vertex;
 				o.ase_normal = v.ase_normal;
-				o.ase_texcoord = v.ase_texcoord;
 				o.ase_color = v.ase_color;
+				o.ase_texcoord = v.ase_texcoord;
 				return o;
 			}
 
@@ -1247,8 +1153,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				VertexInput o = (VertexInput) 0;
 				o.vertex = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.ase_normal = patch[0].ase_normal * bary.x + patch[1].ase_normal * bary.y + patch[2].ase_normal * bary.z;
-				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
 				o.ase_color = patch[0].ase_color * bary.x + patch[1].ase_color * bary.y + patch[2].ase_color * bary.z;
+				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -1293,86 +1199,84 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 					#endif
 				#endif
 
-				float3 temp_cast_0 = (_SplashFalloff).xxx;
-				float2 uv_MainTex = IN.ase_texcoord2.xy * _MainTex_ST.xy + _MainTex_ST.zw;
-				float2 uv_DistortionMap = IN.ase_texcoord2.xy * _DistortionMap_ST.xy + _DistortionMap_ST.zw;
-				float2 appendResult24 = (float2(_Anim.x , _Anim.y));
+				float VertexColorAlpha117 = IN.ase_color.a;
+				float eyeDepth = IN.ase_texcoord2.x;
+				float cameraDepthFade14_g140 = (( eyeDepth -_ProjectionParams.y - _CDDistance1 ) / _CDFalloff1);
+				#ifdef _ENABLECAMERADEPTHFADING_ON
+				float staticSwitch234 = saturate( cameraDepthFade14_g140 );
+				#else
+				float staticSwitch234 = 1.0;
+				#endif
+				float DepthFadeCameraDepthFade235 = staticSwitch234;
+				float3 temp_cast_0 = (1.0).xxx;
 				float4 screenPos = IN.ase_texcoord3;
 				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( screenPos );
 				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
-				float2 screenUV27_g3 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g3 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g3 = GetScreenNoiseRGBASlice27_g3( screenUV27_g3 , offsetFrame27_g3 );
-				#ifdef _ENABLEBLUENOISE_ON
-				float3 staticSwitch66 = ( ( (localGetScreenNoiseRGBASlice27_g3).xyz - float3( 0.5,0.5,0.5 ) ) * ( _BlueNoise * 0.1 ) * 2.0 );
-				#else
-				float3 staticSwitch66 = float3( 0,0,0 );
-				#endif
-				float3 BlueNoise67 = staticSwitch66;
-				float simplePerlin2D89 = snoise( uv_DistortionMap*_NoiseAmount );
-				simplePerlin2D89 = simplePerlin2D89*0.5 + 0.5;
-				float3 tex2DNode8 = UnpackNormalScale( SAMPLE_TEXTURE2D( _DistortionMap, sampler_DistortionMap, ( float3( uv_DistortionMap ,  0.0 ) + float3( ( appendResult24 * _TimeParameters.x ) ,  0.0 ) + BlueNoise67 + simplePerlin2D89 ).xy ), 1.0f );
-				float2 appendResult47 = (float2(tex2DNode8.r , tex2DNode8.g));
-				float2 DistortedUVs28 = ( appendResult47 * ( _DistortionAmount * 0.25 ) );
-				float4 tex2DNode5 = SAMPLE_TEXTURE2D( _MainTex, sampler_Linear_Clamp, ( float3( uv_MainTex ,  0.0 ) + float3( DistortedUVs28 ,  0.0 ) + BlueNoise67 ).xy );
-				float MainTexAlpha33 = tex2DNode5.a;
-				float VertexAlpha37 = IN.ase_color.a;
-				int One61 = 1;
-				float3 temp_cast_7 = One61;
-				float2 screenUV27_g61516 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g61516 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g61516 = GetScreenNoiseRGBASlice27_g61516( screenUV27_g61516 , offsetFrame27_g61516 );
+				float2 screenUV27_g142 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g142 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g142 = GetScreenNoiseRGBASlice27_g142( screenUV27_g142 , offsetFrame27_g142 );
 				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
-				float screenDepth4_g61514 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
-				float distanceDepth4_g61514 = saturate( abs( ( screenDepth4_g61514 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _DepthFadeAmount ) ) );
-				float3 lerpResult6_g61514 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g61516).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g61514);
-				#ifdef _ENABLEDEPTHFADE_ON
-				float3 staticSwitch55 = saturate( ( lerpResult6_g61514 * distanceDepth4_g61514 ) );
+				float screenDepth4_g140 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth4_g140 = saturate( abs( ( screenDepth4_g140 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float3 lerpResult6_g140 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g142).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g140);
+				#ifdef _ENABLESOFTINTERSECTION_ON
+				float3 staticSwitch233 = saturate( ( lerpResult6_g140 * distanceDepth4_g140 ) );
 				#else
-				float3 staticSwitch55 = temp_cast_7;
+				float3 staticSwitch233 = temp_cast_0;
 				#endif
-				float eyeDepth = IN.ase_texcoord2.z;
-				float cameraDepthFade14_g61514 = (( eyeDepth -_ProjectionParams.y - _Offset ) / _CameraDFFalloff);
-				#ifdef _ENABLECAMERADEPTHFADE_ON
-				float staticSwitch56 = saturate( cameraDepthFade14_g61514 );
+				float3 temp_cast_1 = (1.0).xxx;
+				#ifdef _PCDEBUG_ON
+				float3 staticSwitch241 = temp_cast_1;
 				#else
-				float staticSwitch56 = (float)One61;
+				float3 staticSwitch241 = staticSwitch233;
 				#endif
-				float3 DepthFadeAlpha58 = ( staticSwitch55 * staticSwitch56 );
-				float ColorAlpha105 = _Color.a;
-				float3 smoothstepResult100 = smoothstep( float3( 0,0,0 ) , temp_cast_0 , ( MainTexAlpha33 * VertexAlpha37 * DepthFadeAlpha58 * ColorAlpha105 ));
-				float3 Alpha43 = saturate( smoothstepResult100 );
+				float3 DepthFadeSoftIntersection236 = staticSwitch241;
+				float2 uv_ParticleTexture = IN.ase_texcoord2.yz * _ParticleTexture_ST.xy + _ParticleTexture_ST.zw;
+				float2 screenUV27_g8 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _BlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g8 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g8 = GetScreenNoiseRGBASlice27_g8( screenUV27_g8 , offsetFrame27_g8 );
+				#ifdef _BLUENOISEOVERLAY_ON
+				float3 staticSwitch81 = ( ( (localGetScreenNoiseRGBASlice27_g8).xyz - float3( 0.5,0.5,0.5 ) ) * ( _BlueNoise * 0.1 ) * 2.0 );
+				#else
+				float3 staticSwitch81 = float3( 0,0,0 );
+				#endif
+				float3 BlueNoiseMain130 = staticSwitch81;
+				float4 tex2DNode45 = tex2D( _ParticleTexture, ( float3( uv_ParticleTexture ,  0.0 ) + BlueNoiseMain130 ).xy );
+				float ParticleAlpha173 = tex2DNode45.a;
+				float smoothstepResult208 = smoothstep( 0.0 , _EdgeFalloff , ( _Transparency * ParticleAlpha173 ));
+				float4 LuminanceAlpha256 = tex2DNode45;
+				float4 Alpha211 = saturate( ( float4( ( VertexColorAlpha117 * DepthFadeCameraDepthFade235 * DepthFadeSoftIntersection236 * smoothstepResult208 ) , 0.0 ) * LuminanceAlpha256 ) );
 				
-				float4 unityObjectToClipPos20_g61518 = TransformWorldToHClip( TransformObjectToWorld( ( IN.ase_texcoord4.xyz ).xyz ) );
-				float2 screenUV27_g61519 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g61519 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g61519 = GetScreenNoiseRGBASlice27_g61519( screenUV27_g61519 , offsetFrame27_g61519 );
-				float temp_output_21_0_g61518 = ( unityObjectToClipPos20_g61518.w + ( (localGetScreenNoiseRGBASlice27_g61519).w * 0.0 ) );
-				float lerpResult5_g61518 = lerp( ( ( (float4( 0,0,0,0 )).w - 1.0 ) * 2.0 ) , 0.5 , 1.0);
-				float4 unityObjectToClipPos20_g61520 = TransformWorldToHClip( TransformObjectToWorld( ( IN.ase_texcoord4.xyz ).xyz ) );
-				float2 screenUV27_g61521 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g61521 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g61521 = GetScreenNoiseRGBASlice27_g61521( screenUV27_g61521 , offsetFrame27_g61521 );
-				float temp_output_21_0_g61520 = ( unityObjectToClipPos20_g61520.w + ( (localGetScreenNoiseRGBASlice27_g61521).w * _QuestDepthFade ) );
-				float lerpResult5_g61520 = lerp( ( ( (float4( 0,0,0,0 )).w - 1.0 ) * 2.0 ) , 0.5 , 1.0);
-				float temp_output_112_0 = ( ( ( 1.0 - ( temp_output_21_0_g61520 * _ZBufferParams.w ) ) / ( temp_output_21_0_g61520 * _ZBufferParams.z ) ) * ceil( lerpResult5_g61520 ) );
+				float4 unityObjectToClipPos20_g146 = TransformWorldToHClip( TransformObjectToWorld( ( IN.ase_texcoord4.xyz ).xyz ) );
+				float2 screenUV27_g147 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g147 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g147 = GetScreenNoiseRGBASlice27_g147( screenUV27_g147 , offsetFrame27_g147 );
+				float temp_output_21_0_g146 = ( unityObjectToClipPos20_g146.w + ( (localGetScreenNoiseRGBASlice27_g147).w * 0.0 ) );
+				float lerpResult5_g146 = lerp( ( ( (float4( 0,0,0,0 )).w - 1.0 ) * 2.0 ) , 0.5 , 1.0);
+				float4 unityObjectToClipPos20_g144 = TransformWorldToHClip( TransformObjectToWorld( ( IN.ase_texcoord4.xyz ).xyz ) );
+				float2 screenUV27_g145 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _QuestDepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g145 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g145 = GetScreenNoiseRGBASlice27_g145( screenUV27_g145 , offsetFrame27_g145 );
+				float temp_output_21_0_g144 = ( unityObjectToClipPos20_g144.w + ( (localGetScreenNoiseRGBASlice27_g145).w * _QuestDepthFade ) );
+				float lerpResult5_g144 = lerp( ( ( (float4( 0,0,0,0 )).w - 1.0 ) * 2.0 ) , 0.5 , 1.0);
+				float temp_output_239_0 = ( ( ( 1.0 - ( temp_output_21_0_g144 * _ZBufferParams.w ) ) / ( temp_output_21_0_g144 * _ZBufferParams.z ) ) * ceil( lerpResult5_g144 ) );
 				#ifdef SHADER_API_MOBILE
-				float staticSwitch109 = temp_output_112_0;
+				float staticSwitch214 = temp_output_239_0;
 				#else
-				float staticSwitch109 = ( ( ( 1.0 - ( temp_output_21_0_g61518 * _ZBufferParams.w ) ) / ( temp_output_21_0_g61518 * _ZBufferParams.z ) ) * ceil( lerpResult5_g61518 ) );
+				float staticSwitch214 = ( ( ( 1.0 - ( temp_output_21_0_g146 * _ZBufferParams.w ) ) / ( temp_output_21_0_g146 * _ZBufferParams.z ) ) * ceil( lerpResult5_g146 ) );
 				#endif
 				#ifdef _PCDEBUG_ON
-				float staticSwitch110 = temp_output_112_0;
+				float staticSwitch215 = temp_output_239_0;
 				#else
-				float staticSwitch110 = staticSwitch109;
+				float staticSwitch215 = staticSwitch214;
 				#endif
-				float QuestDepthFade111 = staticSwitch110;
+				float QuestDepthFade217 = staticSwitch215;
 				
-				float Alpha = Alpha43.x;
-				float AlphaClipThreshold = 0.5;
+				float Alpha = Alpha211.r;
+				float AlphaClipThreshold = _AlphaClip;
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = QuestDepthFade111;
+				float DepthValue = QuestDepthFade217;
 				#endif
 
 				#if defined(_ALPHATEST_ON) && !defined(ASE_TERRAIN)
@@ -1405,14 +1309,14 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED
-			#define _SPECULAR_SETUP 1
-			#define _TRANSLUCENCY_ASE 1
+			#define _RECEIVE_SHADOWS_OFF 1
 			#define ASE_DEPTH_WRITE_ON
-			#define _EMISSION
+			#pragma multi_compile_instancing
+			#define _ALPHATEST_ON 1
+			#define _NORMALMAP 1
 			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
 			#define REQUIRE_DEPTH_TEXTURE 1
-			#define ASE_USING_SAMPLING_MACROS 1
 
 			#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/PlatformCompiler.hlsl"
 			#pragma vertex vert
@@ -1432,13 +1336,13 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
 			#define ASE_NEEDS_TEXTURE_COORDINATES0
-			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_FRAG_COLOR
 			#define ASE_NEEDS_VERT_POSITION
 			#pragma shader_feature_local_fragment _BRDFMAP
-			#pragma shader_feature_local _ENABLEBLUENOISE_ON
-			#pragma shader_feature_local _ENABLEDEPTHFADE_ON
-			#pragma shader_feature_local _ENABLECAMERADEPTHFADE_ON
+			#pragma shader_feature_local _BLUENOISEOVERLAY_ON
+			#pragma shader_feature_local _ENABLECAMERADEPTHFADING_ON
+			#pragma shader_feature_local _PCDEBUG_ON
+			#pragma shader_feature_local _ENABLESOFTINTERSECTION_ON
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SLZBlueNoise.hlsl"
 
 
@@ -1466,33 +1370,29 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				float4 VizUV : TEXCOORD2;
 				float4 LightCoord : TEXCOORD3;
 				#endif
+				float4 ase_color : COLOR;
 				float4 ase_texcoord4 : TEXCOORD4;
 				float4 ase_texcoord5 : TEXCOORD5;
-				float4 ase_color : COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
+			float4 _ParticleTexture_ST;
 			float4 _Color;
-			float4 _MainTex_ST;
-			float4 _DistortionMap_ST;
-			float4 _Anim;
-			float3 _EmissionColor;
-			float _CameraDFFalloff;
-			float _DepthFadeAmount;
-			float _DepthFadeBlueNoise;
-			float _DepthFadeBlueNoiseSize;
-			float _SplashFalloff;
-			float _Smoothness;
-			float _DummyFloatOne;
-			float _Offset;
-			float _DistortionAmount;
-			float _NoiseAmount;
+			int _Cull;
+			float _BlueNoiseSize;
 			float _BlueNoise;
-			float _TransmissionBoost;
-			float _DummyFloatZero;
-			float _ReflectivityBoost;
+			float _NormalIntensity;
+			float _CDFalloff1;
+			float _CDDistance1;
+			float _DepthFadeBlueNoiseSize;
+			float _DepthFadeBlueNoise;
+			float _SoftIntersection;
+			float _EdgeFalloff;
+			float _Transparency;
+			float _AlphaClip;
+			float _QuestDepthFadeBlueNoiseSize;
 			float _QuestDepthFade;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
@@ -1514,19 +1414,7 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			TEXTURE2D(_MainTex);
-			TEXTURE2D(_DistortionMap);
-			SAMPLER(sampler_DistortionMap);
-			SAMPLER(sampler_Linear_Clamp);
-			
-			#ifdef UNITY_DOTS_INSTANCING_ENABLED
-			UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
-				UNITY_DOTS_INSTANCED_PROP(float, _DummyFloatOne)
-				UNITY_DOTS_INSTANCED_PROP(float, _DummyFloatZero)
-			UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
-			#define _DummyFloatOne UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float , Metadata__DummyFloatOne)
-			#define _DummyFloatZero UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float , Metadata__DummyFloatZero)
-			#endif
+			sampler2D _ParticleTexture;
 
 
 			inline float4 ASE_ComputeGrabScreenPos( float4 pos )
@@ -1542,40 +1430,12 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				return o;
 			}
 			
-			inline float4 GetScreenNoiseRGBASlice27_g3( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g8( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
 			
-			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float2 mod2D289( float2 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float3 permute( float3 x ) { return mod2D289( ( ( x * 34.0 ) + 1.0 ) * x ); }
-			float snoise( float2 v )
-			{
-				const float4 C = float4( 0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439 );
-				float2 i = floor( v + dot( v, C.yy ) );
-				float2 x0 = v - i + dot( i, C.xx );
-				float2 i1;
-				i1 = ( x0.x > x0.y ) ? float2( 1.0, 0.0 ) : float2( 0.0, 1.0 );
-				float4 x12 = x0.xyxy + C.xxzz;
-				x12.xy -= i1;
-				i = mod2D289( i );
-				float3 p = permute( permute( i.y + float3( 0.0, i1.y, 1.0 ) ) + i.x + float3( 0.0, i1.x, 1.0 ) );
-				float3 m = max( 0.5 - float3( dot( x0, x0 ), dot( x12.xy, x12.xy ), dot( x12.zw, x12.zw ) ), 0.0 );
-				m = m * m;
-				m = m * m;
-				float3 x = 2.0 * frac( p * C.www ) - 1.0;
-				float3 h = abs( x ) - 0.5;
-				float3 ox = floor( x + 0.5 );
-				float3 a0 = x - ox;
-				m *= 1.79284291400159 - 0.85373472095314 * ( a0 * a0 + h * h );
-				float3 g;
-				g.x = a0.x * x0.x + h.x * x0.y;
-				g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-				return 130.0 * dot( m, g );
-			}
-			
-			inline float4 GetScreenNoiseRGBASlice27_g61516( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g142( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
@@ -1596,8 +1456,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				float eyeDepth = -objectToViewPos.z;
 				o.ase_texcoord4.z = eyeDepth;
 				
-				o.ase_texcoord4.xy = v.texcoord0.xy;
 				o.ase_color = v.ase_color;
+				o.ase_texcoord4.xy = v.texcoord0.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord4.w = 0;
@@ -1747,65 +1607,63 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 					#endif
 				#endif
 
-				float2 uv_MainTex = IN.ase_texcoord4.xy * _MainTex_ST.xy + _MainTex_ST.zw;
-				float2 uv_DistortionMap = IN.ase_texcoord4.xy * _DistortionMap_ST.xy + _DistortionMap_ST.zw;
-				float2 appendResult24 = (float2(_Anim.x , _Anim.y));
+				float4 VertexColor116 = IN.ase_color;
+				float2 uv_ParticleTexture = IN.ase_texcoord4.xy * _ParticleTexture_ST.xy + _ParticleTexture_ST.zw;
 				float4 screenPos = IN.ase_texcoord5;
 				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( screenPos );
 				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
-				float2 screenUV27_g3 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g3 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g3 = GetScreenNoiseRGBASlice27_g3( screenUV27_g3 , offsetFrame27_g3 );
-				#ifdef _ENABLEBLUENOISE_ON
-				float3 staticSwitch66 = ( ( (localGetScreenNoiseRGBASlice27_g3).xyz - float3( 0.5,0.5,0.5 ) ) * ( _BlueNoise * 0.1 ) * 2.0 );
+				float2 screenUV27_g8 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _BlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g8 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g8 = GetScreenNoiseRGBASlice27_g8( screenUV27_g8 , offsetFrame27_g8 );
+				#ifdef _BLUENOISEOVERLAY_ON
+				float3 staticSwitch81 = ( ( (localGetScreenNoiseRGBASlice27_g8).xyz - float3( 0.5,0.5,0.5 ) ) * ( _BlueNoise * 0.1 ) * 2.0 );
 				#else
-				float3 staticSwitch66 = float3( 0,0,0 );
+				float3 staticSwitch81 = float3( 0,0,0 );
 				#endif
-				float3 BlueNoise67 = staticSwitch66;
-				float simplePerlin2D89 = snoise( uv_DistortionMap*_NoiseAmount );
-				simplePerlin2D89 = simplePerlin2D89*0.5 + 0.5;
-				float3 tex2DNode8 = UnpackNormalScale( SAMPLE_TEXTURE2D( _DistortionMap, sampler_DistortionMap, ( float3( uv_DistortionMap ,  0.0 ) + float3( ( appendResult24 * _TimeParameters.x ) ,  0.0 ) + BlueNoise67 + simplePerlin2D89 ).xy ), 1.0f );
-				float2 appendResult47 = (float2(tex2DNode8.r , tex2DNode8.g));
-				float2 DistortedUVs28 = ( appendResult47 * ( _DistortionAmount * 0.25 ) );
-				float4 tex2DNode5 = SAMPLE_TEXTURE2D( _MainTex, sampler_Linear_Clamp, ( float3( uv_MainTex ,  0.0 ) + float3( DistortedUVs28 ,  0.0 ) + BlueNoise67 ).xy );
-				float4 VertexColor38 = IN.ase_color;
-				float4 Final_Color14 = ( tex2DNode5 * _Color * VertexColor38 );
+				float3 BlueNoiseMain130 = staticSwitch81;
+				float4 tex2DNode45 = tex2D( _ParticleTexture, ( float3( uv_ParticleTexture ,  0.0 ) + BlueNoiseMain130 ).xy );
+				float4 ColorFinal175 = ( VertexColor116 * ( tex2DNode45 * _Color ) );
 				
-				float3 temp_cast_7 = (_SplashFalloff).xxx;
-				float MainTexAlpha33 = tex2DNode5.a;
-				float VertexAlpha37 = IN.ase_color.a;
-				int One61 = 1;
-				float3 temp_cast_8 = One61;
-				float2 screenUV27_g61516 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g61516 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g61516 = GetScreenNoiseRGBASlice27_g61516( screenUV27_g61516 , offsetFrame27_g61516 );
+				float VertexColorAlpha117 = IN.ase_color.a;
+				float eyeDepth = IN.ase_texcoord4.z;
+				float cameraDepthFade14_g140 = (( eyeDepth -_ProjectionParams.y - _CDDistance1 ) / _CDFalloff1);
+				#ifdef _ENABLECAMERADEPTHFADING_ON
+				float staticSwitch234 = saturate( cameraDepthFade14_g140 );
+				#else
+				float staticSwitch234 = 1.0;
+				#endif
+				float DepthFadeCameraDepthFade235 = staticSwitch234;
+				float3 temp_cast_3 = (1.0).xxx;
+				float2 screenUV27_g142 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g142 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g142 = GetScreenNoiseRGBASlice27_g142( screenUV27_g142 , offsetFrame27_g142 );
 				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
-				float screenDepth4_g61514 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
-				float distanceDepth4_g61514 = saturate( abs( ( screenDepth4_g61514 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _DepthFadeAmount ) ) );
-				float3 lerpResult6_g61514 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g61516).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g61514);
-				#ifdef _ENABLEDEPTHFADE_ON
-				float3 staticSwitch55 = saturate( ( lerpResult6_g61514 * distanceDepth4_g61514 ) );
+				float screenDepth4_g140 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth4_g140 = saturate( abs( ( screenDepth4_g140 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float3 lerpResult6_g140 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g142).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g140);
+				#ifdef _ENABLESOFTINTERSECTION_ON
+				float3 staticSwitch233 = saturate( ( lerpResult6_g140 * distanceDepth4_g140 ) );
 				#else
-				float3 staticSwitch55 = temp_cast_8;
+				float3 staticSwitch233 = temp_cast_3;
 				#endif
-				float eyeDepth = IN.ase_texcoord4.z;
-				float cameraDepthFade14_g61514 = (( eyeDepth -_ProjectionParams.y - _Offset ) / _CameraDFFalloff);
-				#ifdef _ENABLECAMERADEPTHFADE_ON
-				float staticSwitch56 = saturate( cameraDepthFade14_g61514 );
+				float3 temp_cast_4 = (1.0).xxx;
+				#ifdef _PCDEBUG_ON
+				float3 staticSwitch241 = temp_cast_4;
 				#else
-				float staticSwitch56 = (float)One61;
+				float3 staticSwitch241 = staticSwitch233;
 				#endif
-				float3 DepthFadeAlpha58 = ( staticSwitch55 * staticSwitch56 );
-				float ColorAlpha105 = _Color.a;
-				float3 smoothstepResult100 = smoothstep( float3( 0,0,0 ) , temp_cast_7 , ( MainTexAlpha33 * VertexAlpha37 * DepthFadeAlpha58 * ColorAlpha105 ));
-				float3 Alpha43 = saturate( smoothstepResult100 );
+				float3 DepthFadeSoftIntersection236 = staticSwitch241;
+				float ParticleAlpha173 = tex2DNode45.a;
+				float smoothstepResult208 = smoothstep( 0.0 , _EdgeFalloff , ( _Transparency * ParticleAlpha173 ));
+				float4 LuminanceAlpha256 = tex2DNode45;
+				float4 Alpha211 = saturate( ( float4( ( VertexColorAlpha117 * DepthFadeCameraDepthFade235 * DepthFadeSoftIntersection236 * smoothstepResult208 ) , 0.0 ) * LuminanceAlpha256 ) );
 				
 				
-				float3 Albedo = Final_Color14.rgb;
+				float3 Albedo = ColorFinal175.rgb;
 				float3 Emission = 0;
-				float Alpha = Alpha43.x;
-				float AlphaClipThreshold = 0.5;
+				float Alpha = Alpha211.r;
+				float AlphaClipThreshold = _AlphaClip;
 
 				#if defined(_ALPHATEST_ON) && !defined(ASE_TERRAIN)
 					clip(Alpha - AlphaClipThreshold);
@@ -1945,14 +1803,14 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED
-			#define _SPECULAR_SETUP 1
-			#define _TRANSLUCENCY_ASE 1
+			#define _RECEIVE_SHADOWS_OFF 1
 			#define ASE_DEPTH_WRITE_ON
-			#define _EMISSION
+			#pragma multi_compile_instancing
+			#define _ALPHATEST_ON 1
+			#define _NORMALMAP 1
 			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
 			#define REQUIRE_DEPTH_TEXTURE 1
-			#define ASE_USING_SAMPLING_MACROS 1
 
 			
 			#pragma vertex vert
@@ -1969,13 +1827,13 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 			
 			#define ASE_NEEDS_TEXTURE_COORDINATES0
-			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_FRAG_COLOR
 			#define ASE_NEEDS_VERT_POSITION
 			#pragma shader_feature_local_fragment _BRDFMAP
-			#pragma shader_feature_local _ENABLEBLUENOISE_ON
-			#pragma shader_feature_local _ENABLEDEPTHFADE_ON
-			#pragma shader_feature_local _ENABLECAMERADEPTHFADE_ON
+			#pragma shader_feature_local _BLUENOISEOVERLAY_ON
+			#pragma shader_feature_local _ENABLECAMERADEPTHFADING_ON
+			#pragma shader_feature_local _PCDEBUG_ON
+			#pragma shader_feature_local _ENABLESOFTINTERSECTION_ON
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SLZBlueNoise.hlsl"
 
 
@@ -1983,8 +1841,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			{
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
-				float4 ase_texcoord : TEXCOORD0;
 				float4 ase_color : COLOR;
+				float4 ase_texcoord : TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1997,33 +1855,29 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 				float4 shadowCoord : TEXCOORD1;
 				#endif
+				float4 ase_color : COLOR;
 				float4 ase_texcoord2 : TEXCOORD2;
 				float4 ase_texcoord3 : TEXCOORD3;
-				float4 ase_color : COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
+			float4 _ParticleTexture_ST;
 			float4 _Color;
-			float4 _MainTex_ST;
-			float4 _DistortionMap_ST;
-			float4 _Anim;
-			float3 _EmissionColor;
-			float _CameraDFFalloff;
-			float _DepthFadeAmount;
-			float _DepthFadeBlueNoise;
-			float _DepthFadeBlueNoiseSize;
-			float _SplashFalloff;
-			float _Smoothness;
-			float _DummyFloatOne;
-			float _Offset;
-			float _DistortionAmount;
-			float _NoiseAmount;
+			int _Cull;
+			float _BlueNoiseSize;
 			float _BlueNoise;
-			float _TransmissionBoost;
-			float _DummyFloatZero;
-			float _ReflectivityBoost;
+			float _NormalIntensity;
+			float _CDFalloff1;
+			float _CDDistance1;
+			float _DepthFadeBlueNoiseSize;
+			float _DepthFadeBlueNoise;
+			float _SoftIntersection;
+			float _EdgeFalloff;
+			float _Transparency;
+			float _AlphaClip;
+			float _QuestDepthFadeBlueNoiseSize;
 			float _QuestDepthFade;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
@@ -2045,19 +1899,7 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			TEXTURE2D(_MainTex);
-			TEXTURE2D(_DistortionMap);
-			SAMPLER(sampler_DistortionMap);
-			SAMPLER(sampler_Linear_Clamp);
-			
-			#ifdef UNITY_DOTS_INSTANCING_ENABLED
-			UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
-				UNITY_DOTS_INSTANCED_PROP(float, _DummyFloatOne)
-				UNITY_DOTS_INSTANCED_PROP(float, _DummyFloatZero)
-			UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
-			#define _DummyFloatOne UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float , Metadata__DummyFloatOne)
-			#define _DummyFloatZero UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float , Metadata__DummyFloatZero)
-			#endif
+			sampler2D _ParticleTexture;
 
 
 			inline float4 ASE_ComputeGrabScreenPos( float4 pos )
@@ -2073,40 +1915,12 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				return o;
 			}
 			
-			inline float4 GetScreenNoiseRGBASlice27_g3( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g8( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
 			
-			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float2 mod2D289( float2 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float3 permute( float3 x ) { return mod2D289( ( ( x * 34.0 ) + 1.0 ) * x ); }
-			float snoise( float2 v )
-			{
-				const float4 C = float4( 0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439 );
-				float2 i = floor( v + dot( v, C.yy ) );
-				float2 x0 = v - i + dot( i, C.xx );
-				float2 i1;
-				i1 = ( x0.x > x0.y ) ? float2( 1.0, 0.0 ) : float2( 0.0, 1.0 );
-				float4 x12 = x0.xyxy + C.xxzz;
-				x12.xy -= i1;
-				i = mod2D289( i );
-				float3 p = permute( permute( i.y + float3( 0.0, i1.y, 1.0 ) ) + i.x + float3( 0.0, i1.x, 1.0 ) );
-				float3 m = max( 0.5 - float3( dot( x0, x0 ), dot( x12.xy, x12.xy ), dot( x12.zw, x12.zw ) ), 0.0 );
-				m = m * m;
-				m = m * m;
-				float3 x = 2.0 * frac( p * C.www ) - 1.0;
-				float3 h = abs( x ) - 0.5;
-				float3 ox = floor( x + 0.5 );
-				float3 a0 = x - ox;
-				m *= 1.79284291400159 - 0.85373472095314 * ( a0 * a0 + h * h );
-				float3 g;
-				g.x = a0.x * x0.x + h.x * x0.y;
-				g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-				return 130.0 * dot( m, g );
-			}
-			
-			inline float4 GetScreenNoiseRGBASlice27_g61516( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g142( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
@@ -2127,8 +1941,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				float eyeDepth = -objectToViewPos.z;
 				o.ase_texcoord2.z = eyeDepth;
 				
-				o.ase_texcoord2.xy = v.ase_texcoord.xy;
 				o.ase_color = v.ase_color;
+				o.ase_texcoord2.xy = v.ase_texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord2.w = 0;
@@ -2170,8 +1984,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			{
 				float4 vertex : INTERNALTESSPOS;
 				float3 ase_normal : NORMAL;
-				float4 ase_texcoord : TEXCOORD0;
 				float4 ase_color : COLOR;
+				float4 ase_texcoord : TEXCOORD0;
 
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -2189,8 +2003,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.vertex = v.vertex;
 				o.ase_normal = v.ase_normal;
-				o.ase_texcoord = v.ase_texcoord;
 				o.ase_color = v.ase_color;
+				o.ase_texcoord = v.ase_texcoord;
 				return o;
 			}
 
@@ -2229,8 +2043,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				VertexInput o = (VertexInput) 0;
 				o.vertex = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.ase_normal = patch[0].ase_normal * bary.x + patch[1].ase_normal * bary.y + patch[2].ase_normal * bary.z;
-				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
 				o.ase_color = patch[0].ase_color * bary.x + patch[1].ase_color * bary.y + patch[2].ase_color * bary.z;
+				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -2266,64 +2080,62 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 					#endif
 				#endif
 
-				float2 uv_MainTex = IN.ase_texcoord2.xy * _MainTex_ST.xy + _MainTex_ST.zw;
-				float2 uv_DistortionMap = IN.ase_texcoord2.xy * _DistortionMap_ST.xy + _DistortionMap_ST.zw;
-				float2 appendResult24 = (float2(_Anim.x , _Anim.y));
+				float4 VertexColor116 = IN.ase_color;
+				float2 uv_ParticleTexture = IN.ase_texcoord2.xy * _ParticleTexture_ST.xy + _ParticleTexture_ST.zw;
 				float4 screenPos = IN.ase_texcoord3;
 				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( screenPos );
 				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
-				float2 screenUV27_g3 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g3 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g3 = GetScreenNoiseRGBASlice27_g3( screenUV27_g3 , offsetFrame27_g3 );
-				#ifdef _ENABLEBLUENOISE_ON
-				float3 staticSwitch66 = ( ( (localGetScreenNoiseRGBASlice27_g3).xyz - float3( 0.5,0.5,0.5 ) ) * ( _BlueNoise * 0.1 ) * 2.0 );
+				float2 screenUV27_g8 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _BlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g8 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g8 = GetScreenNoiseRGBASlice27_g8( screenUV27_g8 , offsetFrame27_g8 );
+				#ifdef _BLUENOISEOVERLAY_ON
+				float3 staticSwitch81 = ( ( (localGetScreenNoiseRGBASlice27_g8).xyz - float3( 0.5,0.5,0.5 ) ) * ( _BlueNoise * 0.1 ) * 2.0 );
 				#else
-				float3 staticSwitch66 = float3( 0,0,0 );
+				float3 staticSwitch81 = float3( 0,0,0 );
 				#endif
-				float3 BlueNoise67 = staticSwitch66;
-				float simplePerlin2D89 = snoise( uv_DistortionMap*_NoiseAmount );
-				simplePerlin2D89 = simplePerlin2D89*0.5 + 0.5;
-				float3 tex2DNode8 = UnpackNormalScale( SAMPLE_TEXTURE2D( _DistortionMap, sampler_DistortionMap, ( float3( uv_DistortionMap ,  0.0 ) + float3( ( appendResult24 * _TimeParameters.x ) ,  0.0 ) + BlueNoise67 + simplePerlin2D89 ).xy ), 1.0f );
-				float2 appendResult47 = (float2(tex2DNode8.r , tex2DNode8.g));
-				float2 DistortedUVs28 = ( appendResult47 * ( _DistortionAmount * 0.25 ) );
-				float4 tex2DNode5 = SAMPLE_TEXTURE2D( _MainTex, sampler_Linear_Clamp, ( float3( uv_MainTex ,  0.0 ) + float3( DistortedUVs28 ,  0.0 ) + BlueNoise67 ).xy );
-				float4 VertexColor38 = IN.ase_color;
-				float4 Final_Color14 = ( tex2DNode5 * _Color * VertexColor38 );
+				float3 BlueNoiseMain130 = staticSwitch81;
+				float4 tex2DNode45 = tex2D( _ParticleTexture, ( float3( uv_ParticleTexture ,  0.0 ) + BlueNoiseMain130 ).xy );
+				float4 ColorFinal175 = ( VertexColor116 * ( tex2DNode45 * _Color ) );
 				
-				float3 temp_cast_7 = (_SplashFalloff).xxx;
-				float MainTexAlpha33 = tex2DNode5.a;
-				float VertexAlpha37 = IN.ase_color.a;
-				int One61 = 1;
-				float3 temp_cast_8 = One61;
-				float2 screenUV27_g61516 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g61516 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g61516 = GetScreenNoiseRGBASlice27_g61516( screenUV27_g61516 , offsetFrame27_g61516 );
+				float VertexColorAlpha117 = IN.ase_color.a;
+				float eyeDepth = IN.ase_texcoord2.z;
+				float cameraDepthFade14_g140 = (( eyeDepth -_ProjectionParams.y - _CDDistance1 ) / _CDFalloff1);
+				#ifdef _ENABLECAMERADEPTHFADING_ON
+				float staticSwitch234 = saturate( cameraDepthFade14_g140 );
+				#else
+				float staticSwitch234 = 1.0;
+				#endif
+				float DepthFadeCameraDepthFade235 = staticSwitch234;
+				float3 temp_cast_3 = (1.0).xxx;
+				float2 screenUV27_g142 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g142 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g142 = GetScreenNoiseRGBASlice27_g142( screenUV27_g142 , offsetFrame27_g142 );
 				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
-				float screenDepth4_g61514 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
-				float distanceDepth4_g61514 = saturate( abs( ( screenDepth4_g61514 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _DepthFadeAmount ) ) );
-				float3 lerpResult6_g61514 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g61516).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g61514);
-				#ifdef _ENABLEDEPTHFADE_ON
-				float3 staticSwitch55 = saturate( ( lerpResult6_g61514 * distanceDepth4_g61514 ) );
+				float screenDepth4_g140 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth4_g140 = saturate( abs( ( screenDepth4_g140 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float3 lerpResult6_g140 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g142).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g140);
+				#ifdef _ENABLESOFTINTERSECTION_ON
+				float3 staticSwitch233 = saturate( ( lerpResult6_g140 * distanceDepth4_g140 ) );
 				#else
-				float3 staticSwitch55 = temp_cast_8;
+				float3 staticSwitch233 = temp_cast_3;
 				#endif
-				float eyeDepth = IN.ase_texcoord2.z;
-				float cameraDepthFade14_g61514 = (( eyeDepth -_ProjectionParams.y - _Offset ) / _CameraDFFalloff);
-				#ifdef _ENABLECAMERADEPTHFADE_ON
-				float staticSwitch56 = saturate( cameraDepthFade14_g61514 );
+				float3 temp_cast_4 = (1.0).xxx;
+				#ifdef _PCDEBUG_ON
+				float3 staticSwitch241 = temp_cast_4;
 				#else
-				float staticSwitch56 = (float)One61;
+				float3 staticSwitch241 = staticSwitch233;
 				#endif
-				float3 DepthFadeAlpha58 = ( staticSwitch55 * staticSwitch56 );
-				float ColorAlpha105 = _Color.a;
-				float3 smoothstepResult100 = smoothstep( float3( 0,0,0 ) , temp_cast_7 , ( MainTexAlpha33 * VertexAlpha37 * DepthFadeAlpha58 * ColorAlpha105 ));
-				float3 Alpha43 = saturate( smoothstepResult100 );
+				float3 DepthFadeSoftIntersection236 = staticSwitch241;
+				float ParticleAlpha173 = tex2DNode45.a;
+				float smoothstepResult208 = smoothstep( 0.0 , _EdgeFalloff , ( _Transparency * ParticleAlpha173 ));
+				float4 LuminanceAlpha256 = tex2DNode45;
+				float4 Alpha211 = saturate( ( float4( ( VertexColorAlpha117 * DepthFadeCameraDepthFade235 * DepthFadeSoftIntersection236 * smoothstepResult208 ) , 0.0 ) * LuminanceAlpha256 ) );
 				
 				
-				float3 Albedo = Final_Color14.rgb;
-				float Alpha = Alpha43.x;
-				float AlphaClipThreshold = 0.5;
+				float3 Albedo = ColorFinal175.rgb;
+				float Alpha = Alpha211.r;
+				float AlphaClipThreshold = _AlphaClip;
 
 				half4 color = half4( Albedo, Alpha );
 
@@ -2354,14 +2166,14 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED
-			#define _SPECULAR_SETUP 1
-			#define _TRANSLUCENCY_ASE 1
+			#define _RECEIVE_SHADOWS_OFF 1
 			#define ASE_DEPTH_WRITE_ON
-			#define _EMISSION
+			#pragma multi_compile_instancing
+			#define _ALPHATEST_ON 1
+			#define _NORMALMAP 1
 			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
 			#define REQUIRE_DEPTH_TEXTURE 1
-			#define ASE_USING_SAMPLING_MACROS 1
 
 			
 			#pragma vertex vert
@@ -2375,14 +2187,14 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
 			#define ASE_NEEDS_TEXTURE_COORDINATES0
-			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_VERT_POSITION
+			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_FRAG_POSITION
 			#pragma shader_feature_local_fragment _BRDFMAP
-			#pragma shader_feature_local _ENABLEBLUENOISE_ON
-			#pragma shader_feature_local _ENABLEDEPTHFADE_ON
-			#pragma shader_feature_local _ENABLECAMERADEPTHFADE_ON
+			#pragma shader_feature_local _BLUENOISEOVERLAY_ON
+			#pragma shader_feature_local _ENABLECAMERADEPTHFADING_ON
 			#pragma shader_feature_local _PCDEBUG_ON
+			#pragma shader_feature_local _ENABLESOFTINTERSECTION_ON
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SLZBlueNoise.hlsl"
 
 
@@ -2416,25 +2228,21 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
+			float4 _ParticleTexture_ST;
 			float4 _Color;
-			float4 _MainTex_ST;
-			float4 _DistortionMap_ST;
-			float4 _Anim;
-			float3 _EmissionColor;
-			float _CameraDFFalloff;
-			float _DepthFadeAmount;
-			float _DepthFadeBlueNoise;
-			float _DepthFadeBlueNoiseSize;
-			float _SplashFalloff;
-			float _Smoothness;
-			float _DummyFloatOne;
-			float _Offset;
-			float _DistortionAmount;
-			float _NoiseAmount;
+			int _Cull;
+			float _BlueNoiseSize;
 			float _BlueNoise;
-			float _TransmissionBoost;
-			float _DummyFloatZero;
-			float _ReflectivityBoost;
+			float _NormalIntensity;
+			float _CDFalloff1;
+			float _CDDistance1;
+			float _DepthFadeBlueNoiseSize;
+			float _DepthFadeBlueNoise;
+			float _SoftIntersection;
+			float _EdgeFalloff;
+			float _Transparency;
+			float _AlphaClip;
+			float _QuestDepthFadeBlueNoiseSize;
 			float _QuestDepthFade;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
@@ -2456,19 +2264,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			TEXTURE2D(_MainTex);
-			TEXTURE2D(_DistortionMap);
-			SAMPLER(sampler_DistortionMap);
-			SAMPLER(sampler_Linear_Clamp);
-			
-			#ifdef UNITY_DOTS_INSTANCING_ENABLED
-			UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
-				UNITY_DOTS_INSTANCED_PROP(float, _DummyFloatOne)
-				UNITY_DOTS_INSTANCED_PROP(float, _DummyFloatZero)
-			UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
-			#define _DummyFloatOne UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float , Metadata__DummyFloatOne)
-			#define _DummyFloatZero UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float , Metadata__DummyFloatZero)
-			#endif
+			sampler2D _NormalMap;
+			sampler2D _ParticleTexture;
 
 
 			inline float4 ASE_ComputeGrabScreenPos( float4 pos )
@@ -2484,50 +2281,22 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				return o;
 			}
 			
-			inline float4 GetScreenNoiseRGBASlice27_g3( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g8( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
 			
-			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float2 mod2D289( float2 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float3 permute( float3 x ) { return mod2D289( ( ( x * 34.0 ) + 1.0 ) * x ); }
-			float snoise( float2 v )
-			{
-				const float4 C = float4( 0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439 );
-				float2 i = floor( v + dot( v, C.yy ) );
-				float2 x0 = v - i + dot( i, C.xx );
-				float2 i1;
-				i1 = ( x0.x > x0.y ) ? float2( 1.0, 0.0 ) : float2( 0.0, 1.0 );
-				float4 x12 = x0.xyxy + C.xxzz;
-				x12.xy -= i1;
-				i = mod2D289( i );
-				float3 p = permute( permute( i.y + float3( 0.0, i1.y, 1.0 ) ) + i.x + float3( 0.0, i1.x, 1.0 ) );
-				float3 m = max( 0.5 - float3( dot( x0, x0 ), dot( x12.xy, x12.xy ), dot( x12.zw, x12.zw ) ), 0.0 );
-				m = m * m;
-				m = m * m;
-				float3 x = 2.0 * frac( p * C.www ) - 1.0;
-				float3 h = abs( x ) - 0.5;
-				float3 ox = floor( x + 0.5 );
-				float3 a0 = x - ox;
-				m *= 1.79284291400159 - 0.85373472095314 * ( a0 * a0 + h * h );
-				float3 g;
-				g.x = a0.x * x0.x + h.x * x0.y;
-				g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-				return 130.0 * dot( m, g );
-			}
-			
-			inline float4 GetScreenNoiseRGBASlice27_g61516( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g142( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
 			
-			inline float4 GetScreenNoiseRGBASlice27_g61519( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g147( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
 			
-			inline float4 GetScreenNoiseRGBASlice27_g61521( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g145( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
@@ -2543,6 +2312,7 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				float4 ase_positionCS = TransformObjectToHClip( ( v.vertex ).xyz );
 				float4 screenPos = ComputeScreenPos( ase_positionCS );
 				o.ase_texcoord5 = screenPos;
+				
 				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
 				float eyeDepth = -objectToViewPos.z;
 				o.ase_texcoord4.z = eyeDepth;
@@ -2704,87 +2474,89 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 					#endif
 				#endif
 
-				float3 temp_cast_0 = (_SplashFalloff).xxx;
-				float2 uv_MainTex = IN.ase_texcoord4.xy * _MainTex_ST.xy + _MainTex_ST.zw;
-				float2 uv_DistortionMap = IN.ase_texcoord4.xy * _DistortionMap_ST.xy + _DistortionMap_ST.zw;
-				float2 appendResult24 = (float2(_Anim.x , _Anim.y));
+				float2 uv_ParticleTexture = IN.ase_texcoord4.xy * _ParticleTexture_ST.xy + _ParticleTexture_ST.zw;
 				float4 screenPos = IN.ase_texcoord5;
 				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( screenPos );
 				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
-				float2 screenUV27_g3 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g3 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g3 = GetScreenNoiseRGBASlice27_g3( screenUV27_g3 , offsetFrame27_g3 );
-				#ifdef _ENABLEBLUENOISE_ON
-				float3 staticSwitch66 = ( ( (localGetScreenNoiseRGBASlice27_g3).xyz - float3( 0.5,0.5,0.5 ) ) * ( _BlueNoise * 0.1 ) * 2.0 );
+				float2 screenUV27_g8 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _BlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g8 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g8 = GetScreenNoiseRGBASlice27_g8( screenUV27_g8 , offsetFrame27_g8 );
+				#ifdef _BLUENOISEOVERLAY_ON
+				float3 staticSwitch81 = ( ( (localGetScreenNoiseRGBASlice27_g8).xyz - float3( 0.5,0.5,0.5 ) ) * ( _BlueNoise * 0.1 ) * 2.0 );
 				#else
-				float3 staticSwitch66 = float3( 0,0,0 );
+				float3 staticSwitch81 = float3( 0,0,0 );
 				#endif
-				float3 BlueNoise67 = staticSwitch66;
-				float simplePerlin2D89 = snoise( uv_DistortionMap*_NoiseAmount );
-				simplePerlin2D89 = simplePerlin2D89*0.5 + 0.5;
-				float3 tex2DNode8 = UnpackNormalScale( SAMPLE_TEXTURE2D( _DistortionMap, sampler_DistortionMap, ( float3( uv_DistortionMap ,  0.0 ) + float3( ( appendResult24 * _TimeParameters.x ) ,  0.0 ) + BlueNoise67 + simplePerlin2D89 ).xy ), 1.0f );
-				float2 appendResult47 = (float2(tex2DNode8.r , tex2DNode8.g));
-				float2 DistortedUVs28 = ( appendResult47 * ( _DistortionAmount * 0.25 ) );
-				float4 tex2DNode5 = SAMPLE_TEXTURE2D( _MainTex, sampler_Linear_Clamp, ( float3( uv_MainTex ,  0.0 ) + float3( DistortedUVs28 ,  0.0 ) + BlueNoise67 ).xy );
-				float MainTexAlpha33 = tex2DNode5.a;
-				float VertexAlpha37 = IN.ase_color.a;
-				int One61 = 1;
-				float3 temp_cast_7 = One61;
-				float2 screenUV27_g61516 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g61516 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g61516 = GetScreenNoiseRGBASlice27_g61516( screenUV27_g61516 , offsetFrame27_g61516 );
+				float3 BlueNoiseMain130 = staticSwitch81;
+				float3 unpack244 = UnpackNormalScale( tex2D( _NormalMap, ( float3( uv_ParticleTexture ,  0.0 ) + BlueNoiseMain130 ).xy ), _NormalIntensity );
+				unpack244.z = lerp( 1, unpack244.z, saturate(_NormalIntensity) );
+				float3 Normal246 = unpack244;
+				
+				float VertexColorAlpha117 = IN.ase_color.a;
+				float eyeDepth = IN.ase_texcoord4.z;
+				float cameraDepthFade14_g140 = (( eyeDepth -_ProjectionParams.y - _CDDistance1 ) / _CDFalloff1);
+				#ifdef _ENABLECAMERADEPTHFADING_ON
+				float staticSwitch234 = saturate( cameraDepthFade14_g140 );
+				#else
+				float staticSwitch234 = 1.0;
+				#endif
+				float DepthFadeCameraDepthFade235 = staticSwitch234;
+				float3 temp_cast_2 = (1.0).xxx;
+				float2 screenUV27_g142 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g142 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g142 = GetScreenNoiseRGBASlice27_g142( screenUV27_g142 , offsetFrame27_g142 );
 				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
-				float screenDepth4_g61514 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
-				float distanceDepth4_g61514 = saturate( abs( ( screenDepth4_g61514 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _DepthFadeAmount ) ) );
-				float3 lerpResult6_g61514 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g61516).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g61514);
-				#ifdef _ENABLEDEPTHFADE_ON
-				float3 staticSwitch55 = saturate( ( lerpResult6_g61514 * distanceDepth4_g61514 ) );
+				float screenDepth4_g140 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth4_g140 = saturate( abs( ( screenDepth4_g140 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float3 lerpResult6_g140 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g142).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g140);
+				#ifdef _ENABLESOFTINTERSECTION_ON
+				float3 staticSwitch233 = saturate( ( lerpResult6_g140 * distanceDepth4_g140 ) );
 				#else
-				float3 staticSwitch55 = temp_cast_7;
+				float3 staticSwitch233 = temp_cast_2;
 				#endif
-				float eyeDepth = IN.ase_texcoord4.z;
-				float cameraDepthFade14_g61514 = (( eyeDepth -_ProjectionParams.y - _Offset ) / _CameraDFFalloff);
-				#ifdef _ENABLECAMERADEPTHFADE_ON
-				float staticSwitch56 = saturate( cameraDepthFade14_g61514 );
+				float3 temp_cast_3 = (1.0).xxx;
+				#ifdef _PCDEBUG_ON
+				float3 staticSwitch241 = temp_cast_3;
 				#else
-				float staticSwitch56 = (float)One61;
+				float3 staticSwitch241 = staticSwitch233;
 				#endif
-				float3 DepthFadeAlpha58 = ( staticSwitch55 * staticSwitch56 );
-				float ColorAlpha105 = _Color.a;
-				float3 smoothstepResult100 = smoothstep( float3( 0,0,0 ) , temp_cast_0 , ( MainTexAlpha33 * VertexAlpha37 * DepthFadeAlpha58 * ColorAlpha105 ));
-				float3 Alpha43 = saturate( smoothstepResult100 );
+				float3 DepthFadeSoftIntersection236 = staticSwitch241;
+				float4 tex2DNode45 = tex2D( _ParticleTexture, ( float3( uv_ParticleTexture ,  0.0 ) + BlueNoiseMain130 ).xy );
+				float ParticleAlpha173 = tex2DNode45.a;
+				float smoothstepResult208 = smoothstep( 0.0 , _EdgeFalloff , ( _Transparency * ParticleAlpha173 ));
+				float4 LuminanceAlpha256 = tex2DNode45;
+				float4 Alpha211 = saturate( ( float4( ( VertexColorAlpha117 * DepthFadeCameraDepthFade235 * DepthFadeSoftIntersection236 * smoothstepResult208 ) , 0.0 ) * LuminanceAlpha256 ) );
 				
-				float4 unityObjectToClipPos20_g61518 = TransformWorldToHClip( TransformObjectToWorld( ( IN.ase_texcoord6.xyz ).xyz ) );
-				float2 screenUV27_g61519 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g61519 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g61519 = GetScreenNoiseRGBASlice27_g61519( screenUV27_g61519 , offsetFrame27_g61519 );
-				float temp_output_21_0_g61518 = ( unityObjectToClipPos20_g61518.w + ( (localGetScreenNoiseRGBASlice27_g61519).w * 0.0 ) );
-				float lerpResult5_g61518 = lerp( ( ( (float4( 0,0,0,0 )).w - 1.0 ) * 2.0 ) , 0.5 , 1.0);
-				float4 unityObjectToClipPos20_g61520 = TransformWorldToHClip( TransformObjectToWorld( ( IN.ase_texcoord6.xyz ).xyz ) );
-				float2 screenUV27_g61521 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g61521 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g61521 = GetScreenNoiseRGBASlice27_g61521( screenUV27_g61521 , offsetFrame27_g61521 );
-				float temp_output_21_0_g61520 = ( unityObjectToClipPos20_g61520.w + ( (localGetScreenNoiseRGBASlice27_g61521).w * _QuestDepthFade ) );
-				float lerpResult5_g61520 = lerp( ( ( (float4( 0,0,0,0 )).w - 1.0 ) * 2.0 ) , 0.5 , 1.0);
-				float temp_output_112_0 = ( ( ( 1.0 - ( temp_output_21_0_g61520 * _ZBufferParams.w ) ) / ( temp_output_21_0_g61520 * _ZBufferParams.z ) ) * ceil( lerpResult5_g61520 ) );
+				float4 unityObjectToClipPos20_g146 = TransformWorldToHClip( TransformObjectToWorld( ( IN.ase_texcoord6.xyz ).xyz ) );
+				float2 screenUV27_g147 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g147 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g147 = GetScreenNoiseRGBASlice27_g147( screenUV27_g147 , offsetFrame27_g147 );
+				float temp_output_21_0_g146 = ( unityObjectToClipPos20_g146.w + ( (localGetScreenNoiseRGBASlice27_g147).w * 0.0 ) );
+				float lerpResult5_g146 = lerp( ( ( (float4( 0,0,0,0 )).w - 1.0 ) * 2.0 ) , 0.5 , 1.0);
+				float4 unityObjectToClipPos20_g144 = TransformWorldToHClip( TransformObjectToWorld( ( IN.ase_texcoord6.xyz ).xyz ) );
+				float2 screenUV27_g145 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _QuestDepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g145 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g145 = GetScreenNoiseRGBASlice27_g145( screenUV27_g145 , offsetFrame27_g145 );
+				float temp_output_21_0_g144 = ( unityObjectToClipPos20_g144.w + ( (localGetScreenNoiseRGBASlice27_g145).w * _QuestDepthFade ) );
+				float lerpResult5_g144 = lerp( ( ( (float4( 0,0,0,0 )).w - 1.0 ) * 2.0 ) , 0.5 , 1.0);
+				float temp_output_239_0 = ( ( ( 1.0 - ( temp_output_21_0_g144 * _ZBufferParams.w ) ) / ( temp_output_21_0_g144 * _ZBufferParams.z ) ) * ceil( lerpResult5_g144 ) );
 				#ifdef SHADER_API_MOBILE
-				float staticSwitch109 = temp_output_112_0;
+				float staticSwitch214 = temp_output_239_0;
 				#else
-				float staticSwitch109 = ( ( ( 1.0 - ( temp_output_21_0_g61518 * _ZBufferParams.w ) ) / ( temp_output_21_0_g61518 * _ZBufferParams.z ) ) * ceil( lerpResult5_g61518 ) );
+				float staticSwitch214 = ( ( ( 1.0 - ( temp_output_21_0_g146 * _ZBufferParams.w ) ) / ( temp_output_21_0_g146 * _ZBufferParams.z ) ) * ceil( lerpResult5_g146 ) );
 				#endif
 				#ifdef _PCDEBUG_ON
-				float staticSwitch110 = temp_output_112_0;
+				float staticSwitch215 = temp_output_239_0;
 				#else
-				float staticSwitch110 = staticSwitch109;
+				float staticSwitch215 = staticSwitch214;
 				#endif
-				float QuestDepthFade111 = staticSwitch110;
+				float QuestDepthFade217 = staticSwitch215;
 				
-				float3 Normal = float3(0, 0, 1);
-				float Alpha = Alpha43.x;
-				float AlphaClipThreshold = 0.5;
+				float3 Normal = Normal246;
+				float Alpha = Alpha211.r;
+				float AlphaClipThreshold = _AlphaClip;
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = QuestDepthFade111;
+				float DepthValue = QuestDepthFade217;
 				#endif
 
 				#if defined(_ALPHATEST_ON) && !defined(ASE_TERRAIN)
@@ -2826,19 +2598,19 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			ENDHLSL
 		}
 
-				/*ase_pass*/
+				
 		Pass
 		{
 			
 			Name "GBuffer"
-			Tags{"LightMode" = "None" }
+			Tags { "LightMode"="None" }
 			
-			Blend One Zero
+			Blend SrcAlpha OneMinusSrcAlpha, One OneMinusSrcAlpha
 			ColorMask RGBA
-			/*ase_stencil*/
+			
 
 			HLSLPROGRAM
-/*ase_pragma_before*/
+#define _NORMAL_DROPOFF_TS 1#pragma multi_compile_fog#define ASE_FOG 1#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED#define _RECEIVE_SHADOWS_OFF 1#define ASE_DEPTH_WRITE_ON#pragma multi_compile_instancing#define _ALPHATEST_ON 1#define _NORMALMAP 1#define ASE_VERSION 19908#define ASE_SRP_VERSION -1#define REQUIRE_DEPTH_TEXTURE 1
 #if FALSE
 			#pragma multi_compile _ LIGHTMAP_ON
 			#pragma multi_compile _ DYNAMICLIGHTMAP_ON
@@ -2874,7 +2646,20 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			    #define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
-			/*ase_pragma*/
+			#define ASE_NEEDS_TEXTURE_COORDINATES0
+			#define ASE_NEEDS_SCREEN_POSITION
+			#define ASE_NEEDS_FRAG_SCREEN_POSITION
+			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
+			#define ASE_NEEDS_FRAG_COLOR
+			#define ASE_NEEDS_VERT_POSITION
+			#define ASE_NEEDS_FRAG_POSITION
+			#pragma shader_feature_local_fragment _BRDFMAP
+			#pragma shader_feature_local _BLUENOISEOVERLAY_ON
+			#pragma shader_feature_local _ENABLECAMERADEPTHFADING_ON
+			#pragma shader_feature_local _PCDEBUG_ON
+			#pragma shader_feature_local _ENABLESOFTINTERSECTION_ON
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SLZBlueNoise.hlsl"
+
 
 			struct VertexInput
 			{
@@ -2884,7 +2669,7 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				float4 texcoord : TEXCOORD0;
 				float4 texcoord1 : TEXCOORD1;
 				float4 texcoord2 : TEXCOORD2;
-				/*ase_vdata:p=p;n=n;t=t;uv0=tc0;uv1=tc1;uv2=tc2*/
+				float4 ase_color : COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -2905,13 +2690,30 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				#if defined(DYNAMICLIGHTMAP_ON)
 				float2 dynamicLightmapUV : TEXCOORD7;
 				#endif
-				/*ase_interp(8,):sp=sp;sc=tc2;wn.xyz=tc3.xyz;wt.xyz=tc4.xyz;wbt.xyz=tc5.xyz;wp.x=tc3.w;wp.y=tc4.w;wp.z=tc5.w;spu=tc6*/
+				float4 ase_color : COLOR;
+				float4 ase_texcoord8 : TEXCOORD8;
+				float4 ase_texcoord9 : TEXCOORD9;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			/*ase_srp_batcher*/
+			float4 _ParticleTexture_ST;
+			float4 _Color;
+			int _Cull;
+			float _BlueNoiseSize;
+			float _BlueNoise;
+			float _NormalIntensity;
+			float _CDFalloff1;
+			float _CDDistance1;
+			float _DepthFadeBlueNoiseSize;
+			float _DepthFadeBlueNoise;
+			float _SoftIntersection;
+			float _EdgeFalloff;
+			float _Transparency;
+			float _AlphaClip;
+			float _QuestDepthFadeBlueNoiseSize;
+			float _QuestDepthFade;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -2932,30 +2734,73 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			/*ase_globals*/
+			sampler2D _ParticleTexture;
+			sampler2D _NormalMap;
 
-			/*ase_funcs*/
 
-			VertexOutput VertexFunction( VertexInput v /*ase_vert_input*/ )
+			inline float4 ASE_ComputeGrabScreenPos( float4 pos )
+			{
+				#if UNITY_UV_STARTS_AT_TOP
+				float scale = -1.0;
+				#else
+				float scale = 1.0;
+				#endif
+				float4 o = pos;
+				o.y = pos.w * 0.5f;
+				o.y = ( pos.y - o.y ) * _ProjectionParams.x * scale + o.y;
+				return o;
+			}
+			
+			inline float4 GetScreenNoiseRGBASlice27_g8( float2 screenUV, float offsetFrame )
+			{
+				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
+			}
+			
+			inline float4 GetScreenNoiseRGBASlice27_g142( float2 screenUV, float offsetFrame )
+			{
+				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
+			}
+			
+			inline float4 GetScreenNoiseRGBASlice27_g147( float2 screenUV, float offsetFrame )
+			{
+				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
+			}
+			
+			inline float4 GetScreenNoiseRGBASlice27_g145( float2 screenUV, float offsetFrame )
+			{
+				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
+			}
+			
+
+			VertexOutput VertexFunction( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				/*ase_vert_code:v=VertexInput;o=VertexOutput*/
+				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
+				float eyeDepth = -objectToViewPos.z;
+				o.ase_texcoord8.z = eyeDepth;
+				
+				o.ase_color = v.ase_color;
+				o.ase_texcoord8.xy = v.texcoord.xy;
+				o.ase_texcoord9 = v.vertex;
+				
+				//setting value to unused interpolator channels and avoid initialization warnings
+				o.ase_texcoord8.w = 0;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = /*ase_vert_out:Vertex Offset;Float3;8;-1;_Vertex*/defaultVertexValue/*end*/;
+				float3 vertexValue = defaultVertexValue;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
 					v.vertex.xyz += vertexValue;
 				#endif
-				v.ase_normal = /*ase_vert_out:Vertex Normal;Float3;10;-1;_Normal*/v.ase_normal/*end*/;
+				v.ase_normal = v.ase_normal;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				float3 positionVS = TransformWorldToView( positionWS );
@@ -3010,7 +2855,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				float4 texcoord : TEXCOORD0;
 				float4 texcoord1 : TEXCOORD1;
 				float4 texcoord2 : TEXCOORD2;
-				/*ase_vcontrol*/
+				float4 ase_color : COLOR;
+
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -3031,7 +2877,7 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				o.texcoord = v.texcoord;
 				o.texcoord1 = v.texcoord1;
 				o.texcoord2 = v.texcoord2;
-				/*ase_control_code:v=VertexInput;o=VertexControl*/
+				o.ase_color = v.ase_color;
 				return o;
 			}
 
@@ -3074,7 +2920,7 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				o.texcoord = patch[0].texcoord * bary.x + patch[1].texcoord * bary.y + patch[2].texcoord * bary.z;
 				o.texcoord1 = patch[0].texcoord1 * bary.x + patch[1].texcoord1 * bary.y + patch[2].texcoord1 * bary.z;
 				o.texcoord2 = patch[0].texcoord2 * bary.x + patch[1].texcoord2 * bary.y + patch[2].texcoord2 * bary.z;
-				/*ase_domain_code:patch=VertexControl;o=VertexInput;bary=SV_DomainLocation*/
+				o.ase_color = patch[0].ase_color * bary.x + patch[1].ase_color * bary.y + patch[2].ase_color * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -3101,7 +2947,7 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 								#ifdef ASE_DEPTH_WRITE_ON
 								,out float outputDepth : ASE_SV_DEPTH
 								#endif
-								/*ase_frag_input*/ )
+								 )
 			{
 				UNITY_SETUP_INSTANCE_ID(IN);
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
@@ -3139,24 +2985,103 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 	
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
-				/*ase_frag_code:IN=VertexOutput*/
-				float3 Albedo = /*ase_frag_out:Albedo;Float3;0;-1;_Albedo*/float3(0.5, 0.5, 0.5)/*end*/;
-				float3 Normal = /*ase_frag_out:Normal;Float3;1;-1;_FragNormal*/float3(0, 0, 1)/*end*/;
-				float3 Emission = /*ase_frag_out:Emission;Float3;2;-1;_Emission*/0/*end*/;
-				float3 Specular = /*ase_frag_out:Specular;Float3;9;-1;_Specular*/0.5/*end*/;
-				float Metallic = /*ase_frag_out:Metallic;Float;3;-1;_Metallic*/0/*end*/;
-				float Smoothness = /*ase_frag_out:Smoothness;Float;4;-1;_Smoothness*/0.5/*end*/;
-				float Occlusion = /*ase_frag_out:Occlusion;Float;5;-1;_Occlusion*/1/*end*/;
-				float Alpha = /*ase_frag_out:Alpha;Float;6;-1;_Alpha*/1/*end*/;
-				float AlphaClipThreshold = /*ase_frag_out:Alpha Clip Threshold;Float;7;-1;_AlphaClip*/0.5/*end*/;
-				float AlphaClipThresholdShadow = /*ase_frag_out:Alpha Clip Threshold Shadow;Float;16;-1;_AlphaClipShadow*/0.5/*end*/;
-				float3 BakedGI = /*ase_frag_out:Baked GI;Float3;11;-1;_BakedGI*/0/*end*/;
-				float3 RefractionColor = /*ase_frag_out:Refraction Color;Float3;12;-1;_RefractionColor*/1/*end*/;
-				float RefractionIndex = /*ase_frag_out:Refraction Index;Float;13;-1;_RefractionIndex*/1/*end*/;
-				float3 Transmission = /*ase_frag_out:Transmission;Float3;14;-1;_Transmission*/1/*end*/;
-				float3 Translucency = /*ase_frag_out:Translucency;Float3;15;-1;_Translucency*/1/*end*/;
+				float4 VertexColor116 = IN.ase_color;
+				float2 uv_ParticleTexture = IN.ase_texcoord8.xy * _ParticleTexture_ST.xy + _ParticleTexture_ST.zw;
+				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( ScreenPos );
+				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
+				float2 screenUV27_g8 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _BlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g8 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g8 = GetScreenNoiseRGBASlice27_g8( screenUV27_g8 , offsetFrame27_g8 );
+				#ifdef _BLUENOISEOVERLAY_ON
+				float3 staticSwitch81 = ( ( (localGetScreenNoiseRGBASlice27_g8).xyz - float3( 0.5,0.5,0.5 ) ) * ( _BlueNoise * 0.1 ) * 2.0 );
+				#else
+				float3 staticSwitch81 = float3( 0,0,0 );
+				#endif
+				float3 BlueNoiseMain130 = staticSwitch81;
+				float4 tex2DNode45 = tex2D( _ParticleTexture, ( float3( uv_ParticleTexture ,  0.0 ) + BlueNoiseMain130 ).xy );
+				float4 ColorFinal175 = ( VertexColor116 * ( tex2DNode45 * _Color ) );
+				
+				float3 unpack244 = UnpackNormalScale( tex2D( _NormalMap, ( float3( uv_ParticleTexture ,  0.0 ) + BlueNoiseMain130 ).xy ), _NormalIntensity );
+				unpack244.z = lerp( 1, unpack244.z, saturate(_NormalIntensity) );
+				float3 Normal246 = unpack244;
+				
+				float VertexColorAlpha117 = IN.ase_color.a;
+				float eyeDepth = IN.ase_texcoord8.z;
+				float cameraDepthFade14_g140 = (( eyeDepth -_ProjectionParams.y - _CDDistance1 ) / _CDFalloff1);
+				#ifdef _ENABLECAMERADEPTHFADING_ON
+				float staticSwitch234 = saturate( cameraDepthFade14_g140 );
+				#else
+				float staticSwitch234 = 1.0;
+				#endif
+				float DepthFadeCameraDepthFade235 = staticSwitch234;
+				float3 temp_cast_5 = (1.0).xxx;
+				float2 screenUV27_g142 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g142 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g142 = GetScreenNoiseRGBASlice27_g142( screenUV27_g142 , offsetFrame27_g142 );
+				float4 ase_positionSSNorm = ScreenPos / ScreenPos.w;
+				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
+				float screenDepth4_g140 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth4_g140 = saturate( abs( ( screenDepth4_g140 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float3 lerpResult6_g140 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g142).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g140);
+				#ifdef _ENABLESOFTINTERSECTION_ON
+				float3 staticSwitch233 = saturate( ( lerpResult6_g140 * distanceDepth4_g140 ) );
+				#else
+				float3 staticSwitch233 = temp_cast_5;
+				#endif
+				float3 temp_cast_6 = (1.0).xxx;
+				#ifdef _PCDEBUG_ON
+				float3 staticSwitch241 = temp_cast_6;
+				#else
+				float3 staticSwitch241 = staticSwitch233;
+				#endif
+				float3 DepthFadeSoftIntersection236 = staticSwitch241;
+				float ParticleAlpha173 = tex2DNode45.a;
+				float smoothstepResult208 = smoothstep( 0.0 , _EdgeFalloff , ( _Transparency * ParticleAlpha173 ));
+				float4 LuminanceAlpha256 = tex2DNode45;
+				float4 Alpha211 = saturate( ( float4( ( VertexColorAlpha117 * DepthFadeCameraDepthFade235 * DepthFadeSoftIntersection236 * smoothstepResult208 ) , 0.0 ) * LuminanceAlpha256 ) );
+				
+				float4 unityObjectToClipPos20_g146 = TransformWorldToHClip( TransformObjectToWorld( ( IN.ase_texcoord9.xyz ).xyz ) );
+				float2 screenUV27_g147 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g147 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g147 = GetScreenNoiseRGBASlice27_g147( screenUV27_g147 , offsetFrame27_g147 );
+				float temp_output_21_0_g146 = ( unityObjectToClipPos20_g146.w + ( (localGetScreenNoiseRGBASlice27_g147).w * 0.0 ) );
+				float lerpResult5_g146 = lerp( ( ( (float4( 0,0,0,0 )).w - 1.0 ) * 2.0 ) , 0.5 , 1.0);
+				float4 unityObjectToClipPos20_g144 = TransformWorldToHClip( TransformObjectToWorld( ( IN.ase_texcoord9.xyz ).xyz ) );
+				float2 screenUV27_g145 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _QuestDepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g145 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g145 = GetScreenNoiseRGBASlice27_g145( screenUV27_g145 , offsetFrame27_g145 );
+				float temp_output_21_0_g144 = ( unityObjectToClipPos20_g144.w + ( (localGetScreenNoiseRGBASlice27_g145).w * _QuestDepthFade ) );
+				float lerpResult5_g144 = lerp( ( ( (float4( 0,0,0,0 )).w - 1.0 ) * 2.0 ) , 0.5 , 1.0);
+				float temp_output_239_0 = ( ( ( 1.0 - ( temp_output_21_0_g144 * _ZBufferParams.w ) ) / ( temp_output_21_0_g144 * _ZBufferParams.z ) ) * ceil( lerpResult5_g144 ) );
+				#ifdef SHADER_API_MOBILE
+				float staticSwitch214 = temp_output_239_0;
+				#else
+				float staticSwitch214 = ( ( ( 1.0 - ( temp_output_21_0_g146 * _ZBufferParams.w ) ) / ( temp_output_21_0_g146 * _ZBufferParams.z ) ) * ceil( lerpResult5_g146 ) );
+				#endif
+				#ifdef _PCDEBUG_ON
+				float staticSwitch215 = temp_output_239_0;
+				#else
+				float staticSwitch215 = staticSwitch214;
+				#endif
+				float QuestDepthFade217 = staticSwitch215;
+				
+				float3 Albedo = ColorFinal175.rgb;
+				float3 Normal = Normal246;
+				float3 Emission = 0;
+				float3 Specular = 0.5;
+				float Metallic = 0.0;
+				float Smoothness = 0.0;
+				float Occlusion = 1;
+				float Alpha = Alpha211.r;
+				float AlphaClipThreshold = _AlphaClip;
+				float AlphaClipThresholdShadow = 0.5;
+				float3 BakedGI = 0;
+				float3 RefractionColor = 1;
+				float RefractionIndex = 1;
+				float3 Transmission = 1;
+				float3 Translucency = 1;
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = /*ase_frag_out:Depth Value;Float;17;-1;_DepthValue*/0/*end*/;
+				float DepthValue = QuestDepthFade217;
 				#endif
 
 				#if defined(_ALPHATEST_ON) && !defined(ASE_TERRAIN)
@@ -3283,14 +3208,14 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED
-			#define _SPECULAR_SETUP 1
-			#define _TRANSLUCENCY_ASE 1
+			#define _RECEIVE_SHADOWS_OFF 1
 			#define ASE_DEPTH_WRITE_ON
-			#define _EMISSION
+			#pragma multi_compile_instancing
+			#define _ALPHATEST_ON 1
+			#define _NORMALMAP 1
 			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
 			#define REQUIRE_DEPTH_TEXTURE 1
-			#define ASE_USING_SAMPLING_MACROS 1
 
         
 			#pragma only_renderers d3d11 glcore gles gles3 
@@ -3309,13 +3234,13 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
         
-			#define ASE_NEEDS_TEXTURE_COORDINATES0
-			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_VERT_POSITION
+			#define ASE_NEEDS_TEXTURE_COORDINATES0
 			#pragma shader_feature_local_fragment _BRDFMAP
-			#pragma shader_feature_local _ENABLEBLUENOISE_ON
-			#pragma shader_feature_local _ENABLEDEPTHFADE_ON
-			#pragma shader_feature_local _ENABLECAMERADEPTHFADE_ON
+			#pragma shader_feature_local _ENABLECAMERADEPTHFADING_ON
+			#pragma shader_feature_local _PCDEBUG_ON
+			#pragma shader_feature_local _ENABLESOFTINTERSECTION_ON
+			#pragma shader_feature_local _BLUENOISEOVERLAY_ON
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SLZBlueNoise.hlsl"
 
 
@@ -3323,41 +3248,37 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			{
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
-				float4 ase_texcoord : TEXCOORD0;
 				float4 ase_color : COLOR;
+				float4 ase_texcoord : TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct VertexOutput
 			{
 				float4 clipPos : SV_POSITION;
+				float4 ase_color : COLOR;
 				float4 ase_texcoord : TEXCOORD0;
 				float4 ase_texcoord1 : TEXCOORD1;
-				float4 ase_color : COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
         
 			CBUFFER_START(UnityPerMaterial)
+			float4 _ParticleTexture_ST;
 			float4 _Color;
-			float4 _MainTex_ST;
-			float4 _DistortionMap_ST;
-			float4 _Anim;
-			float3 _EmissionColor;
-			float _CameraDFFalloff;
-			float _DepthFadeAmount;
-			float _DepthFadeBlueNoise;
-			float _DepthFadeBlueNoiseSize;
-			float _SplashFalloff;
-			float _Smoothness;
-			float _DummyFloatOne;
-			float _Offset;
-			float _DistortionAmount;
-			float _NoiseAmount;
+			int _Cull;
+			float _BlueNoiseSize;
 			float _BlueNoise;
-			float _TransmissionBoost;
-			float _DummyFloatZero;
-			float _ReflectivityBoost;
+			float _NormalIntensity;
+			float _CDFalloff1;
+			float _CDDistance1;
+			float _DepthFadeBlueNoiseSize;
+			float _DepthFadeBlueNoise;
+			float _SoftIntersection;
+			float _EdgeFalloff;
+			float _Transparency;
+			float _AlphaClip;
+			float _QuestDepthFadeBlueNoiseSize;
 			float _QuestDepthFade;
 			#ifdef TESSELLATION_ON
 				float _TessPhongStrength;
@@ -3369,19 +3290,7 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			#endif
 			CBUFFER_END
 
-			TEXTURE2D(_MainTex);
-			TEXTURE2D(_DistortionMap);
-			SAMPLER(sampler_DistortionMap);
-			SAMPLER(sampler_Linear_Clamp);
-			
-			#ifdef UNITY_DOTS_INSTANCING_ENABLED
-			UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
-				UNITY_DOTS_INSTANCED_PROP(float, _DummyFloatOne)
-				UNITY_DOTS_INSTANCED_PROP(float, _DummyFloatZero)
-			UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
-			#define _DummyFloatOne UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float , Metadata__DummyFloatOne)
-			#define _DummyFloatZero UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float , Metadata__DummyFloatZero)
-			#endif
+			sampler2D _ParticleTexture;
 
 
 			inline float4 ASE_ComputeGrabScreenPos( float4 pos )
@@ -3397,40 +3306,12 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				return o;
 			}
 			
-			inline float4 GetScreenNoiseRGBASlice27_g3( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g142( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
 			
-			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float2 mod2D289( float2 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float3 permute( float3 x ) { return mod2D289( ( ( x * 34.0 ) + 1.0 ) * x ); }
-			float snoise( float2 v )
-			{
-				const float4 C = float4( 0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439 );
-				float2 i = floor( v + dot( v, C.yy ) );
-				float2 x0 = v - i + dot( i, C.xx );
-				float2 i1;
-				i1 = ( x0.x > x0.y ) ? float2( 1.0, 0.0 ) : float2( 0.0, 1.0 );
-				float4 x12 = x0.xyxy + C.xxzz;
-				x12.xy -= i1;
-				i = mod2D289( i );
-				float3 p = permute( permute( i.y + float3( 0.0, i1.y, 1.0 ) ) + i.x + float3( 0.0, i1.x, 1.0 ) );
-				float3 m = max( 0.5 - float3( dot( x0, x0 ), dot( x12.xy, x12.xy ), dot( x12.zw, x12.zw ) ), 0.0 );
-				m = m * m;
-				m = m * m;
-				float3 x = 2.0 * frac( p * C.www ) - 1.0;
-				float3 h = abs( x ) - 0.5;
-				float3 ox = floor( x + 0.5 );
-				float3 a0 = x - ox;
-				m *= 1.79284291400159 - 0.85373472095314 * ( a0 * a0 + h * h );
-				float3 g;
-				g.x = a0.x * x0.x + h.x * x0.y;
-				g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-				return 130.0 * dot( m, g );
-			}
-			
-			inline float4 GetScreenNoiseRGBASlice27_g61516( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g8( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
@@ -3455,15 +3336,15 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
 
+				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
+				float eyeDepth = -objectToViewPos.z;
+				o.ase_texcoord.x = eyeDepth;
 				float4 ase_positionCS = TransformObjectToHClip( ( v.vertex ).xyz );
 				float4 screenPos = ComputeScreenPos( ase_positionCS );
 				o.ase_texcoord1 = screenPos;
-				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
-				float eyeDepth = -objectToViewPos.z;
-				o.ase_texcoord.z = eyeDepth;
 				
-				o.ase_texcoord.xy = v.ase_texcoord.xy;
 				o.ase_color = v.ase_color;
+				o.ase_texcoord.yz = v.ase_texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord.w = 0;
@@ -3490,8 +3371,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			{
 				float4 vertex : INTERNALTESSPOS;
 				float3 ase_normal : NORMAL;
-				float4 ase_texcoord : TEXCOORD0;
 				float4 ase_color : COLOR;
+				float4 ase_texcoord : TEXCOORD0;
 
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -3509,8 +3390,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.vertex = v.vertex;
 				o.ase_normal = v.ase_normal;
-				o.ase_texcoord = v.ase_texcoord;
 				o.ase_color = v.ase_color;
+				o.ase_texcoord = v.ase_texcoord;
 				return o;
 			}
 
@@ -3549,8 +3430,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				VertexInput o = (VertexInput) 0;
 				o.vertex = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.ase_normal = patch[0].ase_normal * bary.x + patch[1].ase_normal * bary.y + patch[2].ase_normal * bary.z;
-				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
 				o.ase_color = patch[0].ase_color * bary.x + patch[1].ase_color * bary.y + patch[2].ase_color * bary.z;
+				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -3571,59 +3452,57 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			half4 frag(VertexOutput IN ) : SV_TARGET
 			{
 				SurfaceDescription surfaceDescription = (SurfaceDescription)0;
-				float3 temp_cast_0 = (_SplashFalloff).xxx;
-				float2 uv_MainTex = IN.ase_texcoord.xy * _MainTex_ST.xy + _MainTex_ST.zw;
-				float2 uv_DistortionMap = IN.ase_texcoord.xy * _DistortionMap_ST.xy + _DistortionMap_ST.zw;
-				float2 appendResult24 = (float2(_Anim.x , _Anim.y));
+				float VertexColorAlpha117 = IN.ase_color.a;
+				float eyeDepth = IN.ase_texcoord.x;
+				float cameraDepthFade14_g140 = (( eyeDepth -_ProjectionParams.y - _CDDistance1 ) / _CDFalloff1);
+				#ifdef _ENABLECAMERADEPTHFADING_ON
+				float staticSwitch234 = saturate( cameraDepthFade14_g140 );
+				#else
+				float staticSwitch234 = 1.0;
+				#endif
+				float DepthFadeCameraDepthFade235 = staticSwitch234;
+				float3 temp_cast_0 = (1.0).xxx;
 				float4 screenPos = IN.ase_texcoord1;
 				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( screenPos );
 				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
-				float2 screenUV27_g3 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g3 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g3 = GetScreenNoiseRGBASlice27_g3( screenUV27_g3 , offsetFrame27_g3 );
-				#ifdef _ENABLEBLUENOISE_ON
-				float3 staticSwitch66 = ( ( (localGetScreenNoiseRGBASlice27_g3).xyz - float3( 0.5,0.5,0.5 ) ) * ( _BlueNoise * 0.1 ) * 2.0 );
-				#else
-				float3 staticSwitch66 = float3( 0,0,0 );
-				#endif
-				float3 BlueNoise67 = staticSwitch66;
-				float simplePerlin2D89 = snoise( uv_DistortionMap*_NoiseAmount );
-				simplePerlin2D89 = simplePerlin2D89*0.5 + 0.5;
-				float3 tex2DNode8 = UnpackNormalScale( SAMPLE_TEXTURE2D( _DistortionMap, sampler_DistortionMap, ( float3( uv_DistortionMap ,  0.0 ) + float3( ( appendResult24 * _TimeParameters.x ) ,  0.0 ) + BlueNoise67 + simplePerlin2D89 ).xy ), 1.0f );
-				float2 appendResult47 = (float2(tex2DNode8.r , tex2DNode8.g));
-				float2 DistortedUVs28 = ( appendResult47 * ( _DistortionAmount * 0.25 ) );
-				float4 tex2DNode5 = SAMPLE_TEXTURE2D( _MainTex, sampler_Linear_Clamp, ( float3( uv_MainTex ,  0.0 ) + float3( DistortedUVs28 ,  0.0 ) + BlueNoise67 ).xy );
-				float MainTexAlpha33 = tex2DNode5.a;
-				float VertexAlpha37 = IN.ase_color.a;
-				int One61 = 1;
-				float3 temp_cast_7 = One61;
-				float2 screenUV27_g61516 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g61516 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g61516 = GetScreenNoiseRGBASlice27_g61516( screenUV27_g61516 , offsetFrame27_g61516 );
+				float2 screenUV27_g142 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g142 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g142 = GetScreenNoiseRGBASlice27_g142( screenUV27_g142 , offsetFrame27_g142 );
 				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
-				float screenDepth4_g61514 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
-				float distanceDepth4_g61514 = saturate( abs( ( screenDepth4_g61514 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _DepthFadeAmount ) ) );
-				float3 lerpResult6_g61514 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g61516).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g61514);
-				#ifdef _ENABLEDEPTHFADE_ON
-				float3 staticSwitch55 = saturate( ( lerpResult6_g61514 * distanceDepth4_g61514 ) );
+				float screenDepth4_g140 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth4_g140 = saturate( abs( ( screenDepth4_g140 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float3 lerpResult6_g140 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g142).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g140);
+				#ifdef _ENABLESOFTINTERSECTION_ON
+				float3 staticSwitch233 = saturate( ( lerpResult6_g140 * distanceDepth4_g140 ) );
 				#else
-				float3 staticSwitch55 = temp_cast_7;
+				float3 staticSwitch233 = temp_cast_0;
 				#endif
-				float eyeDepth = IN.ase_texcoord.z;
-				float cameraDepthFade14_g61514 = (( eyeDepth -_ProjectionParams.y - _Offset ) / _CameraDFFalloff);
-				#ifdef _ENABLECAMERADEPTHFADE_ON
-				float staticSwitch56 = saturate( cameraDepthFade14_g61514 );
+				float3 temp_cast_1 = (1.0).xxx;
+				#ifdef _PCDEBUG_ON
+				float3 staticSwitch241 = temp_cast_1;
 				#else
-				float staticSwitch56 = (float)One61;
+				float3 staticSwitch241 = staticSwitch233;
 				#endif
-				float3 DepthFadeAlpha58 = ( staticSwitch55 * staticSwitch56 );
-				float ColorAlpha105 = _Color.a;
-				float3 smoothstepResult100 = smoothstep( float3( 0,0,0 ) , temp_cast_0 , ( MainTexAlpha33 * VertexAlpha37 * DepthFadeAlpha58 * ColorAlpha105 ));
-				float3 Alpha43 = saturate( smoothstepResult100 );
+				float3 DepthFadeSoftIntersection236 = staticSwitch241;
+				float2 uv_ParticleTexture = IN.ase_texcoord.yz * _ParticleTexture_ST.xy + _ParticleTexture_ST.zw;
+				float2 screenUV27_g8 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _BlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g8 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g8 = GetScreenNoiseRGBASlice27_g8( screenUV27_g8 , offsetFrame27_g8 );
+				#ifdef _BLUENOISEOVERLAY_ON
+				float3 staticSwitch81 = ( ( (localGetScreenNoiseRGBASlice27_g8).xyz - float3( 0.5,0.5,0.5 ) ) * ( _BlueNoise * 0.1 ) * 2.0 );
+				#else
+				float3 staticSwitch81 = float3( 0,0,0 );
+				#endif
+				float3 BlueNoiseMain130 = staticSwitch81;
+				float4 tex2DNode45 = tex2D( _ParticleTexture, ( float3( uv_ParticleTexture ,  0.0 ) + BlueNoiseMain130 ).xy );
+				float ParticleAlpha173 = tex2DNode45.a;
+				float smoothstepResult208 = smoothstep( 0.0 , _EdgeFalloff , ( _Transparency * ParticleAlpha173 ));
+				float4 LuminanceAlpha256 = tex2DNode45;
+				float4 Alpha211 = saturate( ( float4( ( VertexColorAlpha117 * DepthFadeCameraDepthFade235 * DepthFadeSoftIntersection236 * smoothstepResult208 ) , 0.0 ) * LuminanceAlpha256 ) );
 				
-				surfaceDescription.Alpha = Alpha43.x;
-				surfaceDescription.AlphaClipThreshold = 0.5;
+				surfaceDescription.Alpha = Alpha211.r;
+				surfaceDescription.AlphaClipThreshold = _AlphaClip;
 
 
 				#if defined(_ALPHATEST_ON) && !defined(ASE_TERRAIN)
@@ -3654,14 +3533,14 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ _VOLUMETRICS_ENABLED
-			#define _SPECULAR_SETUP 1
-			#define _TRANSLUCENCY_ASE 1
+			#define _RECEIVE_SHADOWS_OFF 1
 			#define ASE_DEPTH_WRITE_ON
-			#define _EMISSION
+			#pragma multi_compile_instancing
+			#define _ALPHATEST_ON 1
+			#define _NORMALMAP 1
 			#define ASE_VERSION 19908
 			#define ASE_SRP_VERSION -1
 			#define REQUIRE_DEPTH_TEXTURE 1
-			#define ASE_USING_SAMPLING_MACROS 1
 
 
 			#pragma only_renderers d3d11 glcore gles gles3 
@@ -3682,13 +3561,13 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
         
-			#define ASE_NEEDS_TEXTURE_COORDINATES0
-			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_VERT_POSITION
+			#define ASE_NEEDS_TEXTURE_COORDINATES0
 			#pragma shader_feature_local_fragment _BRDFMAP
-			#pragma shader_feature_local _ENABLEBLUENOISE_ON
-			#pragma shader_feature_local _ENABLEDEPTHFADE_ON
-			#pragma shader_feature_local _ENABLECAMERADEPTHFADE_ON
+			#pragma shader_feature_local _ENABLECAMERADEPTHFADING_ON
+			#pragma shader_feature_local _PCDEBUG_ON
+			#pragma shader_feature_local _ENABLESOFTINTERSECTION_ON
+			#pragma shader_feature_local _BLUENOISEOVERLAY_ON
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SLZBlueNoise.hlsl"
 
 
@@ -3696,41 +3575,37 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			{
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
-				float4 ase_texcoord : TEXCOORD0;
 				float4 ase_color : COLOR;
+				float4 ase_texcoord : TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct VertexOutput
 			{
 				float4 clipPos : SV_POSITION;
+				float4 ase_color : COLOR;
 				float4 ase_texcoord : TEXCOORD0;
 				float4 ase_texcoord1 : TEXCOORD1;
-				float4 ase_color : COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
         
 			CBUFFER_START(UnityPerMaterial)
+			float4 _ParticleTexture_ST;
 			float4 _Color;
-			float4 _MainTex_ST;
-			float4 _DistortionMap_ST;
-			float4 _Anim;
-			float3 _EmissionColor;
-			float _CameraDFFalloff;
-			float _DepthFadeAmount;
-			float _DepthFadeBlueNoise;
-			float _DepthFadeBlueNoiseSize;
-			float _SplashFalloff;
-			float _Smoothness;
-			float _DummyFloatOne;
-			float _Offset;
-			float _DistortionAmount;
-			float _NoiseAmount;
+			int _Cull;
+			float _BlueNoiseSize;
 			float _BlueNoise;
-			float _TransmissionBoost;
-			float _DummyFloatZero;
-			float _ReflectivityBoost;
+			float _NormalIntensity;
+			float _CDFalloff1;
+			float _CDDistance1;
+			float _DepthFadeBlueNoiseSize;
+			float _DepthFadeBlueNoise;
+			float _SoftIntersection;
+			float _EdgeFalloff;
+			float _Transparency;
+			float _AlphaClip;
+			float _QuestDepthFadeBlueNoiseSize;
 			float _QuestDepthFade;
 			#ifdef TESSELLATION_ON
 				float _TessPhongStrength;
@@ -3742,19 +3617,7 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			#endif
 			CBUFFER_END
 
-			TEXTURE2D(_MainTex);
-			TEXTURE2D(_DistortionMap);
-			SAMPLER(sampler_DistortionMap);
-			SAMPLER(sampler_Linear_Clamp);
-			
-			#ifdef UNITY_DOTS_INSTANCING_ENABLED
-			UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
-				UNITY_DOTS_INSTANCED_PROP(float, _DummyFloatOne)
-				UNITY_DOTS_INSTANCED_PROP(float, _DummyFloatZero)
-			UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
-			#define _DummyFloatOne UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float , Metadata__DummyFloatOne)
-			#define _DummyFloatZero UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float , Metadata__DummyFloatZero)
-			#endif
+			sampler2D _ParticleTexture;
 
 
 			inline float4 ASE_ComputeGrabScreenPos( float4 pos )
@@ -3770,40 +3633,12 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				return o;
 			}
 			
-			inline float4 GetScreenNoiseRGBASlice27_g3( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g142( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
 			
-			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float2 mod2D289( float2 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
-			float3 permute( float3 x ) { return mod2D289( ( ( x * 34.0 ) + 1.0 ) * x ); }
-			float snoise( float2 v )
-			{
-				const float4 C = float4( 0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439 );
-				float2 i = floor( v + dot( v, C.yy ) );
-				float2 x0 = v - i + dot( i, C.xx );
-				float2 i1;
-				i1 = ( x0.x > x0.y ) ? float2( 1.0, 0.0 ) : float2( 0.0, 1.0 );
-				float4 x12 = x0.xyxy + C.xxzz;
-				x12.xy -= i1;
-				i = mod2D289( i );
-				float3 p = permute( permute( i.y + float3( 0.0, i1.y, 1.0 ) ) + i.x + float3( 0.0, i1.x, 1.0 ) );
-				float3 m = max( 0.5 - float3( dot( x0, x0 ), dot( x12.xy, x12.xy ), dot( x12.zw, x12.zw ) ), 0.0 );
-				m = m * m;
-				m = m * m;
-				float3 x = 2.0 * frac( p * C.www ) - 1.0;
-				float3 h = abs( x ) - 0.5;
-				float3 ox = floor( x + 0.5 );
-				float3 a0 = x - ox;
-				m *= 1.79284291400159 - 0.85373472095314 * ( a0 * a0 + h * h );
-				float3 g;
-				g.x = a0.x * x0.x + h.x * x0.y;
-				g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-				return 130.0 * dot( m, g );
-			}
-			
-			inline float4 GetScreenNoiseRGBASlice27_g61516( float2 screenUV, float offsetFrame )
+			inline float4 GetScreenNoiseRGBASlice27_g8( float2 screenUV, float offsetFrame )
 			{
 				return GetScreenNoiseRGBAOffset(screenUV, offsetFrame);
 			}
@@ -3829,15 +3664,15 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
 
+				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
+				float eyeDepth = -objectToViewPos.z;
+				o.ase_texcoord.x = eyeDepth;
 				float4 ase_positionCS = TransformObjectToHClip( ( v.vertex ).xyz );
 				float4 screenPos = ComputeScreenPos( ase_positionCS );
 				o.ase_texcoord1 = screenPos;
-				float3 objectToViewPos = TransformWorldToView( TransformObjectToWorld( v.vertex.xyz ) );
-				float eyeDepth = -objectToViewPos.z;
-				o.ase_texcoord.z = eyeDepth;
 				
-				o.ase_texcoord.xy = v.ase_texcoord.xy;
 				o.ase_color = v.ase_color;
+				o.ase_texcoord.yz = v.ase_texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord.w = 0;
@@ -3864,8 +3699,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			{
 				float4 vertex : INTERNALTESSPOS;
 				float3 ase_normal : NORMAL;
-				float4 ase_texcoord : TEXCOORD0;
 				float4 ase_color : COLOR;
+				float4 ase_texcoord : TEXCOORD0;
 
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -3883,8 +3718,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.vertex = v.vertex;
 				o.ase_normal = v.ase_normal;
-				o.ase_texcoord = v.ase_texcoord;
 				o.ase_color = v.ase_color;
+				o.ase_texcoord = v.ase_texcoord;
 				return o;
 			}
 
@@ -3923,8 +3758,8 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 				VertexInput o = (VertexInput) 0;
 				o.vertex = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.ase_normal = patch[0].ase_normal * bary.x + patch[1].ase_normal * bary.y + patch[2].ase_normal * bary.z;
-				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
 				o.ase_color = patch[0].ase_color * bary.x + patch[1].ase_color * bary.y + patch[2].ase_color * bary.z;
+				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -3945,59 +3780,57 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 			half4 frag(VertexOutput IN ) : SV_TARGET
 			{
 				SurfaceDescription surfaceDescription = (SurfaceDescription)0;
-				float3 temp_cast_0 = (_SplashFalloff).xxx;
-				float2 uv_MainTex = IN.ase_texcoord.xy * _MainTex_ST.xy + _MainTex_ST.zw;
-				float2 uv_DistortionMap = IN.ase_texcoord.xy * _DistortionMap_ST.xy + _DistortionMap_ST.zw;
-				float2 appendResult24 = (float2(_Anim.x , _Anim.y));
+				float VertexColorAlpha117 = IN.ase_color.a;
+				float eyeDepth = IN.ase_texcoord.x;
+				float cameraDepthFade14_g140 = (( eyeDepth -_ProjectionParams.y - _CDDistance1 ) / _CDFalloff1);
+				#ifdef _ENABLECAMERADEPTHFADING_ON
+				float staticSwitch234 = saturate( cameraDepthFade14_g140 );
+				#else
+				float staticSwitch234 = 1.0;
+				#endif
+				float DepthFadeCameraDepthFade235 = staticSwitch234;
+				float3 temp_cast_0 = (1.0).xxx;
 				float4 screenPos = IN.ase_texcoord1;
 				float4 ase_grabScreenPos = ASE_ComputeGrabScreenPos( screenPos );
 				float4 ase_grabScreenPosNorm = ase_grabScreenPos / ase_grabScreenPos.w;
-				float2 screenUV27_g3 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * 1.0 ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g3 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g3 = GetScreenNoiseRGBASlice27_g3( screenUV27_g3 , offsetFrame27_g3 );
-				#ifdef _ENABLEBLUENOISE_ON
-				float3 staticSwitch66 = ( ( (localGetScreenNoiseRGBASlice27_g3).xyz - float3( 0.5,0.5,0.5 ) ) * ( _BlueNoise * 0.1 ) * 2.0 );
-				#else
-				float3 staticSwitch66 = float3( 0,0,0 );
-				#endif
-				float3 BlueNoise67 = staticSwitch66;
-				float simplePerlin2D89 = snoise( uv_DistortionMap*_NoiseAmount );
-				simplePerlin2D89 = simplePerlin2D89*0.5 + 0.5;
-				float3 tex2DNode8 = UnpackNormalScale( SAMPLE_TEXTURE2D( _DistortionMap, sampler_DistortionMap, ( float3( uv_DistortionMap ,  0.0 ) + float3( ( appendResult24 * _TimeParameters.x ) ,  0.0 ) + BlueNoise67 + simplePerlin2D89 ).xy ), 1.0f );
-				float2 appendResult47 = (float2(tex2DNode8.r , tex2DNode8.g));
-				float2 DistortedUVs28 = ( appendResult47 * ( _DistortionAmount * 0.25 ) );
-				float4 tex2DNode5 = SAMPLE_TEXTURE2D( _MainTex, sampler_Linear_Clamp, ( float3( uv_MainTex ,  0.0 ) + float3( DistortedUVs28 ,  0.0 ) + BlueNoise67 ).xy );
-				float MainTexAlpha33 = tex2DNode5.a;
-				float VertexAlpha37 = IN.ase_color.a;
-				int One61 = 1;
-				float3 temp_cast_7 = One61;
-				float2 screenUV27_g61516 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
-				float offsetFrame27_g61516 = 0.0;
-				float4 localGetScreenNoiseRGBASlice27_g61516 = GetScreenNoiseRGBASlice27_g61516( screenUV27_g61516 , offsetFrame27_g61516 );
+				float2 screenUV27_g142 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _DepthFadeBlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g142 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g142 = GetScreenNoiseRGBASlice27_g142( screenUV27_g142 , offsetFrame27_g142 );
 				float4 ase_positionSSNorm = screenPos / screenPos.w;
 				ase_positionSSNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_positionSSNorm.z : ase_positionSSNorm.z * 0.5 + 0.5;
-				float screenDepth4_g61514 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
-				float distanceDepth4_g61514 = saturate( abs( ( screenDepth4_g61514 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _DepthFadeAmount ) ) );
-				float3 lerpResult6_g61514 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g61516).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g61514);
-				#ifdef _ENABLEDEPTHFADE_ON
-				float3 staticSwitch55 = saturate( ( lerpResult6_g61514 * distanceDepth4_g61514 ) );
+				float screenDepth4_g140 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_positionSSNorm.xy ),_ZBufferParams);
+				float distanceDepth4_g140 = saturate( abs( ( screenDepth4_g140 - LinearEyeDepth( ase_positionSSNorm.z,_ZBufferParams ) ) / ( _SoftIntersection ) ) );
+				float3 lerpResult6_g140 = lerp( ( ( (localGetScreenNoiseRGBASlice27_g142).xyz - float3( 0.5,0.5,0.5 ) ) * ( ( _DepthFadeBlueNoise * 9.0 ) * 0.1 ) * 2.0 ) , float3( 1,1,1 ) , distanceDepth4_g140);
+				#ifdef _ENABLESOFTINTERSECTION_ON
+				float3 staticSwitch233 = saturate( ( lerpResult6_g140 * distanceDepth4_g140 ) );
 				#else
-				float3 staticSwitch55 = temp_cast_7;
+				float3 staticSwitch233 = temp_cast_0;
 				#endif
-				float eyeDepth = IN.ase_texcoord.z;
-				float cameraDepthFade14_g61514 = (( eyeDepth -_ProjectionParams.y - _Offset ) / _CameraDFFalloff);
-				#ifdef _ENABLECAMERADEPTHFADE_ON
-				float staticSwitch56 = saturate( cameraDepthFade14_g61514 );
+				float3 temp_cast_1 = (1.0).xxx;
+				#ifdef _PCDEBUG_ON
+				float3 staticSwitch241 = temp_cast_1;
 				#else
-				float staticSwitch56 = (float)One61;
+				float3 staticSwitch241 = staticSwitch233;
 				#endif
-				float3 DepthFadeAlpha58 = ( staticSwitch55 * staticSwitch56 );
-				float ColorAlpha105 = _Color.a;
-				float3 smoothstepResult100 = smoothstep( float3( 0,0,0 ) , temp_cast_0 , ( MainTexAlpha33 * VertexAlpha37 * DepthFadeAlpha58 * ColorAlpha105 ));
-				float3 Alpha43 = saturate( smoothstepResult100 );
+				float3 DepthFadeSoftIntersection236 = staticSwitch241;
+				float2 uv_ParticleTexture = IN.ase_texcoord.yz * _ParticleTexture_ST.xy + _ParticleTexture_ST.zw;
+				float2 screenUV27_g8 = ( ( ( (ase_grabScreenPosNorm).xy - float2( 0.5,0.5 ) ) * _BlueNoiseSize ) + float2( 0.5,0.5 ) );
+				float offsetFrame27_g8 = 0.0;
+				float4 localGetScreenNoiseRGBASlice27_g8 = GetScreenNoiseRGBASlice27_g8( screenUV27_g8 , offsetFrame27_g8 );
+				#ifdef _BLUENOISEOVERLAY_ON
+				float3 staticSwitch81 = ( ( (localGetScreenNoiseRGBASlice27_g8).xyz - float3( 0.5,0.5,0.5 ) ) * ( _BlueNoise * 0.1 ) * 2.0 );
+				#else
+				float3 staticSwitch81 = float3( 0,0,0 );
+				#endif
+				float3 BlueNoiseMain130 = staticSwitch81;
+				float4 tex2DNode45 = tex2D( _ParticleTexture, ( float3( uv_ParticleTexture ,  0.0 ) + BlueNoiseMain130 ).xy );
+				float ParticleAlpha173 = tex2DNode45.a;
+				float smoothstepResult208 = smoothstep( 0.0 , _EdgeFalloff , ( _Transparency * ParticleAlpha173 ));
+				float4 LuminanceAlpha256 = tex2DNode45;
+				float4 Alpha211 = saturate( ( float4( ( VertexColorAlpha117 * DepthFadeCameraDepthFade235 * DepthFadeSoftIntersection236 * smoothstepResult208 ) , 0.0 ) * LuminanceAlpha256 ) );
 				
-				surfaceDescription.Alpha = Alpha43.x;
-				surfaceDescription.AlphaClipThreshold = 0.5;
+				surfaceDescription.Alpha = Alpha211.r;
+				surfaceDescription.AlphaClipThreshold = _AlphaClip;
 
 
 				#if defined(_ALPHATEST_ON) && !defined(ASE_TERRAIN)
@@ -4019,189 +3852,181 @@ Shader "AtlasShaders/Vertigo 2/Water/Splash"
 		
 	}
 	
-	CustomEditor "Vertigo2GUI"
+	CustomEditor "LitParticleDepthFadeGUI"
 	Fallback "Hidden/InternalErrorShader"
 	
 }
 /*ASEBEGIN
 Version=19908
-Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;63;-1536,896;Inherit;False;1236;187;;4;67;66;65;64;Blue Noise;0,0.5550687,1,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;95;-2960,-304;Inherit;False;1684;608;;17;22;24;91;92;25;30;89;68;23;26;27;19;8;35;47;18;28;Distorted UV's;0,0.120132,1,1;0;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;64;-1488,960;Inherit;False;Property;_BlueNoise;Blue Noise;21;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;65;-1200,960;Inherit;False;Blue Noise Diffusion;-1;;2;5e6df176aa279d846818294540ea1f3f;0;2;8;FLOAT;0;False;9;FLOAT;1;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.Vector4Node, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;22;-2912,-240;Inherit;False;Property;_Anim;Animation Speed (XY);8;0;Create;False;0;0;0;False;0;False;0,0,0,0;0,0,0,0;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;66;-816,960;Inherit;False;Property;_EnableBlueNoise;Enable Blue Noise;20;0;Create;True;0;0;0;False;1;Header(Blue Noise);False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT3;0,0,0;False;0;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;4;FLOAT3;0,0,0;False;5;FLOAT3;0,0,0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.DynamicAppendNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;24;-2672,-240;Inherit;False;FLOAT2;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;67;-544,960;Inherit;False;BlueNoise;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.SimpleTimeNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;25;-2848,-64;Inherit;False;1;0;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;30;-2544,-128;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;92;-2720,192;Inherit;False;Property;_NoiseAmount;Noise amount;7;0;Create;False;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;91;-2752,64;Inherit;False;0;8;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;68;-2480,-16;Inherit;False;67;BlueNoise;1;0;OBJECT;;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;23;-2448,-112;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;26;-2512,-240;Inherit;False;0;8;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.NoiseGeneratorNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;89;-2528,64;Inherit;True;Simplex2D;True;False;2;0;FLOAT2;0,0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleAddOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;27;-2224,-240;Inherit;False;4;4;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;19;-2016,-48;Inherit;False;Property;_DistortionAmount;Distortion amount;6;0;Create;False;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;8;-2096,-240;Inherit;True;Property;_DistortionMap;Distortion;5;1;[Normal];Create;False;0;0;0;False;0;False;-1;None;None;True;0;False;bump;Auto;True;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;35;-1664,-128;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0.25;False;1;FLOAT;0
-Node;AmplifyShaderEditor.DynamicAppendNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;47;-1808,-240;Inherit;False;FLOAT2;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;59;-2160,960;Inherit;False;436;163;;2;61;60;Register One;0,0,0,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;96;-2987,384;Inherit;False;1439;550;;11;49;48;51;124;123;122;58;57;55;56;52;Depth Faders;1,0.7039996,0.03301889,1;0;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;18;-1664,-240;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.IntNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;60;-2096,1008;Inherit;False;Constant;_One;One;12;0;Create;True;0;0;0;False;0;False;1;0;False;0;0;0;1;INT;0
-Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;99;-1232,-304;Inherit;False;1092;547;;13;20;29;70;21;5;33;13;7;40;6;14;105;126;Final Color;1,0,0.4235697,1;0;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;61;-1952,1008;Inherit;False;One;-1;True;1;0;INT;0;False;1;INT;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;28;-1456,-224;Inherit;False;DistortedUVs;-1;True;1;0;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;122;-2960,608;Inherit;False;Property;_DepthFadeBlueNoiseSize;Blue Noise Size;16;0;Create;False;1;Blue Noise;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;123;-2960,528;Inherit;False;Property;_DepthFadeBlueNoise;Depth Fade Blue Noise;15;0;Create;True;1;Blue Noise;0;0;False;0;False;1.5;0;0;5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;51;-2960,688;Inherit;False;Property;_DepthFadeAmount;Depth Fade Amount;14;0;Create;True;0;0;0;False;0;False;0;0;0;3;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;48;-2960,848;Inherit;False;Property;_Offset;Offset;19;0;Create;True;0;0;0;False;0;False;0.1;0;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;49;-2960,768;Inherit;False;Property;_CameraDFFalloff;Falloff;18;0;Create;False;0;0;0;False;0;False;0;0;0;0.5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;52;-2432,448;Inherit;False;61;One;1;0;OBJECT;;False;1;INT;0
-Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;20;-1184,-256;Inherit;False;0;5;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;29;-1184,-128;Inherit;False;28;DistortedUVs;1;0;OBJECT;;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;70;-1152,-48;Inherit;False;67;BlueNoise;1;0;OBJECT;;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;124;-2656,528;Inherit;False;Depth Faders;-1;;61514;d82d20eda006c484093d6adf8fee07db;0;5;28;FLOAT;0;False;30;FLOAT;1;False;24;FLOAT;0;False;25;FLOAT;0;False;26;FLOAT;0;False;2;FLOAT3;0;FLOAT;23
-Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;39;-2656,960;Inherit;False;468;259;;3;38;37;36;Register Vertex Alpha;1,0,0,1;0;0
-Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;56;-2224,560;Inherit;False;Property;_EnableCameraDepthFade;Enable Camera Depth Fade;17;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;55;-2224,448;Inherit;False;Property;_EnableDepthFade;Enable Depth Fade;13;0;Create;True;0;0;0;False;1;Header(Depth Fading Options);False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT3;0,0,0;False;0;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;4;FLOAT3;0,0,0;False;5;FLOAT3;0,0,0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.SimpleAddOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;21;-960,-256;Inherit;False;3;3;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;2;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.SamplerStateNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;126;-960,-112;Inherit;False;1;1;1;1;-1;None;1;0;SAMPLER2D;;False;1;SAMPLERSTATE;0
-Node;AmplifyShaderEditor.ColorNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;7;-720,-64;Inherit;False;Property;_Color;Color;0;0;Create;True;0;0;0;False;0;False;1,1,1,1;1,1,1,1;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.VertexColorNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;36;-2608,1008;Inherit;False;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;57;-1936,448;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;FLOAT;0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;97;-836.9503,384;Inherit;False;1096.464;389.2057;;10;106;62;43;45;100;101;42;41;34;107;Alpha;0.8635316,1,0.2971698,1;0;0
-Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;5;-784,-256;Inherit;True;Property;_MainTex;Main Texture;4;0;Create;False;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;105;-480,48;Inherit;False;ColorAlpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;37;-2432,1104;Inherit;False;VertexAlpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;58;-1792,464;Inherit;False;DepthFadeAlpha;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;106;-752,688;Inherit;False;105;ColorAlpha;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;33;-480,-48;Inherit;False;MainTexAlpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;34;-784,448;Inherit;False;33;MainTexAlpha;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;41;-752,528;Inherit;False;37;VertexAlpha;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;62;-784,608;Inherit;False;58;DepthFadeAlpha;1;0;OBJECT;;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;107;-560,608;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;101;-512,592;Inherit;False;Property;_SplashFalloff;Splash Falloff;12;0;Create;True;0;0;0;False;0;False;1;0;0;5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;42;-512,448;Inherit;False;4;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.SmoothstepOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;100;-272,448;Inherit;False;3;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;1,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.SaturateNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;45;-96,448;Inherit;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;98;-1525,384;Inherit;False;665;434;;6;104;103;11;10;9;16;Emission;0,0.8665147,1,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;71;-256,896;Inherit;False;292;339;;3;74;73;72;Transluency Options;0.7716191,1,0.4858491,1;0;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;43;48,448;Inherit;False;Alpha;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;108;-1694,1120;Inherit;False;1392.496;303.9352;;7;115;112;114;113;111;110;109;Quest Depth Fade;1,0.3646275,0,1;0;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;38;-2432,1008;Inherit;False;VertexColor;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;72;-208,1120;Inherit;False;Property;_DummyFloatOne;DummyFloatOne;1;1;[HideInInspector];Create;True;0;0;0;True;0;True;1;1;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;73;-208,1040;Inherit;False;Property;_DummyFloatZero;DummyFloatZero;3;1;[HideInInspector];Create;True;0;0;0;True;0;True;0;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;74;-208,944;Inherit;False;Property;_TransmissionBoost;Transmission Boost;11;0;Create;True;1;Extra;0;0;True;0;False;2;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;12;64,-192;Inherit;False;11;Emission;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;15;64,-272;Inherit;False;14;Final Color;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;31;-32,-32;Inherit;False;Property;_Smoothness;Smoothness;9;0;Create;True;0;0;0;False;2;Space(20);Header(Extra);False;0;0;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;32;-32,-112;Inherit;False;Property;_ReflectivityBoost;Reflectivity Boost;10;0;Create;True;0;0;0;False;0;False;0;0.5;0;3;0;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;46;64,48;Inherit;False;43;Alpha;1;0;OBJECT;;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;102;336,-352;Inherit;False;BRDFMap;22;;61517;1affaac2d6e57354aaa8d6573a2b32b8;0;1;3;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;109;-976,1168;Inherit;False;Property;_SHADER_API_MOBILE;SHADER_API_MOBILE;33;0;Create;True;0;0;0;False;0;False;0;0;0;False;SHADER_API_MOBILE;Toggle;2;Key0;Key1;Fetch;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;110;-720,1168;Inherit;False;Property;_PCDebug;PC Debug;26;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;111;-512,1168;Inherit;False;QuestDepthFade;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;113;-1360,1168;Inherit;False;BlueNoiseFakeTransparencyDepthOffset;-1;;61518;e0e0f8e10bf068a43b805df662b593ba;0;3;1;FLOAT;1;False;2;FLOAT;0;False;24;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;114;-784,1264;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;112;-1360,1296;Inherit;False;BlueNoiseFakeTransparencyDepthOffset;-1;;61520;e0e0f8e10bf068a43b805df662b593ba;0;3;1;FLOAT;1;False;2;FLOAT;0.15;False;24;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;115;-1648,1296;Inherit;False;Property;_QuestDepthFade;Quest Depth Fade;25;1;[Header];Create;True;1;Quest Depth Fade;0;0;False;0;False;0.025;0;0;3;0;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;116;32,128;Inherit;False;111;QuestDepthFade;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;13;-480,-256;Inherit;False;MainTextureColor;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;40;-688,128;Inherit;False;38;VertexColor;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;6;-480,-176;Inherit;False;3;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;14;-336,-176;Inherit;False;Final Color;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;10;-1232,432;Inherit;False;4;4;0;COLOR;0,0,0,0;False;1;FLOAT3;0,0,0;False;2;COLOR;0,0,0,0;False;3;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;11;-1088,432;Inherit;False;Emission;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;16;-1504,432;Inherit;False;13;MainTextureColor;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.ColorNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;9;-1504,512;Inherit;False;Property;_EmissionColor;Emission Color;2;1;[HDR];Create;True;0;0;0;False;0;False;0,0,0,1;1,1,1,1;True;False;0;6;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;103;-1472,656;Inherit;False;38;VertexColor;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;104;-1472,736;Inherit;False;37;VertexAlpha;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;79;272,-256;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;80;272,-272;Float;False;True;-1;3;Vertigo2GUI;0;15;AtlasShaders/Vertigo 2/Water/Splash;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;23;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;2;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;True;2;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;48;Workflow;0;639179345658743985;Surface;1;639179345649436040;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space;0;0;Transmission;0;0;  Transmission Shadow;0.5,True,_teansmisoo;0;Translucency;1;639179345776909414;  Translucency Strength;1,True,_TransmissionBoost;639179346142296473;  Normal Distortion;0.5,True,_DummyFloatOne;639179346172802680;  Scattering;2,True,_DummyFloatOne;639179346195531751;  Direct;0.9,True,_DummyFloatZero;639179346224176843;  Ambient;0.1,True,_DummyFloatOne;639179346238284832;  Shadow;0.5,True,_DummyFloatZero;639179346251187794;Cast Shadows;0;639179345726238479;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;0;0;LOD CrossFade;0;0;Built-in Fog;1;0;Lightmaps;1;0;Volumetrics;1;0;Decals;0;0;Screen Space Occlusion;1;0;Reflection Probe Blend/Projection;1;0;Light Layers;0;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;GBuffer Pass;0;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;1;639228730782050106;  Early Z;0;0;Vertex Position;1;0;Debug Display;0;0;Clear Coat;0;0;Fluorescence;0;0;0;10;False;True;False;True;True;True;True;False;True;True;False;;True;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;81;496,-192;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;82;496,-192;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;83;496,-192;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;84;496,-192;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;85;496,-192;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;86;496,-192;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;1;LightMode=None;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;87;496,-192;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;SceneSelectionPass;0;8;SceneSelectionPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=SceneSelectionPass;False;True;4;d3d11;glcore;gles;gles3;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;88;496,-192;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ScenePickingPass;0;9;ScenePickingPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Picking;False;True;4;d3d11;glcore;gles;gles3;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-WireConnection;65;8;64;0
-WireConnection;66;0;65;0
-WireConnection;24;0;22;1
-WireConnection;24;1;22;2
-WireConnection;67;0;66;0
-WireConnection;30;0;24;0
-WireConnection;23;0;30;0
-WireConnection;23;1;25;0
-WireConnection;89;0;91;0
-WireConnection;89;1;92;0
-WireConnection;27;0;26;0
-WireConnection;27;1;23;0
-WireConnection;27;2;68;0
-WireConnection;27;3;89;0
-WireConnection;8;1;27;0
-WireConnection;35;0;19;0
-WireConnection;47;0;8;1
-WireConnection;47;1;8;2
-WireConnection;18;0;47;0
-WireConnection;18;1;35;0
-WireConnection;61;0;60;0
-WireConnection;28;0;18;0
-WireConnection;124;28;123;0
-WireConnection;124;30;122;0
-WireConnection;124;24;51;0
-WireConnection;124;25;49;0
-WireConnection;124;26;48;0
-WireConnection;56;1;52;0
-WireConnection;56;0;124;23
-WireConnection;55;1;52;0
-WireConnection;55;0;124;0
-WireConnection;21;0;20;0
-WireConnection;21;1;29;0
-WireConnection;21;2;70;0
-WireConnection;57;0;55;0
-WireConnection;57;1;56;0
-WireConnection;5;1;21;0
-WireConnection;5;7;126;0
-WireConnection;105;0;7;4
-WireConnection;37;0;36;4
-WireConnection;58;0;57;0
-WireConnection;33;0;5;4
-WireConnection;107;0;106;0
-WireConnection;42;0;34;0
-WireConnection;42;1;41;0
-WireConnection;42;2;62;0
-WireConnection;42;3;107;0
-WireConnection;100;0;42;0
-WireConnection;100;2;101;0
-WireConnection;45;0;100;0
-WireConnection;43;0;45;0
-WireConnection;38;0;36;0
-WireConnection;109;1;113;0
-WireConnection;109;0;112;0
-WireConnection;110;1;109;0
-WireConnection;110;0;114;0
-WireConnection;111;0;110;0
-WireConnection;114;0;112;0
-WireConnection;112;2;115;0
-WireConnection;13;0;5;0
-WireConnection;6;0;5;0
-WireConnection;6;1;7;0
-WireConnection;6;2;40;0
-WireConnection;14;0;6;0
-WireConnection;10;0;16;0
-WireConnection;10;1;9;0
-WireConnection;10;2;103;0
-WireConnection;10;3;104;0
-WireConnection;11;0;10;0
-WireConnection;80;0;15;0
-WireConnection;80;2;12;0
-WireConnection;80;9;32;0
-WireConnection;80;4;31;0
-WireConnection;80;6;46;0
-WireConnection;80;17;116;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;74;-3344,-1168;Inherit;False;1122.697;210.8152;Blue noise around edges for realistic look;6;237;130;81;137;83;59;Blue Noise;0,0.6848593,1,1;0;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;83;-3328,-1120;Inherit;False;Property;_BlueNoise;Blue Noise;8;0;Create;True;1;Blue Noise;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;237;-3328,-1040;Inherit;False;Property;_BlueNoiseSize;Blue Noise Size;9;0;Create;True;0;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;137;-3040,-1120;Inherit;False;Blue Noise Diffusion;-1;;7;5e6df176aa279d846818294540ea1f3f;0;2;8;FLOAT;0;False;9;FLOAT;1;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;162;-2704,-1472;Inherit;False;475.3197;258.7333;;2;156;181;Register Particle Texture;0,0.3210201,1,1;0;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;81;-2736,-1120;Inherit;False;Property;_BlueNoiseOverlay;Blue Noise Overlay;7;0;Create;True;0;0;0;False;1;Header(Blue Noise) ;False;0;1;1;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT3;0,0,0;False;0;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;4;FLOAT3;0,0,0;False;5;FLOAT3;0,0,0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;177;-2192,-1472;Inherit;False;1715.8;503.2612;Calculate color;12;70;118;256;50;175;51;173;45;157;97;84;138;Color;0.6577053,0,1,1;0;0
+Node;AmplifyShaderEditor.TexturePropertyNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;181;-2688,-1424;Inherit;True;Property;_ParticleTexture;Particle Texture;0;1;[Header];Create;True;1;Base Attributes;0;0;False;0;False;None;None;False;white;Auto;Texture2D;False;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;130;-2448,-1120;Inherit;False;BlueNoiseMain;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;138;-2000,-1152;Inherit;False;130;BlueNoiseMain;1;0;OBJECT;;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;156;-2480,-1424;Inherit;False;ParticleTextureObject;-1;True;1;0;SAMPLER2D;;False;1;SAMPLER2D;0
+Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;84;-2032,-1280;Inherit;False;0;181;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;222;-3760,-912;Inherit;False;1541.594;462.8636;;16;236;241;243;235;233;234;232;231;230;227;229;228;226;225;224;223;Depth Fading;1,0.7118232,0,1;0;0
+Node;AmplifyShaderEditor.SimpleAddOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;97;-1808,-1280;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;157;-1920,-1360;Inherit;False;156;ParticleTextureObject;1;0;OBJECT;;False;1;SAMPLER2D;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;223;-3744,-544;Inherit;False;Property;_CDDistance1;Distance;16;0;Create;False;0;0;0;False;0;False;0.025;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;224;-3744,-624;Inherit;False;Property;_CDFalloff1;Falloff;15;1;[Header];Create;False;0;0;0;False;0;False;0.035;0;0;0.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;45;-1680,-1344;Inherit;True;Property;_TextureObject01;TextureObject01;5;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;225;-3456,-720;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;226;-3424,-704;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;228;-3744,-864;Inherit;False;Property;_DepthFadeBlueNoise;Depth Fade Blue Noise;12;0;Create;True;1;Blue Noise;0;0;False;0;False;1;0;0;5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;229;-3744,-784;Inherit;False;Property;_DepthFadeBlueNoiseSize;Blue Noise Size;13;0;Create;False;1;Blue Noise;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;227;-3744,-704;Inherit;False;Property;_SoftIntersection;Soft Intersection;11;0;Create;True;0;0;0;False;0;False;0.15;0;0;5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;230;-3056,-752;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;120;-3152,-1472;Inherit;False;418.4033;236.4031;Register vertex color for particle color and alpha control;3;117;116;69;Vertex Color;1,0,0,1;0;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;200;-3648,-400;Inherit;False;1433.537;615.8824;Calculate Alpha;15;212;211;210;209;208;207;206;205;203;202;47;124;257;258;259;Alpha;1,0.2950937,0,1;0;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;173;-1408,-1248;Inherit;False;ParticleAlpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;231;-3440,-864;Inherit;False;Depth Faders;-1;;140;d82d20eda006c484093d6adf8fee07db;0;5;28;FLOAT;0;False;30;FLOAT;1;False;24;FLOAT;0;False;25;FLOAT;0;False;26;FLOAT;0;False;2;FLOAT3;0;FLOAT;23
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;232;-3184,-688;Inherit;False;Constant;_Float0;Float 0;22;0;Create;True;0;0;0;False;0;False;1;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;233;-2992,-864;Inherit;False;Property;_EnableSoftIntersection;Enable Soft Intersection;10;0;Create;True;0;0;0;False;1;Header(Soft Intersection Options);False;0;1;1;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT3;0,0,0;False;0;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;4;FLOAT3;0,0,0;False;5;FLOAT3;0,0,0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;243;-2720,-688;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;202;-3568,48;Inherit;False;173;ParticleAlpha;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;47;-3632,-64;Inherit;False;Property;_Transparency;Transparency;4;0;Create;True;0;0;0;False;0;False;1;1;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;234;-2992,-768;Inherit;False;Property;_EnableCameraDepthFading;Enable Camera Depth Fading;14;0;Create;True;0;0;0;False;1;Space (10);False;0;1;1;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.VertexColorNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;69;-3136,-1424;Inherit;False;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;241;-2704,-864;Inherit;False;Property;_Keyword0;Keyword 0;19;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Reference;215;True;True;All;9;1;FLOAT3;0,0,0;False;0;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;4;FLOAT3;0,0,0;False;5;FLOAT3;0,0,0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;203;-3344,-32;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;124;-3456,144;Inherit;False;Property;_EdgeFalloff;Edge Falloff;6;0;Create;True;0;0;0;False;0;False;1;0;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;235;-2688,-768;Inherit;False;DepthFadeCameraDepthFade;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;117;-2960,-1344;Inherit;False;VertexColorAlpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;236;-2496,-864;Inherit;False;DepthFadeSoftIntersection;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;256;-1264,-1424;Inherit;False;LuminanceAlpha;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SmoothstepOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;208;-3184,-32;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;205;-3216,-352;Inherit;False;117;VertexColorAlpha;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;206;-3280,-272;Inherit;False;235;DepthFadeCameraDepthFade;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;207;-3280,-192;Inherit;False;236;DepthFadeSoftIntersection;1;0;OBJECT;;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;257;-3200,112;Inherit;False;256;LuminanceAlpha;1;0;OBJECT;;False;1;COLOR;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;209;-2832,-352;Inherit;False;4;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;258;-2673.768,-148.389;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SaturateNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;210;-2688,-352;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;247;-2192,-496;Inherit;False;836;351;;6;245;250;253;254;244;246;Normal;0.2309275,0,1,1;0;0
+Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;213;-2192,-912;Inherit;False;1386.622;350.7966;;6;221;220;217;216;215;214;Quest Depth Fade;1,0.3646275,0,1;0;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;211;-2544,-352;Inherit;False;Alpha;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.OneMinusNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;264;-1451.564,-1662.258;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;260;-3124.568,247.3336;Inherit;False;Property;_Intesnity;Intesnity;23;0;Create;True;0;0;0;False;0;False;1;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;259;-2832,64;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;262;-2960,320;Inherit;False;Property;_falloff;falloff;24;0;Create;True;0;0;0;False;0;False;1;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.PowerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;263;-2770.531,253.835;Inherit;False;False;2;0;COLOR;0,0,0,0;False;1;FLOAT;1;False;1;COLOR;0
+Node;AmplifyShaderEditor.ColorNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;51;-1392,-1168;Inherit;False;Property;_Color;Color;3;1;[HDR];Create;True;0;0;0;False;0;False;0.5019608,0.5019608,0.5019608,1;1,1,1,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;212;-3344,-112;Inherit;False;AlphaFloat;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;116;-2960,-1424;Inherit;False;VertexColor;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;98;-368,-752;Inherit;False;BRDFMap;20;;143;1affaac2d6e57354aaa8d6573a2b32b8;0;1;3;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.IntNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;238;-336,-832;Inherit;False;Property;_Cull;_Cull;25;1;[HideInInspector];Create;True;0;0;0;True;0;False;2;0;False;0;0;0;1;INT;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;214;-1488,-864;Inherit;False;Property;_SHADER_API_MOBILE;SHADER_API_MOBILE;33;0;Create;True;0;0;0;False;0;False;0;0;0;False;SHADER_API_MOBILE;Toggle;2;Key0;Key1;Fetch;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;215;-1232,-864;Inherit;False;Property;_PCDebug;PC Debug;19;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;216;-1296,-768;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;217;-1024,-864;Inherit;False;QuestDepthFade;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;220;-2176,-656;Inherit;False;Property;_QuestDepthFadeBlueNoiseSize;Blue Noise Size;18;0;Create;False;1;Quest Depth Fade;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;221;-2176,-736;Inherit;False;Property;_QuestDepthFade;Quest Depth Fade;17;1;[Header];Create;True;1;Quest Depth Fade;0;0;False;0;False;0.25;0;0;3;0;1;FLOAT;0
+Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;239;-1872,-736;Inherit;False;BlueNoiseFakeTransparencyDepthOffset;-1;;144;e0e0f8e10bf068a43b805df662b593ba;0;3;1;FLOAT;1;False;2;FLOAT;0;False;24;FLOAT;1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;240;-1872,-864;Inherit;False;BlueNoiseFakeTransparencyDepthOffset;-1;;146;e0e0f8e10bf068a43b805df662b593ba;0;3;1;FLOAT;1;False;2;FLOAT;0;False;24;FLOAT;1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;182;-608,-512;Inherit;False;Constant;_Zero;Zero;13;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;141;-736,-352;Inherit;False;Property;_AlphaClip;Alpha Clip;5;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;199;-672,-272;Inherit;False;217;QuestDepthFade;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;248;-640,-592;Inherit;False;246;Normal;1;0;OBJECT;;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;176;-640,-672;Inherit;False;175;ColorFinal;1;0;OBJECT;;False;1;COLOR;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;246;-1552,-448;Inherit;False;Normal;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;244;-1840,-448;Inherit;True;Property;_NormalMap;Normal Map;1;1;[NoScaleOffset];Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;bump;Auto;True;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.SimpleAddOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;254;-1952,-448;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;253;-2160,-448;Inherit;False;0;181;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;250;-2160,-320;Inherit;False;130;BlueNoiseMain;1;0;OBJECT;;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;245;-2160,-240;Inherit;False;Property;_NormalIntensity;Normal Intensity;2;0;Create;True;0;0;0;False;0;False;1;1;0;3;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;175;-704,-1344;Inherit;False;ColorFinal;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;50;-1200,-1344;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;118;-1040,-1424;Inherit;False;116;VertexColor;1;0;OBJECT;;False;1;COLOR;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;70;-864,-1344;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;170;-640,-432;Inherit;False;211;Alpha;1;0;OBJECT;;False;1;COLOR;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;59;-3024,-1056;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;14;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;61;480,-16;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;14;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;62;480,-16;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;14;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;63;480,-16;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;14;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;64;480,-16;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;14;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;65;480,-16;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;14;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;66;480,-16;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;14;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;1;LightMode=None;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;67;480,-16;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;14;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;SceneSelectionPass;0;8;SceneSelectionPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=SceneSelectionPass;False;True;4;d3d11;glcore;gles;gles3;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;68;480,-16;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;14;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ScenePickingPass;0;9;ScenePickingPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Picking;False;True;4;d3d11;glcore;gles;gles3;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;60;-432,-672;Float;False;True;-1;2;LitParticleDepthFadeGUI;0;15;AtlasShaders/Particle/Lit Particle Depth Fade (Additive);94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;23;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;True;True;0;True;_Cull;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;2;False;;True;3;False;;True;True;0;False;;0;False;;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;True;2;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;48;Workflow;1;0;Surface;1;639017053547212722;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space;0;0;Transmission;0;0;  Transmission Shadow;0.5,False,;0;Translucency;0;0;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;0;639057609998133177;  Use Shadow Threshold;1;639057533553618306;Receive Shadows;0;639057533636857740;GPU Instancing;1;639205269020899573;LOD CrossFade;0;0;Built-in Fog;1;0;Lightmaps;1;0;Volumetrics;1;0;Decals;0;0;Screen Space Occlusion;1;0;Reflection Probe Blend/Projection;1;0;Light Layers;0;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;GBuffer Pass;0;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;1;639204470042078188;  Early Z;0;0;Vertex Position;1;0;Debug Display;0;0;Clear Coat;0;0;Fluorescence;0;0;0;10;False;True;False;True;True;True;True;True;True;True;False;;False;0
+WireConnection;137;8;83;0
+WireConnection;137;9;237;0
+WireConnection;81;0;137;0
+WireConnection;130;0;81;0
+WireConnection;156;0;181;0
+WireConnection;97;0;84;0
+WireConnection;97;1;138;0
+WireConnection;45;0;157;0
+WireConnection;45;1;97;0
+WireConnection;225;0;224;0
+WireConnection;226;0;223;0
+WireConnection;230;0;232;0
+WireConnection;173;0;45;4
+WireConnection;231;28;228;0
+WireConnection;231;30;229;0
+WireConnection;231;24;227;0
+WireConnection;231;25;225;0
+WireConnection;231;26;226;0
+WireConnection;233;1;230;0
+WireConnection;233;0;231;0
+WireConnection;243;0;232;0
+WireConnection;234;1;232;0
+WireConnection;234;0;231;23
+WireConnection;241;1;233;0
+WireConnection;241;0;243;0
+WireConnection;203;0;47;0
+WireConnection;203;1;202;0
+WireConnection;235;0;234;0
+WireConnection;117;0;69;4
+WireConnection;236;0;241;0
+WireConnection;256;0;45;0
+WireConnection;208;0;203;0
+WireConnection;208;2;124;0
+WireConnection;209;0;205;0
+WireConnection;209;1;206;0
+WireConnection;209;2;207;0
+WireConnection;209;3;208;0
+WireConnection;258;0;209;0
+WireConnection;258;1;257;0
+WireConnection;210;0;258;0
+WireConnection;211;0;210;0
+WireConnection;264;0;45;0
+WireConnection;259;0;257;0
+WireConnection;259;1;260;0
+WireConnection;263;0;259;0
+WireConnection;263;1;262;0
+WireConnection;212;0;47;0
+WireConnection;116;0;69;0
+WireConnection;214;1;240;0
+WireConnection;214;0;239;0
+WireConnection;215;1;214;0
+WireConnection;215;0;216;0
+WireConnection;216;0;239;0
+WireConnection;217;0;215;0
+WireConnection;239;2;221;0
+WireConnection;239;24;220;0
+WireConnection;246;0;244;0
+WireConnection;244;1;254;0
+WireConnection;244;5;245;0
+WireConnection;254;0;253;0
+WireConnection;254;1;250;0
+WireConnection;175;0;70;0
+WireConnection;50;0;45;0
+WireConnection;50;1;51;0
+WireConnection;70;0;118;0
+WireConnection;70;1;50;0
+WireConnection;60;0;176;0
+WireConnection;60;1;248;0
+WireConnection;60;3;182;0
+WireConnection;60;4;182;0
+WireConnection;60;6;170;0
+WireConnection;60;7;141;0
+WireConnection;60;17;199;0
 ASEEND*/
-//CHKSM=E2C94F48C5A2BD1ED1236FFB1D4C634AAF06512F
+//CHKSM=D5E59CF4E4D1061F8D7FA13F0B33EF61D96E2B6E
