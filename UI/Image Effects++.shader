@@ -4,17 +4,24 @@ Shader "AtlasShaders/UI/Image Effects++"
 {
 	Properties
 	{
-		[HideInInspector] _Cutoff("Alpha Cutoff", Range(0, 1)) = 0.5
 		[HideInInspector] _EmissionColor("Emission Color", Color) = (1,1,1,1)
+		[HideInInspector] _Cutoff("Alpha Cutoff", Range(0, 1)) = 0.5
 		[HideInInspector] _MainTex( "MainTex", 2D ) = "white" {}
 		[Toggle( _MULTIPLYCOLOR_ON )] _MultiplyColor( "Multiply Color", Float ) = 1
 		[Header(Gradient)][Gradient] _Gradient( "Gradient", 2D ) = "white" {}
 		_GradientRotation( "Gradient Rotation", Range( 0, 1 ) ) = 0
+		[Toggle( _ANIMATEDROTATION_ON )] _AnimatedRotation( "Animated Rotation", Float ) = 0
+		_GradientRotationSpeed( "Gradient Rotation Speed", Range( 0, 5 ) ) = 0
 		_GradientScroll( "Gradient Scroll", Vector ) = ( 0, 0, 0, 0 )
 		[Header(Gaussian Blur)] _Blur( "Blur", Range( 0, 25 ) ) = 0
 		_Quality( "Quality", Range( 0, 25 ) ) = 0
 		_Directions( "Directions", Range( 0, 50 ) ) = 0
-		[Header(Noise Distortion)] _NoiseDistortionOffsetScroll( "Noise Distortion (Offset = Scroll)", 2D ) = "white" {}
+		[Header(Image Visuals)][Toggle( _GRAYSCALE_ON )] _Grayscale( "Grayscale", Float ) = 0
+		_Saturation( "Saturation", Range( 0, 15 ) ) = 1
+		_Contrast( "Contrast", Range( 0, 15 ) ) = 1
+		_Hue( "Hue", Range( 0, 1 ) ) = 0
+		_Posterize( "Posterize", Range( 1, 25 ) ) = 1
+		[Header(Distortion)] _NoiseDistortionOffsetScroll( "Noise Distortion (Offset = Scroll)", 2D ) = "white" {}
 		_NoiseDistortionAmount( "Noise Distortion Amount", Range( 0, 2 ) ) = 0
 
 		[HideInInspector]_QueueOffset("_QueueOffset", Float) = 0
@@ -204,7 +211,9 @@ Shader "AtlasShaders/UI/Image Effects++"
 			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_FRAG_COLOR
 			#pragma shader_feature_local _MULTIPLYCOLOR_ON
+			#pragma shader_feature_local _GRAYSCALE_ON
 			#pragma multi_compile_instancing
+			#pragma shader_feature_local _ANIMATEDROTATION_ON
 
 
 			struct VertexInput
@@ -238,10 +247,15 @@ Shader "AtlasShaders/UI/Image Effects++"
 			float4 _MainTex_ST;
 			float4 _NoiseDistortionOffsetScroll_ST;
 			float2 _GradientScroll;
+			float _Posterize;
+			float _Contrast;
 			float _NoiseDistortionAmount;
 			float _Quality;
 			float _Directions;
+			float _Saturation;
+			float _Hue;
 			float _GradientRotation;
+			float _GradientRotationSpeed;
 			#ifdef TESSELLATION_ON
 				float _TessPhongStrength;
 				float _TessValue;
@@ -254,7 +268,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 			TEXTURE2D(_MainTex);
 			TEXTURE2D(_NoiseDistortionOffsetScroll);
 			SAMPLER(sampler_NoiseDistortionOffsetScroll);
-			SAMPLER(sampler_MainTex);
+			SAMPLER(sampler_Linear_Clamp);
 			TEXTURE2D(_Gradient);
 			SAMPLER(sampler_Linear_Repeat);
 			UNITY_INSTANCING_BUFFER_START(AtlasShadersUIImageEffects)
@@ -262,7 +276,28 @@ Shader "AtlasShaders/UI/Image Effects++"
 			UNITY_INSTANCING_BUFFER_END(AtlasShadersUIImageEffects)
 
 
-						
+			float3 HSVToRGB( float3 c )
+			{
+				float4 K = float4( 1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0 );
+				float3 p = abs( frac( c.xxx + K.xyz ) * 6.0 - K.www );
+				return c.z * lerp( K.xxx, saturate( p - K.xxx ), c.y );
+			}
+			
+			float3 RGBToHSV(float3 c)
+			{
+				float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+				float4 p = lerp( float4( c.bg, K.wz ), float4( c.gb, K.xy ), step( c.b, c.g ) );
+				float4 q = lerp( float4( p.xyw, c.r ), float4( c.r, p.yzx ), step( p.x, c.r ) );
+				float d = q.x - min( q.w, q.y );
+				float e = 1.0e-10;
+				return float3( abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+			}
+			float4 CalculateContrast( float contrastValue, float4 colorTarget )
+			{
+				float t = 0.5 * ( 1.0 - contrastValue );
+				return mul( float4x4( contrastValue,0,0,t, 0,contrastValue,0,t, 0,0,contrastValue,t, 0,0,0,1 ), colorTarget );
+			}
+			
 			VertexOutput VertexFunction ( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
@@ -415,25 +450,50 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float Blur1_g6 = _Blur_Instance;
 				float Quality1_g6 = _Quality;
 				float Directions1_g6 = _Directions;
-				SamplerState Sampler1_g6 = sampler_MainTex;
+				SamplerState Sampler1_g6 = sampler_Linear_Clamp;
 				float TextureAlpha1_g6 = 0.0;
 				float4 localGaussianBlurASE1_g6 = GaussianBlurASE_float( Texture1_g6 , UV1_g6 , Blur1_g6 , Quality1_g6 , Directions1_g6 , Sampler1_g6 , TextureAlpha1_g6 );
-				float4 temp_output_39_0 = localGaussianBlurASE1_g6;
+				float3 temp_output_12_0_g8 = CalculateContrast(_Contrast,localGaussianBlurASE1_g6).rgb;
+				float dotResult28_g8 = dot( float3( 0.2126729, 0.7151522, 0.072175 ) , temp_output_12_0_g8 );
+				float3 temp_cast_5 = (dotResult28_g8).xxx;
+				float temp_output_21_0_g8 = _Saturation;
+				float3 lerpResult31_g8 = lerp( temp_cast_5 , temp_output_12_0_g8 , temp_output_21_0_g8);
+				float div98=256.0/float((int)_Posterize);
+				float4 posterize98 = ( floor( float4( lerpResult31_g8 , 0.0 ) * div98 ) / div98 );
+				float3 hsvTorgb4_g9 = RGBToHSV( posterize98.rgb );
+				float3 hsvTorgb8_g9 = HSVToRGB( float3(( hsvTorgb4_g9.x + _Hue ),( hsvTorgb4_g9.y + 0.0 ),( hsvTorgb4_g9.z + 0.0 )) );
+				float3 temp_output_99_0 = saturate( hsvTorgb8_g9 );
+				float3 desaturateInitialColor91 = temp_output_99_0;
+				float desaturateDot91 = dot( desaturateInitialColor91, float3( 0.299, 0.587, 0.114 ));
+				float3 desaturateVar91 = lerp( desaturateInitialColor91, desaturateDot91.xxx, 1.0 );
+				#ifdef _GRAYSCALE_ON
+				float3 staticSwitch89 = desaturateVar91;
+				#else
+				float3 staticSwitch89 = temp_output_99_0;
+				#endif
+				float3 MainTexture83 = staticSwitch89;
 				float2 texCoord68 = IN.ase_texcoord3.xy * float2( 1,1 ) + ( _GradientScroll * _TimeParameters.x );
-				float cos21 = cos(  (0.0 + ( _GradientRotation - 0.0 ) * ( 6.5 - 0.0 ) / ( 1.0 - 0.0 ) ) );
-				float sin21 = sin(  (0.0 + ( _GradientRotation - 0.0 ) * ( 6.5 - 0.0 ) / ( 1.0 - 0.0 ) ) );
+				#ifdef _ANIMATEDROTATION_ON
+				float staticSwitch82 = ( _GradientRotationSpeed * _TimeParameters.x );
+				#else
+				float staticSwitch82 =  (0.0 + ( _GradientRotation - 0.0 ) * ( 6.5 - 0.0 ) / ( 1.0 - 0.0 ) );
+				#endif
+				float cos21 = cos( staticSwitch82 );
+				float sin21 = sin( staticSwitch82 );
 				float2 rotator21 = mul( texCoord68 - float2( 0.5,0.5 ) , float2x2( cos21 , -sin21 , sin21 , cos21 )) + float2( 0.5,0.5 );
 				float4 Gradient70 = SAMPLE_TEXTURE2D( _Gradient, sampler_Linear_Repeat, rotator21 );
 				#ifdef _MULTIPLYCOLOR_ON
-				float4 staticSwitch72 = ( temp_output_39_0 * IN.ase_color * Gradient70 );
+				float4 staticSwitch72 = ( float4( MainTexture83 , 0.0 ) * IN.ase_color * Gradient70 );
 				#else
-				float4 staticSwitch72 = ( ( temp_output_39_0 * IN.ase_color ) + Gradient70 );
+				float4 staticSwitch72 = ( ( float4( MainTexture83 , 0.0 ) * IN.ase_color ) + Gradient70 );
 				#endif
+				
+				float MainTextureAlpha86 = TextureAlpha1_g6;
 				
 				half3 BakedAlbedo = 0;
 				half3 BakedEmission = 0;
-				half3 Color = staticSwitch72.xyz;
-				half Alpha = TextureAlpha1_g6;
+				half3 Color = staticSwitch72.rgb;
+				half Alpha = saturate( ( MainTextureAlpha86 * IN.ase_color.a ) );
 				half AlphaClipThreshold = 0.5;
 				half AlphaClipThresholdShadow = 0.5;
 
@@ -509,6 +569,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
+				float4 ase_color : COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -522,6 +583,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float4 shadowCoord : TEXCOORD1;
 				#endif
 				float4 ase_texcoord2 : TEXCOORD2;
+				float4 ase_color : COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
@@ -530,10 +592,15 @@ Shader "AtlasShaders/UI/Image Effects++"
 			float4 _MainTex_ST;
 			float4 _NoiseDistortionOffsetScroll_ST;
 			float2 _GradientScroll;
+			float _Posterize;
+			float _Contrast;
 			float _NoiseDistortionAmount;
 			float _Quality;
 			float _Directions;
+			float _Saturation;
+			float _Hue;
 			float _GradientRotation;
+			float _GradientRotationSpeed;
 			#ifdef TESSELLATION_ON
 				float _TessPhongStrength;
 				float _TessValue;
@@ -546,7 +613,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 			TEXTURE2D(_MainTex);
 			TEXTURE2D(_NoiseDistortionOffsetScroll);
 			SAMPLER(sampler_NoiseDistortionOffsetScroll);
-			SAMPLER(sampler_MainTex);
+			SAMPLER(sampler_Linear_Clamp);
 			UNITY_INSTANCING_BUFFER_START(AtlasShadersUIImageEffects)
 				UNITY_DEFINE_INSTANCED_PROP(float, _Blur)
 			UNITY_INSTANCING_BUFFER_END(AtlasShadersUIImageEffects)
@@ -561,6 +628,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
 				o.ase_texcoord2.xy = v.ase_texcoord.xy;
+				o.ase_color = v.ase_color;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord2.zw = 0;
@@ -600,6 +668,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float4 vertex : INTERNALTESSPOS;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
+				float4 ase_color : COLOR;
 
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -618,6 +687,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				o.vertex = v.vertex;
 				o.ase_normal = v.ase_normal;
 				o.ase_texcoord = v.ase_texcoord;
+				o.ase_color = v.ase_color;
 				return o;
 			}
 
@@ -657,6 +727,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				o.vertex = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.ase_normal = patch[0].ase_normal * bary.x + patch[1].ase_normal * bary.y + patch[2].ase_normal * bary.z;
 				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
+				o.ase_color = patch[0].ase_color * bary.x + patch[1].ase_color * bary.y + patch[2].ase_color * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -700,11 +771,12 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float Blur1_g6 = _Blur_Instance;
 				float Quality1_g6 = _Quality;
 				float Directions1_g6 = _Directions;
-				SamplerState Sampler1_g6 = sampler_MainTex;
+				SamplerState Sampler1_g6 = sampler_Linear_Clamp;
 				float TextureAlpha1_g6 = 0.0;
 				float4 localGaussianBlurASE1_g6 = GaussianBlurASE_float( Texture1_g6 , UV1_g6 , Blur1_g6 , Quality1_g6 , Directions1_g6 , Sampler1_g6 , TextureAlpha1_g6 );
+				float MainTextureAlpha86 = TextureAlpha1_g6;
 				
-				float Alpha = TextureAlpha1_g6;
+				float Alpha = saturate( ( MainTextureAlpha86 * IN.ase_color.a ) );
 				float AlphaClipThreshold = 0.5;
 
 				#ifdef _ALPHATEST_ON
@@ -766,7 +838,9 @@ Shader "AtlasShaders/UI/Image Effects++"
 			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_FRAG_COLOR
 			#pragma shader_feature_local _MULTIPLYCOLOR_ON
+			#pragma shader_feature_local _GRAYSCALE_ON
 			#pragma multi_compile_instancing
+			#pragma shader_feature_local _ANIMATEDROTATION_ON
 
 
 			struct VertexInput
@@ -800,10 +874,15 @@ Shader "AtlasShaders/UI/Image Effects++"
 			float4 _MainTex_ST;
 			float4 _NoiseDistortionOffsetScroll_ST;
 			float2 _GradientScroll;
+			float _Posterize;
+			float _Contrast;
 			float _NoiseDistortionAmount;
 			float _Quality;
 			float _Directions;
+			float _Saturation;
+			float _Hue;
 			float _GradientRotation;
+			float _GradientRotationSpeed;
 			#ifdef TESSELLATION_ON
 				float _TessPhongStrength;
 				float _TessValue;
@@ -816,7 +895,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 			TEXTURE2D(_MainTex);
 			TEXTURE2D(_NoiseDistortionOffsetScroll);
 			SAMPLER(sampler_NoiseDistortionOffsetScroll);
-			SAMPLER(sampler_MainTex);
+			SAMPLER(sampler_Linear_Clamp);
 			TEXTURE2D(_Gradient);
 			SAMPLER(sampler_Linear_Repeat);
 			UNITY_INSTANCING_BUFFER_START(AtlasShadersUIImageEffects)
@@ -824,7 +903,28 @@ Shader "AtlasShaders/UI/Image Effects++"
 			UNITY_INSTANCING_BUFFER_END(AtlasShadersUIImageEffects)
 
 
-						
+			float3 HSVToRGB( float3 c )
+			{
+				float4 K = float4( 1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0 );
+				float3 p = abs( frac( c.xxx + K.xyz ) * 6.0 - K.www );
+				return c.z * lerp( K.xxx, saturate( p - K.xxx ), c.y );
+			}
+			
+			float3 RGBToHSV(float3 c)
+			{
+				float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+				float4 p = lerp( float4( c.bg, K.wz ), float4( c.gb, K.xy ), step( c.b, c.g ) );
+				float4 q = lerp( float4( p.xyw, c.r ), float4( c.r, p.yzx ), step( p.x, c.r ) );
+				float d = q.x - min( q.w, q.y );
+				float e = 1.0e-10;
+				return float3( abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+			}
+			float4 CalculateContrast( float contrastValue, float4 colorTarget )
+			{
+				float t = 0.5 * ( 1.0 - contrastValue );
+				return mul( float4x4( contrastValue,0,0,t, 0,contrastValue,0,t, 0,0,contrastValue,t, 0,0,0,1 ), colorTarget );
+			}
+			
 			VertexOutput VertexFunction ( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
@@ -977,25 +1077,50 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float Blur1_g6 = _Blur_Instance;
 				float Quality1_g6 = _Quality;
 				float Directions1_g6 = _Directions;
-				SamplerState Sampler1_g6 = sampler_MainTex;
+				SamplerState Sampler1_g6 = sampler_Linear_Clamp;
 				float TextureAlpha1_g6 = 0.0;
 				float4 localGaussianBlurASE1_g6 = GaussianBlurASE_float( Texture1_g6 , UV1_g6 , Blur1_g6 , Quality1_g6 , Directions1_g6 , Sampler1_g6 , TextureAlpha1_g6 );
-				float4 temp_output_39_0 = localGaussianBlurASE1_g6;
+				float3 temp_output_12_0_g8 = CalculateContrast(_Contrast,localGaussianBlurASE1_g6).rgb;
+				float dotResult28_g8 = dot( float3( 0.2126729, 0.7151522, 0.072175 ) , temp_output_12_0_g8 );
+				float3 temp_cast_5 = (dotResult28_g8).xxx;
+				float temp_output_21_0_g8 = _Saturation;
+				float3 lerpResult31_g8 = lerp( temp_cast_5 , temp_output_12_0_g8 , temp_output_21_0_g8);
+				float div98=256.0/float((int)_Posterize);
+				float4 posterize98 = ( floor( float4( lerpResult31_g8 , 0.0 ) * div98 ) / div98 );
+				float3 hsvTorgb4_g9 = RGBToHSV( posterize98.rgb );
+				float3 hsvTorgb8_g9 = HSVToRGB( float3(( hsvTorgb4_g9.x + _Hue ),( hsvTorgb4_g9.y + 0.0 ),( hsvTorgb4_g9.z + 0.0 )) );
+				float3 temp_output_99_0 = saturate( hsvTorgb8_g9 );
+				float3 desaturateInitialColor91 = temp_output_99_0;
+				float desaturateDot91 = dot( desaturateInitialColor91, float3( 0.299, 0.587, 0.114 ));
+				float3 desaturateVar91 = lerp( desaturateInitialColor91, desaturateDot91.xxx, 1.0 );
+				#ifdef _GRAYSCALE_ON
+				float3 staticSwitch89 = desaturateVar91;
+				#else
+				float3 staticSwitch89 = temp_output_99_0;
+				#endif
+				float3 MainTexture83 = staticSwitch89;
 				float2 texCoord68 = IN.ase_texcoord3.xy * float2( 1,1 ) + ( _GradientScroll * _TimeParameters.x );
-				float cos21 = cos(  (0.0 + ( _GradientRotation - 0.0 ) * ( 6.5 - 0.0 ) / ( 1.0 - 0.0 ) ) );
-				float sin21 = sin(  (0.0 + ( _GradientRotation - 0.0 ) * ( 6.5 - 0.0 ) / ( 1.0 - 0.0 ) ) );
+				#ifdef _ANIMATEDROTATION_ON
+				float staticSwitch82 = ( _GradientRotationSpeed * _TimeParameters.x );
+				#else
+				float staticSwitch82 =  (0.0 + ( _GradientRotation - 0.0 ) * ( 6.5 - 0.0 ) / ( 1.0 - 0.0 ) );
+				#endif
+				float cos21 = cos( staticSwitch82 );
+				float sin21 = sin( staticSwitch82 );
 				float2 rotator21 = mul( texCoord68 - float2( 0.5,0.5 ) , float2x2( cos21 , -sin21 , sin21 , cos21 )) + float2( 0.5,0.5 );
 				float4 Gradient70 = SAMPLE_TEXTURE2D( _Gradient, sampler_Linear_Repeat, rotator21 );
 				#ifdef _MULTIPLYCOLOR_ON
-				float4 staticSwitch72 = ( temp_output_39_0 * IN.ase_color * Gradient70 );
+				float4 staticSwitch72 = ( float4( MainTexture83 , 0.0 ) * IN.ase_color * Gradient70 );
 				#else
-				float4 staticSwitch72 = ( ( temp_output_39_0 * IN.ase_color ) + Gradient70 );
+				float4 staticSwitch72 = ( ( float4( MainTexture83 , 0.0 ) * IN.ase_color ) + Gradient70 );
 				#endif
+				
+				float MainTextureAlpha86 = TextureAlpha1_g6;
 				
 				float3 BakedAlbedo = 0;
 				float3 BakedEmission = 0;
-				float3 Color = staticSwitch72.xyz;
-				float Alpha = TextureAlpha1_g6;
+				float3 Color = staticSwitch72.rgb;
+				float Alpha = saturate( ( MainTextureAlpha86 * IN.ase_color.a ) );
 				float AlphaClipThreshold = 0.5;
 				float AlphaClipThresholdShadow = 0.5;
 
@@ -1071,6 +1196,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
+				float4 ase_color : COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1078,6 +1204,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 			{
 				float4 clipPos : SV_POSITION;
 				float4 ase_texcoord : TEXCOORD0;
+				float4 ase_color : COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
@@ -1086,10 +1213,15 @@ Shader "AtlasShaders/UI/Image Effects++"
 			float4 _MainTex_ST;
 			float4 _NoiseDistortionOffsetScroll_ST;
 			float2 _GradientScroll;
+			float _Posterize;
+			float _Contrast;
 			float _NoiseDistortionAmount;
 			float _Quality;
 			float _Directions;
+			float _Saturation;
+			float _Hue;
 			float _GradientRotation;
+			float _GradientRotationSpeed;
 			#ifdef TESSELLATION_ON
 				float _TessPhongStrength;
 				float _TessValue;
@@ -1103,7 +1235,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 			TEXTURE2D(_MainTex);
 			TEXTURE2D(_NoiseDistortionOffsetScroll);
 			SAMPLER(sampler_NoiseDistortionOffsetScroll);
-			SAMPLER(sampler_MainTex);
+			SAMPLER(sampler_Linear_Clamp);
 			UNITY_INSTANCING_BUFFER_START(AtlasShadersUIImageEffects)
 				UNITY_DEFINE_INSTANCED_PROP(float, _Blur)
 			UNITY_INSTANCING_BUFFER_END(AtlasShadersUIImageEffects)
@@ -1130,6 +1262,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 
 
 				o.ase_texcoord.xy = v.ase_texcoord.xy;
+				o.ase_color = v.ase_color;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord.zw = 0;
@@ -1157,6 +1290,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float4 vertex : INTERNALTESSPOS;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
+				float4 ase_color : COLOR;
 
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -1175,6 +1309,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				o.vertex = v.vertex;
 				o.ase_normal = v.ase_normal;
 				o.ase_texcoord = v.ase_texcoord;
+				o.ase_color = v.ase_color;
 				return o;
 			}
 
@@ -1214,6 +1349,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				o.vertex = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.ase_normal = patch[0].ase_normal * bary.x + patch[1].ase_normal * bary.y + patch[2].ase_normal * bary.z;
 				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
+				o.ase_color = patch[0].ase_color * bary.x + patch[1].ase_color * bary.y + patch[2].ase_color * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -1242,11 +1378,12 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float Blur1_g6 = _Blur_Instance;
 				float Quality1_g6 = _Quality;
 				float Directions1_g6 = _Directions;
-				SamplerState Sampler1_g6 = sampler_MainTex;
+				SamplerState Sampler1_g6 = sampler_Linear_Clamp;
 				float TextureAlpha1_g6 = 0.0;
 				float4 localGaussianBlurASE1_g6 = GaussianBlurASE_float( Texture1_g6 , UV1_g6 , Blur1_g6 , Quality1_g6 , Directions1_g6 , Sampler1_g6 , TextureAlpha1_g6 );
+				float MainTextureAlpha86 = TextureAlpha1_g6;
 				
-				surfaceDescription.Alpha = TextureAlpha1_g6;
+				surfaceDescription.Alpha = saturate( ( MainTextureAlpha86 * IN.ase_color.a ) );
 				surfaceDescription.AlphaClipThreshold = 0.5;
 
 
@@ -1309,6 +1446,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
+				float4 ase_color : COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1316,6 +1454,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 			{
 				float4 clipPos : SV_POSITION;
 				float4 ase_texcoord : TEXCOORD0;
+				float4 ase_color : COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
@@ -1324,10 +1463,15 @@ Shader "AtlasShaders/UI/Image Effects++"
 			float4 _MainTex_ST;
 			float4 _NoiseDistortionOffsetScroll_ST;
 			float2 _GradientScroll;
+			float _Posterize;
+			float _Contrast;
 			float _NoiseDistortionAmount;
 			float _Quality;
 			float _Directions;
+			float _Saturation;
+			float _Hue;
 			float _GradientRotation;
+			float _GradientRotationSpeed;
 			#ifdef TESSELLATION_ON
 				float _TessPhongStrength;
 				float _TessValue;
@@ -1341,7 +1485,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 			TEXTURE2D(_MainTex);
 			TEXTURE2D(_NoiseDistortionOffsetScroll);
 			SAMPLER(sampler_NoiseDistortionOffsetScroll);
-			SAMPLER(sampler_MainTex);
+			SAMPLER(sampler_Linear_Clamp);
 			UNITY_INSTANCING_BUFFER_START(AtlasShadersUIImageEffects)
 				UNITY_DEFINE_INSTANCED_PROP(float, _Blur)
 			UNITY_INSTANCING_BUFFER_END(AtlasShadersUIImageEffects)
@@ -1369,6 +1513,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 
 
 				o.ase_texcoord.xy = v.ase_texcoord.xy;
+				o.ase_color = v.ase_color;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord.zw = 0;
@@ -1396,6 +1541,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float4 vertex : INTERNALTESSPOS;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
+				float4 ase_color : COLOR;
 
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -1414,6 +1560,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				o.vertex = v.vertex;
 				o.ase_normal = v.ase_normal;
 				o.ase_texcoord = v.ase_texcoord;
+				o.ase_color = v.ase_color;
 				return o;
 			}
 
@@ -1453,6 +1600,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				o.vertex = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.ase_normal = patch[0].ase_normal * bary.x + patch[1].ase_normal * bary.y + patch[2].ase_normal * bary.z;
 				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
+				o.ase_color = patch[0].ase_color * bary.x + patch[1].ase_color * bary.y + patch[2].ase_color * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -1481,11 +1629,12 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float Blur1_g6 = _Blur_Instance;
 				float Quality1_g6 = _Quality;
 				float Directions1_g6 = _Directions;
-				SamplerState Sampler1_g6 = sampler_MainTex;
+				SamplerState Sampler1_g6 = sampler_Linear_Clamp;
 				float TextureAlpha1_g6 = 0.0;
 				float4 localGaussianBlurASE1_g6 = GaussianBlurASE_float( Texture1_g6 , UV1_g6 , Blur1_g6 , Quality1_g6 , Directions1_g6 , Sampler1_g6 , TextureAlpha1_g6 );
+				float MainTextureAlpha86 = TextureAlpha1_g6;
 				
-				surfaceDescription.Alpha = TextureAlpha1_g6;
+				surfaceDescription.Alpha = saturate( ( MainTextureAlpha86 * IN.ase_color.a ) );
 				surfaceDescription.AlphaClipThreshold = 0.5;
 
 
@@ -1557,6 +1706,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
+				float4 ase_color : COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1565,6 +1715,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float4 clipPos : SV_POSITION;
 				float3 normalWS : TEXCOORD0;
 				float4 ase_texcoord1 : TEXCOORD1;
+				float4 ase_color : COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
@@ -1573,10 +1724,15 @@ Shader "AtlasShaders/UI/Image Effects++"
 			float4 _MainTex_ST;
 			float4 _NoiseDistortionOffsetScroll_ST;
 			float2 _GradientScroll;
+			float _Posterize;
+			float _Contrast;
 			float _NoiseDistortionAmount;
 			float _Quality;
 			float _Directions;
+			float _Saturation;
+			float _Hue;
 			float _GradientRotation;
+			float _GradientRotationSpeed;
 			#ifdef TESSELLATION_ON
 				float _TessPhongStrength;
 				float _TessValue;
@@ -1589,7 +1745,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 			TEXTURE2D(_MainTex);
 			TEXTURE2D(_NoiseDistortionOffsetScroll);
 			SAMPLER(sampler_NoiseDistortionOffsetScroll);
-			SAMPLER(sampler_MainTex);
+			SAMPLER(sampler_Linear_Clamp);
 			UNITY_INSTANCING_BUFFER_START(AtlasShadersUIImageEffects)
 				UNITY_DEFINE_INSTANCED_PROP(float, _Blur)
 			UNITY_INSTANCING_BUFFER_END(AtlasShadersUIImageEffects)
@@ -1612,6 +1768,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
 				o.ase_texcoord1.xy = v.ase_texcoord.xy;
+				o.ase_color = v.ase_color;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord1.zw = 0;
@@ -1643,6 +1800,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float4 vertex : INTERNALTESSPOS;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
+				float4 ase_color : COLOR;
 
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -1661,6 +1819,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				o.vertex = v.vertex;
 				o.ase_normal = v.ase_normal;
 				o.ase_texcoord = v.ase_texcoord;
+				o.ase_color = v.ase_color;
 				return o;
 			}
 
@@ -1700,6 +1859,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				o.vertex = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.ase_normal = patch[0].ase_normal * bary.x + patch[1].ase_normal * bary.y + patch[2].ase_normal * bary.z;
 				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
+				o.ase_color = patch[0].ase_color * bary.x + patch[1].ase_color * bary.y + patch[2].ase_color * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -1728,11 +1888,12 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float Blur1_g6 = _Blur_Instance;
 				float Quality1_g6 = _Quality;
 				float Directions1_g6 = _Directions;
-				SamplerState Sampler1_g6 = sampler_MainTex;
+				SamplerState Sampler1_g6 = sampler_Linear_Clamp;
 				float TextureAlpha1_g6 = 0.0;
 				float4 localGaussianBlurASE1_g6 = GaussianBlurASE_float( Texture1_g6 , UV1_g6 , Blur1_g6 , Quality1_g6 , Directions1_g6 , Sampler1_g6 , TextureAlpha1_g6 );
+				float MainTextureAlpha86 = TextureAlpha1_g6;
 				
-				surfaceDescription.Alpha = TextureAlpha1_g6;
+				surfaceDescription.Alpha = saturate( ( MainTextureAlpha86 * IN.ase_color.a ) );
 				surfaceDescription.AlphaClipThreshold = 0.5;
 
 				#if _ALPHATEST_ON
@@ -1801,6 +1962,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
+				float4 ase_color : COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1809,6 +1971,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float4 clipPos : SV_POSITION;
 				float3 normalWS : TEXCOORD0;
 				float4 ase_texcoord1 : TEXCOORD1;
+				float4 ase_color : COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
@@ -1817,10 +1980,15 @@ Shader "AtlasShaders/UI/Image Effects++"
 			float4 _MainTex_ST;
 			float4 _NoiseDistortionOffsetScroll_ST;
 			float2 _GradientScroll;
+			float _Posterize;
+			float _Contrast;
 			float _NoiseDistortionAmount;
 			float _Quality;
 			float _Directions;
+			float _Saturation;
+			float _Hue;
 			float _GradientRotation;
+			float _GradientRotationSpeed;
 			#ifdef TESSELLATION_ON
 				float _TessPhongStrength;
 				float _TessValue;
@@ -1833,7 +2001,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 			TEXTURE2D(_MainTex);
 			TEXTURE2D(_NoiseDistortionOffsetScroll);
 			SAMPLER(sampler_NoiseDistortionOffsetScroll);
-			SAMPLER(sampler_MainTex);
+			SAMPLER(sampler_Linear_Clamp);
 			UNITY_INSTANCING_BUFFER_START(AtlasShadersUIImageEffects)
 				UNITY_DEFINE_INSTANCED_PROP(float, _Blur)
 			UNITY_INSTANCING_BUFFER_END(AtlasShadersUIImageEffects)
@@ -1856,6 +2024,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
 				o.ase_texcoord1.xy = v.ase_texcoord.xy;
+				o.ase_color = v.ase_color;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord1.zw = 0;
@@ -1886,6 +2055,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float4 vertex : INTERNALTESSPOS;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
+				float4 ase_color : COLOR;
 
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -1904,6 +2074,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				o.vertex = v.vertex;
 				o.ase_normal = v.ase_normal;
 				o.ase_texcoord = v.ase_texcoord;
+				o.ase_color = v.ase_color;
 				return o;
 			}
 
@@ -1943,6 +2114,7 @@ Shader "AtlasShaders/UI/Image Effects++"
 				o.vertex = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.ase_normal = patch[0].ase_normal * bary.x + patch[1].ase_normal * bary.y + patch[2].ase_normal * bary.z;
 				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
+				o.ase_color = patch[0].ase_color * bary.x + patch[1].ase_color * bary.y + patch[2].ase_color * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -1971,11 +2143,12 @@ Shader "AtlasShaders/UI/Image Effects++"
 				float Blur1_g6 = _Blur_Instance;
 				float Quality1_g6 = _Quality;
 				float Directions1_g6 = _Directions;
-				SamplerState Sampler1_g6 = sampler_MainTex;
+				SamplerState Sampler1_g6 = sampler_Linear_Clamp;
 				float TextureAlpha1_g6 = 0.0;
 				float4 localGaussianBlurASE1_g6 = GaussianBlurASE_float( Texture1_g6 , UV1_g6 , Blur1_g6 , Quality1_g6 , Directions1_g6 , Sampler1_g6 , TextureAlpha1_g6 );
+				float MainTextureAlpha86 = TextureAlpha1_g6;
 				
-				surfaceDescription.Alpha = TextureAlpha1_g6;
+				surfaceDescription.Alpha = saturate( ( MainTextureAlpha86 * IN.ase_color.a ) );
 				surfaceDescription.AlphaClipThreshold = 0.5;
 				
 				#if _ALPHATEST_ON
@@ -2002,42 +2175,62 @@ Shader "AtlasShaders/UI/Image Effects++"
 }
 /*ASEBEGIN
 Version=19908
-Node;AmplifyShaderEditor.SimpleTimeNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;48;-1776,272;Inherit;False;1;0;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.TextureTransformNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;50;-1808,176;Inherit;False;-1;False;1;0;SAMPLER2D;;False;2;FLOAT2;0;FLOAT2;1
-Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;56;-1520,256;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;46;-1808,48;Inherit;False;0;51;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;53;-1488,176;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.TexturePropertyNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;51;-2144,-64;Inherit;True;Property;_NoiseDistortionOffsetScroll;Noise Distortion (Offset = Scroll);8;1;[Header];Create;True;1;Noise Distortion;0;0;False;0;False;None;None;False;white;Auto;Texture2D;False;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.SimpleAddOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;54;-1488,48;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;44;-1280,128;Inherit;False;Property;_NoiseDistortionAmount;Noise Distortion Amount;9;0;Create;True;0;0;0;False;0;False;0;0;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;52;-1280,-64;Inherit;True;Property;_TextureSample0;Texture Sample 0;8;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;43;-944,-48;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;29;-1008,-176;Inherit;False;0;35;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;37;-944,144;Inherit;False;Property;_Quality;Quality;6;0;Create;True;0;0;0;False;0;False;0;3;0;25;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;38;-944,224;Inherit;False;Property;_Directions;Directions;7;0;Create;True;0;0;0;False;0;False;0;16;0;50;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;36;-944,64;Inherit;False;InstancedProperty;_Blur;Blur;5;1;[Header];Create;True;1;Gaussian Blur;0;0;False;0;True;0;15;0;25;0;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleAddOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;45;-784,-176;Inherit;False;2;2;0;FLOAT2;0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.TexturePropertyNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;35;-1024,-368;Inherit;True;Property;_MainTex;MainTex;0;1;[HideInInspector];Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;False;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;39;-544,-368;Inherit;False;GaussianBlur;-1;;6;6765d09d9703cbc4f91a813a22575f6a;0;6;11;SAMPLER2D;0;False;5;FLOAT2;0,0;False;6;FLOAT;0;False;7;FLOAT;3;False;8;FLOAT;16;False;9;SAMPLERSTATE;;False;2;FLOAT4;0;FLOAT;15
+Node;AmplifyShaderEditor.TextureTransformNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;50;-3328,-320;Inherit;False;-1;False;1;0;SAMPLER2D;;False;2;FLOAT2;0;FLOAT2;1
+Node;AmplifyShaderEditor.SimpleTimeNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;48;-3200,-224;Inherit;False;1;0;FLOAT;1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;53;-3008,-320;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT;0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;46;-3328,-448;Inherit;False;0;105;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SimpleAddOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;54;-3008,-448;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.TexturePropertyNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;105;-3648,-560;Inherit;True;Property;_NoiseDistortionOffsetScroll;Noise Distortion (Offset = Scroll);15;1;[Header];Create;True;1;Distortion;0;0;False;0;False;None;None;False;white;Auto;Texture2D;False;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;52;-2800,-560;Inherit;True;Property;_TextureSample0;Texture Sample 0;8;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;44;-2736,-368;Inherit;False;Property;_NoiseDistortionAmount;Noise Distortion Amount;16;0;Create;True;0;0;0;False;0;False;0;0;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;29;-2528,-688;Inherit;False;0;35;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;43;-2448,-560;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SimpleAddOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;45;-2304,-688;Inherit;False;2;2;0;FLOAT2;0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.TexturePropertyNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;35;-2416,-880;Inherit;True;Property;_MainTex;MainTex;0;1;[HideInInspector];Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;False;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;37;-2448,-352;Inherit;False;Property;_Quality;Quality;8;0;Create;True;0;0;0;False;0;False;0;3;0;25;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;38;-2448,-272;Inherit;False;Property;_Directions;Directions;9;0;Create;True;0;0;0;False;0;False;0;16;0;50;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;36;-2448,-432;Inherit;False;InstancedProperty;_Blur;Blur;7;1;[Header];Create;True;1;Gaussian Blur;0;0;False;0;True;0;15;0;25;0;1;FLOAT;0
+Node;AmplifyShaderEditor.SamplerStateNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;106;-2352,-192;Inherit;False;1;1;1;1;-1;None;1;0;SAMPLER2D;;False;1;SAMPLERSTATE;0
+Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;39;-2080,-880;Inherit;False;GaussianBlur;-1;;6;6765d09d9703cbc4f91a813a22575f6a;0;6;11;SAMPLER2D;0;False;5;FLOAT2;0,0;False;6;FLOAT;0;False;7;FLOAT;3;False;8;FLOAT;16;False;9;SAMPLERSTATE;;False;2;FLOAT4;0;FLOAT;15
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;86;-1792,-704;Inherit;False;MainTextureAlpha;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.VertexColorNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;15;-448,-176;Inherit;False;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;41;-48,-208;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;87;-384,-272;Inherit;False;86;MainTextureAlpha;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;76;-80,-208;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;71;-448,0;Inherit;False;70;Gradient;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.Vector2Node, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;67;-688,496;Inherit;False;Property;_GradientScroll;Gradient Scroll;4;0;Create;True;0;0;0;False;0;False;0,0;0,0;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
-Node;AmplifyShaderEditor.SimpleTimeNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;58;-688,624;Inherit;False;1;0;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;61;-480,496;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;68;-304,496;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.TFHCRemapNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;31;-16,624;Inherit;False;5;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;3;FLOAT;0;False;4;FLOAT;6.5;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;23;-304,624;Inherit;False;Property;_GradientRotation;Gradient Rotation;3;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RotatorNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;21;176,496;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;0.5,0.5;False;2;FLOAT;1;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SamplerStateNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;69;176,416;Inherit;False;0;0;0;1;-1;None;1;0;SAMPLER2D;;False;1;SAMPLERSTATE;0
 Node;AmplifyShaderEditor.TexturePropertyNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;64;144,224;Inherit;True;Property;_Gradient;Gradient;2;1;[Header];Create;True;1;Gradient;0;0;False;1;Gradient;False;None;None;False;white;Auto;Texture2D;False;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;63;400,224;Inherit;True;Property;_TextureSample1;Texture Sample 1;7;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
 Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;70;688,224;Inherit;False;Gradient;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;16;-80,-368;Inherit;False;3;3;0;FLOAT4;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;73;-112,-80;Inherit;False;2;2;0;FLOAT4;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.SimpleAddOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;74;48,-80;Inherit;False;2;2;0;FLOAT4;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;72;160,-368;Inherit;False;Property;_MultiplyColor;Multiply Color;1;0;Create;True;0;0;0;False;0;False;0;1;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT4;0,0,0,0;False;0;FLOAT4;0,0,0,0;False;2;FLOAT4;0,0,0,0;False;3;FLOAT4;0,0,0,0;False;4;FLOAT4;0,0,0,0;False;5;FLOAT4;0,0,0,0;False;6;FLOAT4;0,0,0,0;False;7;FLOAT4;0,0,0,0;False;8;FLOAT4;0,0,0,0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;16;-80,-368;Inherit;False;3;3;0;FLOAT3;0,0,0;False;1;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SimpleAddOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;74;48,-80;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;72;160,-368;Inherit;False;Property;_MultiplyColor;Multiply Color;1;0;Create;True;0;0;0;False;0;False;0;1;1;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.WireNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;75;0,16;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;73;-112,-80;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SaturateNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;77;256,-272;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;82;-144,720;Inherit;False;Property;_AnimatedRotation;Animated Rotation;4;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.Vector2Node, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;67;-464,496;Inherit;False;Property;_GradientScroll;Gradient Scroll;6;0;Create;True;0;0;0;False;0;False;0,0;0,0;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;61;-256,496;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT;0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;68;-80,496;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SimpleTimeNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;58;-464,624;Inherit;False;1;0;FLOAT;1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.TFHCRemapNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;31;-336,720;Inherit;False;5;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;3;FLOAT;0;False;4;FLOAT;6.5;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;23;-624,720;Inherit;False;Property;_GradientRotation;Gradient Rotation;3;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;81;-576,896;Inherit;False;Property;_GradientRotationSpeed;Gradient Rotation Speed;5;0;Create;True;0;0;0;False;0;False;0;0;0;5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;78;-304,896;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleTimeNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;79;-480,976;Inherit;False;1;0;FLOAT;1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;85;-368,80;Inherit;False;83;MainTexture;1;0;OBJECT;;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;84;-288,-368;Inherit;False;83;MainTexture;1;0;OBJECT;;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.SimpleContrastOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;97;-1504,-880;Inherit;False;2;1;COLOR;0,0,0,0;False;0;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;96;-1216,-880;Inherit;False;Saturation;-1;;8;4f383aa3b2a7ef640be83276d286e709;1,51,0;2;12;FLOAT3;0,0,0;False;21;FLOAT;0.5;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;102;-1504,-784;Inherit;False;Property;_Saturation;Saturation;11;0;Create;True;0;0;0;False;0;False;1;0;0;15;0;1;FLOAT;0
+Node;AmplifyShaderEditor.PosterizeNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;98;-928,-880;Inherit;False;1;2;1;COLOR;0,0,0,0;False;0;INT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;99;-592,-880;Inherit;False;HueShift;-1;;9;7bf5d342a765ece4382eb764b7e3ac6f;0;4;14;COLOR;0,0,0,0;False;15;FLOAT;0;False;16;FLOAT;0;False;17;FLOAT;0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;101;-1792,-784;Inherit;False;Property;_Contrast;Contrast;12;0;Create;True;0;0;0;False;0;False;1;0;0;15;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;104;-928,-784;Inherit;False;Property;_Hue;Hue;13;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;103;-1216,-784;Inherit;False;Property;_Posterize;Posterize;14;0;Create;True;0;0;0;False;0;False;1;0;1;25;0;1;FLOAT;0
+Node;AmplifyShaderEditor.DesaturateOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;91;-336,-816;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT;1;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.StaticSwitch, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;89;-128,-880;Inherit;False;Property;_Grayscale;Grayscale;10;0;Create;True;0;0;0;False;1;Header(Image Visuals);False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT3;0,0,0;False;0;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;4;FLOAT3;0,0,0;False;5;FLOAT3;0,0,0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;83;128,-880;Inherit;False;MainTexture;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.RotatorNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;21;176,496;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;0.5,0.5;False;2;FLOAT;1;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;5;0,0;Float;False;False;-1;3;UnityEditor.ShaderGraphUnlitGUI;0;1;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;7;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;7;0,0;Float;False;False;-1;3;UnityEditor.ShaderGraphUnlitGUI;0;1;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;7;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;8;0,0;Float;False;False;-1;3;UnityEditor.ShaderGraphUnlitGUI;0;1;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;7;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
@@ -2048,13 +2241,12 @@ Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Versi
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;13;0,0;Float;False;False;-1;3;UnityEditor.ShaderGraphUnlitGUI;0;1;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;DepthNormals;0;8;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;7;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;False;True;1;LightMode=DepthNormalsOnly;False;True;4;d3d11;glcore;gles;gles3;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;14;0,0;Float;False;False;-1;3;UnityEditor.ShaderGraphUnlitGUI;0;1;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;DepthNormalsOnly;0;9;DepthNormalsOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;7;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;False;True;1;LightMode=DepthNormalsOnly;False;True;9;d3d11;metal;vulkan;xboxone;xboxseries;playstation;ps4;ps5;switch;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;6;448,-368;Float;False;True;-1;3;UnityEditor.ShaderGraphUnlitGUI;0;16;AtlasShaders/UI/Image Effects++;2992e84f91cbeb14eab234972e07ea9d;True;Forward;0;1;Forward;8;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;True;7;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;2;False;;True;3;False;;True;True;0;False;;0;False;;False;True;1;LightMode=UniversalForwardOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;23;Surface;1;639257258683787568;  Blend;0;0;Two Sided;1;0;Cast Shadows;0;639257258710781642;  Use Shadow Threshold;0;0;Receive Shadows;0;639257258716483491;GPU Instancing;1;0;LOD CrossFade;0;0;Built-in Fog;0;0;Volumetrics;0;0;DOTS Instancing;0;0;Meta Pass;0;0;Extra Pre Pass;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Vertex Position;1;0;0;10;False;True;False;True;False;True;True;True;True;True;False;;True;0
-WireConnection;50;0;51;0
-WireConnection;56;0;48;0
+WireConnection;50;0;105;0
 WireConnection;53;0;50;1
-WireConnection;53;1;56;0
+WireConnection;53;1;48;0
 WireConnection;54;0;46;0
 WireConnection;54;1;53;0
-WireConnection;52;0;51;0
+WireConnection;52;0;105;0
 WireConnection;52;1;54;0
 WireConnection;43;0;52;0
 WireConnection;43;1;44;0
@@ -2065,28 +2257,48 @@ WireConnection;39;5;45;0
 WireConnection;39;6;36;0
 WireConnection;39;7;37;0
 WireConnection;39;8;38;0
-WireConnection;41;0;39;15
-WireConnection;61;0;67;0
-WireConnection;61;1;58;0
-WireConnection;68;1;61;0
-WireConnection;31;0;23;0
-WireConnection;21;0;68;0
-WireConnection;21;2;31;0
+WireConnection;39;9;106;0
+WireConnection;86;0;39;15
+WireConnection;76;0;87;0
+WireConnection;76;1;15;4
 WireConnection;63;0;64;0
 WireConnection;63;1;21;0
 WireConnection;63;7;69;0
 WireConnection;70;0;63;0
-WireConnection;16;0;39;0
+WireConnection;16;0;84;0
 WireConnection;16;1;15;0
 WireConnection;16;2;71;0
-WireConnection;73;0;39;0
-WireConnection;73;1;15;0
 WireConnection;74;0;73;0
 WireConnection;74;1;75;0
 WireConnection;72;1;74;0
 WireConnection;72;0;16;0
 WireConnection;75;0;71;0
+WireConnection;73;0;85;0
+WireConnection;73;1;15;0
+WireConnection;77;0;76;0
+WireConnection;82;1;31;0
+WireConnection;82;0;78;0
+WireConnection;61;0;67;0
+WireConnection;61;1;58;0
+WireConnection;68;1;61;0
+WireConnection;31;0;23;0
+WireConnection;78;0;81;0
+WireConnection;78;1;79;0
+WireConnection;97;1;39;0
+WireConnection;97;0;101;0
+WireConnection;96;12;97;0
+WireConnection;96;21;102;0
+WireConnection;98;1;96;0
+WireConnection;98;0;103;0
+WireConnection;99;14;98;0
+WireConnection;99;15;104;0
+WireConnection;91;0;99;0
+WireConnection;89;1;99;0
+WireConnection;89;0;91;0
+WireConnection;83;0;89;0
+WireConnection;21;0;68;0
+WireConnection;21;2;82;0
 WireConnection;6;2;72;0
-WireConnection;6;3;41;0
+WireConnection;6;3;77;0
 ASEEND*/
-//CHKSM=05F128604FBFC6BB6D9E27193710337FC65DD24E
+//CHKSM=849027081CA5392802488A20AD235F848B79CA57
