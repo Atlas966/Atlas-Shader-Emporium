@@ -162,7 +162,7 @@ Material:
     - _FrontalGlare: -7.24
     - _GlareIntensity: 1
     - _GlareSharpness: 1
-    - _GlobalIntensity: 1
+    - _GlobalIntensity: 0.12
     - _GradientScrollSpeed: 0
     - _Grayscale: 0
     - _Length: 1
